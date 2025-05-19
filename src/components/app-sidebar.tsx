@@ -4,14 +4,13 @@ import * as React from "react"
 import {
   AudioWaveform,
   BookOpen,
-  Bot,
+  ChartNoAxesGantt,
   Command,
   Frame,
   GalleryVerticalEnd,
   Map,
   PieChart,
   Settings2,
-  SquareTerminal,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -27,13 +26,14 @@ import {
 } from "@/components/ui/sidebar"
 import Image from "next/image"
 import logo from '@/lib/logo.png'
+import Link from "next/link"
 
 // This is sample data.
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    name: "Jagadeesh",
+    email: "test@example.com",
+    avatar: "Jaggu",
   },
   teams: [
     {
@@ -56,61 +56,38 @@ const data = {
     {
       title: "My Learning",
       url: "#",
-      icon: SquareTerminal,
+      icon: ChartNoAxesGantt,
       isActive: true,
       items: [
         {
-          title: "History",
+          title: "Schedule",
+          url: "/dashboard/schedule",
+        },
+        {
+          title: "Learning",
+          url: "/dashboard/learning",
+        },
+        {
+          title: "Notes",
           url: "/dashboard/notes",
         },
-        {
-          title: "Starred",
-          url: "/dashboard",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
       ],
     },
     {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Documentation",
+      title: "Documents",
       url: "#",
       icon: BookOpen,
       items: [
         {
-          title: "Introduction",
+          title: "My Books",
           url: "#",
         },
         {
-          title: "Get Started",
+          title: "My PDF's",
           url: "#",
         },
         {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
+          title: "Notes",
           url: "#",
         },
       ],
@@ -163,7 +140,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         {/* <TeamSwitcher teams={data.teams} /> */}
-        <Image src={logo} sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" alt="jbdc" />
+        <Link className="flex flex-col items-center" href='/dashboard'><Image src={logo} width={150} height={150} alt="jbdc" /></Link>
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
