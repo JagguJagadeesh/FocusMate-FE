@@ -1,6 +1,6 @@
 'use client'
 import Image from "next/image"
-import logo from '@/lib/hatlogo.png'
+import logo from '@/lib/hatlogo.jpeg'
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -17,6 +17,7 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { signupUser } from "@/services/authService"
 import { useRouter } from "next/navigation"
+import useUserStore from "@/stores/useUserStore"
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -33,6 +34,7 @@ const formSchema = z.object({
 
 
 function Signup() {
+      const setUser = useUserStore(state=>state.setUser)
   const router = useRouter()
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -44,11 +46,15 @@ function Signup() {
     },
   })
 
-  const onSubmit = (values: z.infer<typeof formSchema>)=>{
+  const onSubmit = async (values: z.infer<typeof formSchema>)=>{
     try {
-      const data = signupUser(values)
-      // if(!data) console.log('Error at Signing up');
-      if(!data) return 
+      const data = await signupUser(values)
+      if(!data) console.log("problem signingup");
+      setUser({
+        id:data.user.id,
+        name:data.user.name,
+        email:data.user.email
+      })
       router.push('/dashboard')
       // console.log('User signed up:', data)
     } catch (err: any) {

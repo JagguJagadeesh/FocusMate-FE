@@ -5,13 +5,15 @@ import { Separator } from '@/components/ui/separator'
 import Link from 'next/link'
 import React from 'react'
 import Image from 'next/image'
-import logo from '@/lib/hatlogo.png'
+import logo from '@/lib/hatlogo.jpeg'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { signinUser } from '@/services/authService'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { useRouter } from 'next/navigation'
+import useUserStore from "@/stores/useUserStore";
+
 
 const formSchema = z.object({
   email: z.string().email({
@@ -24,7 +26,7 @@ const formSchema = z.object({
 
 
 function Login() {
-
+    const setUser = useUserStore(state=>state.setUser)
   const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -38,12 +40,19 @@ function Login() {
   const onSubmit = async (values: z.infer<typeof formSchema>)=>{
     try {
       const data =  await signinUser(values)
+      console.log(data)
+      if(!data) console.log("problem signingup");
+      setUser({
+        id:data.user.id,
+        name:data.user.name,
+        email:data.user.email
+      })
       if( data) router.push('/dashboard')
-      // console.log('User signed up:', data)
-    } catch (err: any) {
-      console.error('Signup failed:', err.response?.data?.message || err.message)
-    }
+      } catch (err: any) {
+    console.error('Signup failed:', err.response?.data?.message || err.message)
   }
+}
+
   return (
     <div className="w-screen h-screen flex flex-col items-center justify-center">
       <div>
@@ -90,7 +99,7 @@ function Login() {
               </FormItem>
             )}
           />
-          <Button type="submit" className="mt-2">Create account</Button>
+          <Button type="submit" className="mt-2">Sign in</Button>
         </div>
       </div>
       </form>

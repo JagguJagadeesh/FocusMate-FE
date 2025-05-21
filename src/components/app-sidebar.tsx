@@ -27,6 +27,7 @@ import {
 import Image from "next/image"
 import logo from '@/lib/logo.png'
 import Link from "next/link"
+import useUserStore from "@/stores/useUserStore"
 
 // This is sample data.
 const data = {
@@ -64,8 +65,8 @@ const data = {
           url: "/dashboard/schedule",
         },
         {
-          title: "Learning",
-          url: "/dashboard/learning",
+          title: "Play Lists",
+          url: "/dashboard/playlist",
         },
         {
           title: "Notes",
@@ -136,6 +137,8 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const userData = useUserStore(s=>s.user)
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -147,7 +150,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={userData} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

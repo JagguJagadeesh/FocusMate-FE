@@ -1,14 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
-  DialogHeader,
-  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
 import {
@@ -18,10 +15,21 @@ import {
 import "@excalidraw/excalidraw/index.css";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { createNote } from "@/services/userService";
+import useUserStore from "@/stores/useUserStore";
 
 const ExcalidrawWrapper: React.FC = () => {
-  const [canvasUrl, setCanvasUrl] = useState("");
+
+  const user = useUserStore(s=>s.user)
+
   const [excalidrawAPI, setExcalidrawAPI] = useState<any>(null);
+  const [canvasUrl, setCanvasUrl] = useState("");
+  const [noteTitle,setNoteTitle] = useState("");
+  const [noteDes,setNoteDes] = useState("")
+
 
   const initialData = {
   appState: {
@@ -56,6 +64,21 @@ const ExcalidrawWrapper: React.FC = () => {
     setCanvasUrl(canvas.toDataURL());
   };
 
+   
+  const handleSave  = async () => {
+    try {
+      const res = createNote({
+        ownerID:user.id,
+        title: noteTitle,
+        description: noteDes,
+        imgData: canvasUrl
+      })
+      console.log(res)
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
   return (
     <div className="">
       <Link href='/dashboard'><Button  className="absolute z-10 top-4 py-2 bg-red-400 left-22 hover:bg-red-500 duration-150 cursor-pointer"><span className="text-md">X</span> Cancel</Button></Link>
@@ -80,20 +103,21 @@ const ExcalidrawWrapper: React.FC = () => {
         />
       </div>
       <DialogContent className="">
-        <DialogHeader>
+        {/* <DialogHeader>
           <DialogTitle>Exported View</DialogTitle>
-          <DialogDescription>
-            Click on the save button to save the draw.
-          </DialogDescription>
-        </DialogHeader>
+        </DialogHeader> */}
         {canvasUrl && (
         <div className="rounded-lg border mx-4 flex items-center justify-center ">
           <img src={canvasUrl} alt="Exported drawing" />
         </div>
       )}
+        <div className="flex flex-col gap-2">
+          <div className="flex gap-2"><Label>Title:</Label><Input onBlur={(e)=>{setNoteTitle(e.target.value)}} type="text" placeholder="Title of note"/></div>
+          <div className="flex gap-2"><Textarea onBlur={(e)=>{setNoteDes(e.target.value)}} placeholder="Describe about note"/></div>
+        </div>
         <DialogFooter className="sm:justify-start">
           <DialogClose asChild>
-            <Button className="cursor-pointer">
+            <Button className="cursor-pointer" onClick={handleSave}>
               Save
             </Button>
           </DialogClose>
