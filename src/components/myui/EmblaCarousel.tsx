@@ -16,6 +16,7 @@ import schdulepic from '@/images/schdulepic.png'
 import chatbotpic from '@/images/chatbotpic.png'
 import analyticpic from '@/images/analyticspic.png'
 
+
 const images = [dashbordpic, schdulepic, chatbotpic, analyticpic];
 
 
@@ -41,11 +42,11 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
   const { autoplayIsPlaying, toggleAutoplay, onAutoplayButtonClick } =
     useAutoplay(emblaApi)
 
-  const { showAutoplayProgress } = useAutoplayProgress(emblaApi, progressNode)
+  // const { showAutoplayProgress } = useAutoplayProgress(emblaApi, progressNode)
 
   return (
-    <div className="relative w-full overflow-hidden">
-    <div className="overflow-hidden" ref={emblaRef}>
+    <div className="flex flex-col w-full overflow-hidden">
+    <div className="overflow-hidden border-2 rounded-lg border-gray-300 mr-1 mb-2" ref={emblaRef}>
         <div className="flex w-full">
         {slides.map((index) => (
             <div
@@ -59,37 +60,37 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
     </div>
 
     {/* Controls */}
-    <div className="flex items-center justify-between gap-4 mt-4">
-        <div className="flex gap-2">
-        <PrevButton
+    <div className="flex items-center justify-around gap-4 mt-4">
+        <div className="flex gap-16">
+        <PrevButton className='text-gray-500 cursor-pointer'
             onClick={() => onAutoplayButtonClick(onPrevButtonClick)}
             disabled={prevBtnDisabled}
         />
-        <NextButton
+        <NextButton className='text-gray-500 cursor-pointer'
             onClick={() => onAutoplayButtonClick(onNextButtonClick)}
             disabled={nextBtnDisabled}
         />
         </div>
 
         {/* Progress bar */}
-        <div
+        {/* <div
         className={`relative h-1 w-20 overflow-hidden rounded-full border transition-opacity duration-300 ease-in-out ${
             showAutoplayProgress ? 'opacity-100' : 'opacity-0'
         }`}
-        >
-        <div
+        > */}
+        {/* <div
             ref={progressNode}
             className="absolute top-0 left-[-100%] bottom-0 w-full bg-gray-800 animate-[autoplay-progress_3s_linear_1]"
         />
-        </div>
+        </div> */}
 
-        <button
+        {/* <button
         onClick={toggleAutoplay}
         type="button"
         className="px-4 py-1 text-sm font-semibold rounded-full border text-gray-800 hover:bg-gray-100"
         >
         {autoplayIsPlaying ? 'Stop' : 'Start'}
-        </button>
+        </button> */}
     </div>
     </div>
 

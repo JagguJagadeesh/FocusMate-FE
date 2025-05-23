@@ -5,6 +5,14 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 import Link from "next/link"
+import { Turret_Road } from "next/font/google"
+
+
+const troad = Turret_Road({
+  weight: ['400'],
+  style: ['normal'],
+  subsets: ['latin', 'latin-ext']
+});
 
 export default function Page() {
   return (
@@ -17,20 +25,20 @@ export default function Page() {
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+          <div className={`${troad.className} grid auto-rows-min gap-4 md:grid-cols-3`}>
             <Link href='/tabs/draw'>
-            <div className="aspect-video  flex items-center justify-center shadow-2xl bg-gradient-to-r  from-slate-100 to-slate-300 rounded-lg hover:border-b hover:border-r hover:text-gray-800 border-gray-500 duration-150">
-              <p className="text-3xl font-stretch-ultra-expanded ">Create Notes +</p>
+            <div className="aspect-video  flex items-center justify-center text-shadow-white hover:border rounded-2xl bg-gradient-to-br from-gray-700 to-gray-900 duration-100">
+              <p className="text-3xl ">Create Note</p>
             </div>
             </Link>
             <Link href='/tabs/schedule'>
-            <div className="aspect-video  flex items-center justify-center shadow-2xl bg-gradient-to-l  from-slate-100 to-slate-300 rounded-lg hover:border-t hover:border-l hover:text-gray-800 border-gray-500 duration-150">
-              <p className="text-3xl font-stretch-ultra-expanded ">Create Schedule +</p>
+            <div className="aspect-video  flex items-center justify-center text-shadow-white hover:border rounded-2xl bg-gradient-to-br from-gray-700 to-gray-900 duration-100">
+              <p className="text-3xl ">Create Schedule</p>
             </div>
             </Link>
-            <Link href='/tabs/draw'>
-            <div className="aspect-video  flex items-center justify-center shadow-2xl bg-gradient-to-r  from-slate-100 to-slate-300 rounded-lg hover:border-b hover:border-r hover:text-gray-800 border-gray-500 duration-150">
-              <p className="text-3xl font-stretch-ultra-expanded ">Add PlayList +</p>
+            <Link href='/dashboard/playlist'>
+            <div className="aspect-video  flex items-center justify-center text-shadow-white hover:border rounded-2xl bg-gradient-to-br from-gray-700 to-gray-900 duration-100">
+              <p className=' text-3xl'>My PlayList</p>
             </div>
             </Link>
           </div>

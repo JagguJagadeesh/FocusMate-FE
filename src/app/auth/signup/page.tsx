@@ -18,6 +18,7 @@ import { z } from "zod"
 import { signupUser } from "@/services/authService"
 import { useRouter } from "next/navigation"
 import useUserStore from "@/stores/useUserStore"
+import { toast } from "sonner"
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -55,10 +56,16 @@ function Signup() {
         name:data.user.name,
         email:data.user.email
       })
+      toast.success("Account created!", {
+      description: "Thank You have great day.",
+      });
       router.push('/dashboard')
       // console.log('User signed up:', data)
     } catch (err: any) {
       console.error('Signup failed:', err.response?.data?.message || err.message)
+      toast.error("Signup failed", {
+      description: "Email may already be in use.",
+    });
     }
   }
 
@@ -75,9 +82,6 @@ function Signup() {
           <p className="text-2xl font-bold">Sign up to FocusMate</p>
           <p className="text-gray-500 text-sm mb-3">Already have Account ? <Link href='/auth/signin' className="text-blue-500">Login</Link></p>
         </div>
-        <div>
-          <Button className="w-full bg-black text-white px-36">Continue with Google</Button>
-        </div>
         <Separator className="my-4"/>
         <div className="flex flex-col gap-2">
           <FormField
@@ -86,7 +90,7 @@ function Signup() {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input placeholder="shadcn" {...field} />
+                  <Input placeholder="Jhon" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -120,7 +124,7 @@ function Signup() {
               </FormItem>
             )}
           />
-          <Button type="submit" className="mt-2">Create account</Button>
+          <Button type="submit" className="mt-2 px-36">Create account</Button>
         </div>
       </div>
       </form>
