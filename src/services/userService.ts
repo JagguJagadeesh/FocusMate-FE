@@ -28,12 +28,13 @@ const addVideo = async (video: object) => {
 }
 
 const getAllVideos = async (id: string) => {
-    const res = await axiosInstance.post('/getallvideos',id)
+    const res = await axiosInstance.post('/getallvideos',{ownerID: id})
+    // console.log(res)
     return res.data
 }
 
 const deleteVideo = async (videoId: string) => {
-    const res = await axiosInstance.post('/deletevideo',videoId)
+    const res = await axiosInstance.post('/deletevideo',{id: videoId})
     return res.data
 }
 
