@@ -7,7 +7,6 @@ import { Trash } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { deleteNote } from '@/services/userService'
 import { toast } from 'sonner'
-import { useRouter } from 'next/navigation'
 
 
 interface NotesCardProps {
@@ -21,7 +20,7 @@ export default function NotesCard({ id, title, description, imgData }: NotesCard
   // const router = useRouter()
   const handleDelete = async () => {
     try {
-      const res = await deleteNote(id)
+      await deleteNote(id)
       toast.success("Note deleted successfully!")
       // router.refresh()
       window.location.reload()

@@ -34,7 +34,6 @@ const data = {
   user: {
     name: "Jagadeesh",
     email: "test@example.com",
-    avatar: "Jaggu",
   },
   teams: [
     {

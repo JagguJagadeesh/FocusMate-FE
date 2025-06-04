@@ -1,10 +1,9 @@
 'use client'
-import React, { useRef } from 'react'
+import React from 'react'
 import { EmblaOptionsType } from 'embla-carousel'
 import useEmblaCarousel from 'embla-carousel-react'
 import Autoplay from 'embla-carousel-autoplay'
 import { useAutoplay } from './EmblaCarouselAutoplay'
-import { useAutoplayProgress } from './EmblaCarouselAutoplayProgress'
 import {
   NextButton,
   PrevButton,
@@ -27,7 +26,7 @@ type PropType = {
 
 const EmblaCarousel: React.FC<PropType> = (props) => {
   const { slides, options } = props
-  const progressNode = useRef<HTMLDivElement>(null)
+  // const progressNode = useRef<HTMLDivElement>(null)
   const [emblaRef, emblaApi] = useEmblaCarousel(options, [
     Autoplay({ playOnInit: false, delay: 3000 })
   ])
@@ -39,7 +38,7 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
     onNextButtonClick
   } = usePrevNextButtons(emblaApi)
 
-  const { autoplayIsPlaying, toggleAutoplay, onAutoplayButtonClick } =
+  const { onAutoplayButtonClick } =
     useAutoplay(emblaApi)
 
   // const { showAutoplayProgress } = useAutoplayProgress(emblaApi, progressNode)

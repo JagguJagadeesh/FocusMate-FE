@@ -26,7 +26,7 @@ function HomeLayout() {
           <p className={`text-3xl sm:text-4xl lg:text-5xl font-semibold ${troad.className}`}>Your Personal Study Planner, Reinvented</p>
           <p className="text-lg lg:text-xl">Welcome to <strong>FocusMate</strong> — your smart study companion.</p>
           <p className="text-sm lg:text-base text-muted-foreground">
-            Whether you're preparing for exams, managing class deadlines, or just trying to stay productive, FocusMate helps you create personalized study plans, track progress, and stay focused using AI-powered insights and reminders.
+            Whether you&apos;re preparing for exams, managing class deadlines, or just trying to stay productive, FocusMate helps you create personalized study plans, track progress, and stay focused using AI-powered insights and reminders.
           </p>
           <Link href="/auth/signup">
             <Button className="px-6 py-6 border-gray-500 border-2 mt-3 w-fit cursor-pointer text-xl">Create Study Plan</Button>
