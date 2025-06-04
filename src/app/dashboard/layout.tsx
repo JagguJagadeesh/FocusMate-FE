@@ -3,11 +3,13 @@
 
 import { AppSidebar } from "@/components/app-sidebar"
 import { SidebarProvider } from "@/components/ui/sidebar"
-import { Geist } from 'next/font/google'
+import { Turret_Road } from 'next/font/google'
 
 
-const geist = Geist({
-  subsets: ['latin-ext'],
+
+const geist = Turret_Road({
+  subsets: ['latin'],
+  weight:'400',
 })
 
 export default function DashboardLayout({

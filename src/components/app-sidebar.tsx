@@ -10,7 +10,7 @@ import {
   GalleryVerticalEnd,
   Map,
   PieChart,
-  Settings2,
+  Telescope
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -94,13 +94,13 @@ const data = {
       ],
     },
     {
-      title: "Settings",
+      title: "Explore",
       url: "#",
-      icon: Settings2,
+      icon: Telescope,
       items: [
         {
-          title: "General",
-          url: "#",
+          title: "Community",
+          url: "/community",
         },
         {
           title: "Team",

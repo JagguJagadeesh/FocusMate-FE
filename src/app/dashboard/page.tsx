@@ -6,6 +6,8 @@ import {
 } from "@/components/ui/sidebar"
 import Link from "next/link"
 import { Turret_Road } from "next/font/google"
+import Calendar from './schedule/Calendar'
+import UserChart from './progress/UserChart'
 
 
 const troad = Turret_Road({
@@ -27,22 +29,29 @@ export default function Page() {
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
           <div className={`${troad.className} grid auto-rows-min gap-4 md:grid-cols-3`}>
             <Link href='/tabs/draw'>
-            <div className="aspect-video  flex items-center justify-center text-shadow-white hover:border rounded-2xl bg-gradient-to-br from-gray-700 to-gray-900 duration-100">
+            <div className="aspect-video  flex items-center justify-center  hover:border-2 rounded-2xl bg-gray-400 text-black opacity-90 hover:opacity-100 duration-100">
               <p className="text-3xl ">Create Note</p>
             </div>
             </Link>
             <Link href='/tabs/schedule'>
-            <div className="aspect-video  flex items-center justify-center text-shadow-white hover:border rounded-2xl bg-gradient-to-br from-gray-700 to-gray-900 duration-100">
+            <div className="aspect-video  flex items-center justify-center hover:border-2 rounded-2xl bg-gray-400 text-black opacity-90 hover:opacity-100 duration-100">
               <p className="text-3xl ">Create Schedule</p>
             </div>
             </Link>
             <Link href='/dashboard/playlist'>
-            <div className="aspect-video  flex items-center justify-center text-shadow-white hover:border rounded-2xl bg-gradient-to-br from-gray-700 to-gray-900 duration-100">
+            <div className="aspect-video  flex items-center justify-center hover:border-2 rounded-2xl bg-gray-400 text-black opacity-90 hover:opacity-100 duration-100">
               <p className=' text-3xl'>My PlayList</p>
             </div>
             </Link>
           </div>
-          <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
+          <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" >
+          <Calendar/>
+          </div>
+          <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" >
+          <div className="p-10">
+            <UserChart/>
+          </div>
+          </div>
         </div>
         </SidebarInset>
       </>

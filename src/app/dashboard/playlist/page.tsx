@@ -17,6 +17,7 @@ import { Input } from '@/components/ui/input'
 import useUserStore from '@/stores/useUserStore'
 import { addVideo, deleteVideo, getAllVideos } from '@/services/userService'
 import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 
 const caveat = Turret_Road({
   subsets: ['latin'],
@@ -36,6 +37,7 @@ function getYouTubeEmbedUrl(url: string): string {
 }
 
 export default function PlayList() {
+  const router = useRouter()
   const userData = useUserStore(s => s.user)
   const [data, setData] = useState<Video[]>([])
   const [open, setOpen] = useState(false)
@@ -68,6 +70,7 @@ export default function PlayList() {
       toast.success('Video added successfully')
       setNewTitle('')
       setNewUrl('')
+      router.push('/dashboard/playlist')
       setOpenAddDialog(false)
     } catch (err) {
       toast.error("Failed to add video")

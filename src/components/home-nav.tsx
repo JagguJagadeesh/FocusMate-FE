@@ -16,7 +16,7 @@ function HomeNav() {
           <ul className='flex gap-6 items-center text-lg font-medium font-mono'>
             <Link href={'#'}><li className='hover:underline cursor-pointer duration-150 text-md'>Home</li></Link>
             <Link href={'#'}><li className='hover:underline cursor-pointer duration-150 text-md'>About</li></Link>
-            <Link href={'#'}><li className='hover:underline cursor-pointer duration-150 text-md'>Community</li></Link>
+            <Link href={'/community'}><li className='hover:underline cursor-pointer duration-150 text-md'>Community</li></Link>
             <Link href={'#'}><li className='hover:underline cursor-pointer duration-150 text-md'>Contact</li></Link>
           </ul>
         </div>
