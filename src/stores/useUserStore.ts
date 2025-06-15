@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 
 type User = {
   id: string;
@@ -9,6 +9,7 @@ type User = {
 
 type UserStore = {
   user: User;
+  hasHydrated: boolean;
   setUser: (user: User) => void;
   clearUser: () => void;
 };
@@ -23,11 +24,15 @@ const useUserStore = create<UserStore>()(
   persist(
     (set) => ({
       user: initialUser,
+      hasHydrated: false,
       setUser: (user) => set({ user }),
       clearUser: () => set({ user: initialUser }),
     }),
     {
-      name: "user-store", // localStorage key
+      name: 'user-store',
+      onRehydrateStorage: () => (state) => {
+        if(state) state.hasHydrated = true;
+      },
     }
   )
 );

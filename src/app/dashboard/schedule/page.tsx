@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import Calendar from './Calendar'
+import Scheduler from './Calendar'
 import { SidebarInset, SidebarTrigger } from '@/components/ui/sidebar'
 import { Separator } from '@radix-ui/react-separator'
 
@@ -16,7 +16,7 @@ export default function Schedule() {
           </div>
         </header>
       </SidebarInset>
-      <Calendar/>
+      <Scheduler view='dayGridMonth'/>
     </div>
   )
 }

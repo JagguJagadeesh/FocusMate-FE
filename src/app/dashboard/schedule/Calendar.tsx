@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
@@ -10,6 +10,9 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Turret_Road } from 'next/font/google'
+import axiosInstance from '@/lib/axiosInstence'
+import useUserStore from '@/stores/useUserStore'
+import { toast } from 'sonner'
 
 const caveat = Turret_Road({
   subsets: ['latin'],
@@ -20,7 +23,7 @@ type Task = {
   id: string
   title: string
   start: string
-  allDay: boolean
+  userID: string
   category: string
 }
 
@@ -31,16 +34,38 @@ const categoryColors: Record<string, string> = {
   other: '#a855f7',
 }
 
-export default function Scheduler() {
+export default function Scheduler({view}: {view: string}) {
   const [events, setEvents] = useState<Task[]>([])
   const [open, setOpen] = useState(false)
   const [editingEventId, setEditingEventId] = useState<string | null>(null)
-
+  
   const [title, setTitle] = useState('')
   const [datetime, setDatetime] = useState('')
   const [category, setCategory] = useState('work')
-
+  
   const calendarRef = useRef<FullCalendar>(null)
+  const { user, hasHydrated } = useUserStore();
+  
+  async function getAllTasks(userID: string) {
+    const res = await axiosInstance.post('/getalltasks',{userID})
+    // console.log(res)
+    return res.data
+  }
+  useEffect(() => {
+  if (!hasHydrated || !user.id) return; // wait for hydration and valid user
+
+  const fetchTasks = async () => {
+    try {
+      const data = await getAllTasks(user.id);
+      setEvents(data.tasks);
+    } catch (err) {
+      console.error("Failed to fetch tasks:", err);
+    }
+  };
+
+      fetchTasks();
+  }, [hasHydrated, user.id]);
+
 
   const handleDateClick = (arg: DateClickArg) => {
     setTitle('')
@@ -59,27 +84,41 @@ export default function Scheduler() {
     setOpen(true)
   }
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!title || !datetime) return
 
     const newEvent: Task = {
       id: editingEventId ?? Date.now().toString(),
       title,
       start: datetime,
-      allDay: false,
+      userID: user.id,
       category,
     }
+    try {
+      const res = await axiosInstance.post('/addtask',newEvent);
+      // console.log(res)
+    } catch (e) {
+      console.log(e)
+    }
+    toast.success('Task Added Successfully...')
     setEvents(prev =>
       editingEventId
         ? prev.map(e => (e.id === editingEventId ? newEvent : e))
         : [...prev, newEvent]
     )
-
+    // console.log(events)
     setOpen(false)
   }
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!editingEventId) return
+    try {
+      const res = await axiosInstance.post('/deletetask',{id: editingEventId});
+      // console.log(res)
+    } catch (e) {
+      console.log(e)
+    }
+    toast.success('Task Deleted Successfully...')
     setEvents(prev => prev.filter(e => e.id !== editingEventId))
     setOpen(false)
   }
@@ -92,7 +131,9 @@ export default function Scheduler() {
     )
     setEvents(updated)
   }
-console.log(events)
+  if (!hasHydrated) {
+    return <div>Loading...</div>;
+  }
   return (
     <div className={`p-4 ${caveat.className}`}>
       <h2 className="text-3xl font-bold text-center mb-6">My Schedule</h2>
@@ -100,11 +141,11 @@ console.log(events)
       <FullCalendar
         ref={calendarRef}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-        initialView="dayGridMonth"
+        initialView={view}
         headerToolbar={{
           left: 'prev,next today',
           center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay',
+          right: 'dayGridMonth,timeGridDay',
         }}
         events={events}
         dateClick={handleDateClick}
@@ -174,14 +215,10 @@ function renderEventContent(eventInfo: any) {
     <div
       style={{
         backgroundColor: color,
-        color: 'white',
-        borderRadius: '0.25rem',
-        padding: '0.2rem 0.4rem',
-        fontSize: '0.875rem',
-        fontWeight: 500,
       }}
+      className={`text-white text-wrap rounded-lg px-1 py-1 text-xl`}
     >
-      {eventInfo.event.title}
+      <p className='text-sm'>{eventInfo.event.title}</p>
     </div>
   )
 }

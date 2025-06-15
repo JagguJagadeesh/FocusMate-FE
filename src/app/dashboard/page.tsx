@@ -45,7 +45,7 @@ export default function Page() {
             </Link>
           </div>
           <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" >
-          <Calendar/>
+          <Calendar view={'timeGridDay'}/>
           </div>
           <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" >
           <div className="p-10">

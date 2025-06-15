@@ -2,8 +2,10 @@
 // import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 
 import { AppSidebar } from "@/components/app-sidebar"
+import Loading from "@/components/loading"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { Turret_Road } from 'next/font/google'
+import { Suspense } from "react"
 
 
 
@@ -20,7 +22,9 @@ export default function DashboardLayout({
   return <section className={geist.className}>
     <SidebarProvider>
       <AppSidebar />
-      {children}
+      <Suspense fallback={<Loading />}>
+        {children}
+      </Suspense>
     </SidebarProvider>
       </section>
         
