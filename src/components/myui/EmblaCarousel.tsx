@@ -52,7 +52,7 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
             className="flex-[0_0_100%] flex justify-center items-center h-80 border rounded-lg border-gray-300"
             key={index}
             >
-            <span className="text-3xl font-bold"><Image objectFit='cover' src={images[index]} alt=''/></span>
+            <span className="text-3xl font-bold"><Image  src={images[index]} alt=''/></span>
             </div>
         ))}
         </div>

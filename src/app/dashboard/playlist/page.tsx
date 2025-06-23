@@ -2,224 +2,172 @@
 
 import React, { useEffect, useState } from 'react'
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle
+  Dialog, DialogContent, DialogHeader, DialogTitle,
 } from '@/components/ui/dialog'
 import { motion } from 'framer-motion'
-import { Plus, Trash2 } from 'lucide-react'
+import { PlusIcon, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { SidebarInset, SidebarTrigger } from '@/components/ui/sidebar'
-import { Separator } from '@radix-ui/react-separator'
-import { Turret_Road } from 'next/font/google'
-import { Input } from '@/components/ui/input'
+import { Separator } from '@/components/ui/separator'
 import useUserStore from '@/stores/useUserStore'
 import { addVideo, deleteVideo, getAllVideos } from '@/services/userService'
 import { toast } from 'sonner'
-import { useRouter } from 'next/navigation'
+import { Input } from '@/components/ui/input'
 
-const caveat = Turret_Road({
-  subsets: ['latin'],
-  weight: '500'
-})
-
-type Video = {
-  title: string
-  link: string
-  id: string
-}
+type Video = { title: string; link: string; id: string }
 
 function getYouTubeEmbedUrl(url: string): string {
-  const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([^\s&]+)/;
-  const match = url.match(regex);
-  return match ? `https://www.youtube.com/embed/${match[1]}` : '';
+  const regex = /(?:youtu\.be\/|v=|\/embed\/)([\w-]+)/;
+  const match = url.match(regex)
+  return match ? `https://www.youtube.com/embed/${match[1]}` : ''
 }
 
 export default function PlayList() {
-  const router = useRouter()
   const userData = useUserStore(s => s.user)
-  const [data, setData] = useState<Video[]>([])
-  const [open, setOpen] = useState(false)
-  const [openAddDialog, setOpenAddDialog] = useState(false)
-  const [activeVideo, setActiveVideo] = useState<Video | null>(null)
-  const [newTitle, setNewTitle] = useState('')
-  const [newUrl, setNewUrl] = useState('')
+  const [videos, setVideos] = useState<Video[]>([])
+  const [active, setActive] = useState<Video | null>(null)
+  const [openVideo, setOpenVideo] = useState(false)
+  const [openAdd, setOpenAdd] = useState(false)
+  const [title, setTitle] = useState('')
+  const [link, setLink] = useState('')
 
-  const handleOpen = (video: Video) => {
-    setActiveVideo(video)
-    setOpen(true)
-  }
-
-  const handleAddVideo = async () => {
-    if (!newTitle.trim() || !newUrl.trim()) {
-      toast.error("Title and URL cannot be empty")
-      return
-    }
-
-    const embedUrl = getYouTubeEmbedUrl(newUrl)
-    if (!embedUrl) {
-      toast.error("Invalid YouTube URL")
-      return
-    }
-
+  const fetchVideos = async () => {
     try {
-      const newVideo = { ownerID: userData.id, title: newTitle, link: embedUrl }
-      const res = await addVideo(newVideo)
-      setData(prev => [...prev, res.data])
-      toast.success('Video added successfully')
-      setNewTitle('')
-      setNewUrl('')
-      router.push('/dashboard/playlist')
-      setOpenAddDialog(false)
-    } catch (err) {
-      toast.error("Failed to add video")
-      console.error(err)
-    }
-  }
-
-  const handleDeleteVideo = async ( id: string) => {
-    try {
-      await deleteVideo(id)
-      setData(prev => prev.filter(video => video.id !== id))
-      toast.success('Video deleted successfully')
-    } catch (err) {
-      console.error("Failed to delete video:", err)
-      toast.error("Failed to delete video")
-    }
-  }
-
-  const loadVideos = async (id: string) => {
-    try {
-      const res = await getAllVideos(id)
-      setData(res.data)
-    } catch (err) {
-      console.error("Failed to fetch videos:", err)
+      const res = await getAllVideos(userData.id)
+      setVideos(res.data || [])
+    } catch {
+      toast.error('Failed to fetch videos')
     }
   }
 
   useEffect(() => {
     if (userData?.id) {
-      loadVideos(userData.id)
+      fetchVideos()
     }
   }, [userData])
 
+  const onAdd = async () => {
+    if (!title || !link) return toast.error('Required')
+    const embed = getYouTubeEmbedUrl(link)
+    if (!embed) return toast.error('Invalid URL')
+
+    try {
+      await addVideo({ ownerID: userData.id, title, link: embed })
+      toast.success('Video Added!')
+      setTitle('')
+      setLink('')
+      setOpenAdd(false)
+      await fetchVideos() 
+    } catch {
+      toast.error('Failed to add video')
+    }
+  }
+
+  const onDelete = async (id: string) => {
+    try {
+      await deleteVideo(id)
+      setVideos(videos.filter(v => v.id !== id))
+      toast.success('Video Deleted')
+    } catch {
+      toast.error('Delete failed')
+    }
+  }
+
   return (
-    <div className={caveat.className}>
+    <div className="w-full">
       <SidebarInset>
-        <header className="absolute flex h-16 items-center gap-2">
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 h-4" />
-          </div>
+        <header className="sticky top-0 z-20 flex h-16 items-center gap-2 px-4 border-b bg-background/80 backdrop-blur">
+          <SidebarTrigger />
+          <Separator orientation="vertical" />
+          <h2 className="text-xl font-semibold">{userData.name}'s Playlist</h2>
         </header>
       </SidebarInset>
 
-      <div className="p-6 max-w-7xl mx-auto">
-        <h2 className="text-3xl mb-6 text-center">My Playlist</h2>
-
-        <Button
-          className="fixed bottom-6 right-6 text-lg flex gap-2 items-center"
-          onClick={() => setOpenAddDialog(true)}
-        >
-          Add <Plus size={24} />
-        </Button>
-
-        <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          {data.map((video, index) => {
-  if (!video || !video.link) return null; // Skip invalid entries
-
-  return (
-    <motion.div
-      key={video.id}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      onClick={() => handleOpen(video)}
-      className="cursor-pointer"
-    >
-      <div className='w-full h-full p-4 border rounded-lg bg-white dark:bg-zinc-900'>
-        <div className="aspect-video rounded-2xl border overflow-hidden">
-          <iframe
-            src={video.link}
-            className="w-full h-full pointer-events-none"
-            loading="lazy"
-            allowFullScreen
-          />
-        </div>
-        <div className='flex items-center justify-between mt-4'>
-          <p className='text-sm font-medium'>{video.title}</p>
-          <Button onClick={(e) => {
-            e.stopPropagation(); // Prevent triggering video open
-            handleDeleteVideo(video.id);
-          }} className='bg-red-600 hover:bg-red-500 cursor-pointer'>
-            <Trash2 size={18} />
-          </Button>
-        </div>
-      </div>
-    </motion.div>
-  );
-})}
-
-        </div>
-      </div>
-
-      {/* Video Playback Dialog */}
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="min-w-[52rem] min-h-[28rem] p-6">
-          <DialogHeader className="px-6 pt-4">
-            <DialogTitle className="text-xl font-semibold">
-              {activeVideo?.title}
-            </DialogTitle>
-          </DialogHeader>
-          <div className="aspect-video w-full">
-            {activeVideo && (
+      <main className="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {videos?.filter(v => v?.link && v?.id && v?.title).map((v, i) => (
+          <motion.div
+            key={v.id}
+            className="group cursor-pointer overflow-hidden rounded-lg bg-white dark:bg-zinc-900 shadow-lg"
+            whileHover={{ scale: 1.02 }}
+            onClick={() => { setActive(v); setOpenVideo(true); }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.1 }}
+          >
+            <div className="relative aspect-video group-hover:brightness-110 transition">
               <iframe
-                src={activeVideo.link}
-                title={activeVideo.title}
-                className="w-full h-full rounded-2xl"
-                allowFullScreen
+                src={v.link}
+                title={v.title}
+                className="w-full h-full pointer-events-none"
                 loading="lazy"
               />
-            )}
+            </div>
+            <div className="flex justify-between items-center p-3">
+              <p className="truncate font-medium">{v.title}</p>
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={(e) => { e.stopPropagation(); onDelete(v.id) }}
+              >
+                <Trash2 size={18} />
+              </Button>
+            </div>
+          </motion.div>
+        ))}
+
+        <div
+          onClick={() => setOpenAdd(true)}
+          className="w-full cursor-pointer rounded-xl  bg-muted hover:bg-muted/70 shadow-2xl transition-all"
+        >
+          <div className="aspect-video w-full flex items-center justify-center rounded-t-xl text-violet-700 bg-gradient-to-br from-gray-300 to-gray-500">
+            <PlusIcon className="w-10 h-10" />
+          </div>
+          <div className="p-4 flex items-center justify-center font-medium">
+            Add New Video
+          </div>
+        </div>
+      </main>
+
+      <Dialog open={openVideo} onOpenChange={setOpenVideo}>
+        <DialogContent className="w-full max-w-6xl p-6 flex flex-col gap-4 rounded-xl">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-semibold text-center">
+              {active?.title}
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="aspect-video w-full">
+            <iframe
+              src={active?.link || ''}
+              title={active?.title || ''}
+              className="w-full h-full rounded-lg"
+              allowFullScreen
+              loading="lazy"
+            />
           </div>
         </DialogContent>
       </Dialog>
 
-      {/* Add Video Dialog */}
-      <Dialog open={openAddDialog} onOpenChange={setOpenAddDialog}>
-        <DialogContent className="w-[95%] max-w-md rounded-lg p-6">
+      <Dialog open={openAdd} onOpenChange={setOpenAdd}>
+        <DialogContent className="w-full max-w-md p-6 rounded-lg">
           <DialogHeader>
-            <DialogTitle className="text-xl mb-4">
-              Add a new YouTube Video
-            </DialogTitle>
+            <DialogTitle>Add a YouTube Video</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
+          <div className="space-y-4 mt-4">
             <Input
-              placeholder="Title of Video"
-              value={newTitle}
-              onChange={(e) => setNewTitle(e.target.value)}
+              placeholder="Title"
+              value={title}
+              onChange={e => setTitle(e.target.value)}
             />
             <Input
-              placeholder="YouTube Link"
-              value={newUrl}
-              onChange={(e) => setNewUrl(e.target.value)}
+              placeholder="YouTube URL"
+              value={link}
+              onChange={e => setLink(e.target.value)}
             />
           </div>
-          <div className="mt-6 flex justify-end space-x-2">
-            <Button
-              variant="outline"
-              type="button"
-              onClick={() => setOpenAddDialog(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleAddVideo}
-              className="bg-blue-600 text-white hover:bg-blue-500"
-            >
-              Continue
-            </Button>
+          <div className="flex justify-end mt-6 space-x-2">
+            <Button variant="outline" onClick={() => setOpenAdd(false)}>Cancel</Button>
+            <Button onClick={onAdd}>Add</Button>
           </div>
         </DialogContent>
       </Dialog>

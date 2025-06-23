@@ -23,9 +23,11 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
+  useSidebar,
 } from "@/components/ui/sidebar"
 import Image from "next/image"
 import logo from '@/lib/logo.png'
+import smallLogo from '@/lib/hatlogo.jpeg'
 import Link from "next/link"
 import useUserStore from "@/stores/useUserStore"
 
@@ -80,16 +82,12 @@ const data = {
       items: [
         {
           title: "My Books",
-          url: "#",
+          url: "/dashboard/books",
         },
         {
           title: "My PDF's",
-          url: "#",
-        },
-        {
-          title: "Notes",
-          url: "#",
-        },
+          url: "/dashboard/pdfs",
+        }
       ],
     },
     {
@@ -102,16 +100,12 @@ const data = {
           url: "/community",
         },
         {
+          title: "Events",
+          url: "/dashboard/events",
+        },
+        {
           title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
+          url: "/dashboard/team",
         },
       ],
     },
@@ -137,12 +131,31 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const userData = useUserStore(s=>s.user)
+  const collapsed  = false
 
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         {/* <TeamSwitcher teams={data.teams} /> */}
-        <Link className="flex flex-col items-center" href='/dashboard'><Image src={logo} width={150} height={150} alt="jbdc" /></Link>
+        <Link className="flex flex-col items-center" href='/dashboard'>
+        {collapsed ? (
+            <Image
+              src={smallLogo}
+              alt="Compact Logo"
+              width={40}
+              height={40}
+              className="transition-all duration-200"
+            />
+          ) : (
+            <Image
+              src={logo}
+              alt="Full Logo"
+              width={220}
+              height={150}
+              className="transition-all rounded duration-200"
+            />
+          )}
+        </Link>
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />

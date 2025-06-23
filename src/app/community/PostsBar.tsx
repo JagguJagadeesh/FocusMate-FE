@@ -1,7 +1,9 @@
+'use client'
+
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import React from 'react'
-
+import { motion } from 'framer-motion'
 
 const posts = [
   {
@@ -29,33 +31,37 @@ const posts = [
     image: "https://picsum.photos/id/1035/800/600",
     description: "Exploring the desert on four wheels."
   }
-];
-
+]
 
 function PostsBar() {
   return (
-    <div >
-      <div>
-        <p className='text-3xl mb-2'>Posts</p>
-      </div>
-      <ScrollArea className="h-[33rem] w-full rounded-md ">
-      <div className="p-4">
-        {posts.map((item,index) => 
-          <React.Fragment key={index}>
-            <div className="rounded-2xl overflow-hidden shadow-2xl">
-            <img className="w-full h-72 object-cover" src={item.image} alt="Post"/>
-            <div className="p-4">
-                <h2 className="text-xl font-semibol mb-2">{item.title}</h2>
-                <p className="text-sm">
-                {item.description}
-                </p>
-            </div>
-            </div>
-            <Separator className="my-2" />
-          </React.Fragment>
-        )}
-      </div>
-    </ScrollArea>
+    <div>
+      <h1 className="text-3xl font-bold mb-4">Posts</h1>
+      <ScrollArea className="h-[33rem] w-full rounded-md">
+        <div className="p-2 flex flex-col gap-4">
+          {posts.map((item, index) => (
+            <motion.div
+              key={index}
+              className="rounded-2xl overflow-hidden shadow-lg bg-white dark:bg-neutral-900"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1, duration: 0.4, ease: 'easeOut' }}
+            >
+              <img
+                className="w-full h-60 object-cover"
+                src={item.image}
+                alt={item.title}
+                loading="lazy"
+              />
+              <div className="p-4">
+                <h2 className="text-xl font-semibold mb-2">{item.title}</h2>
+                <p className="text-sm text-gray-700 dark:text-gray-300">{item.description}</p>
+              </div>
+              <Separator className="my-2" />
+            </motion.div>
+          ))}
+        </div>
+      </ScrollArea>
     </div>
   )
 }

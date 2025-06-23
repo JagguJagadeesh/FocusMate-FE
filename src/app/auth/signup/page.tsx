@@ -21,116 +21,108 @@ import useUserStore from "@/stores/useUserStore"
 import { toast } from "sonner"
 
 const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-  email: z.string().email({
-    message: "Invalid email address.",
-  }),
-  password: z.string().min(6, {
-    message: "Password must be at least 6 characters.",
-  }),
+  name: z.string().min(2, "Name must be at least 2 characters."),
+  email: z.string().email("Invalid email address."),
+  password: z.string().min(6, "Password must be at least 6 characters."),
 })
 
-
-
 function Signup() {
-      const setUser = useUserStore(state=>state.setUser)
+  const setUser = useUserStore(state => state.setUser)
   const router = useRouter()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      email:"",
-      password:""
+      email: "",
+      password: ""
     },
   })
 
-  const onSubmit = async (values: z.infer<typeof formSchema>)=>{
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const data = await signupUser(values)
-      if(!data) console.log("problem signingup");
       setUser({
-        id:data.user.id,
-        name:data.user.name,
-        email:data.user.email
+        id: data.user.id,
+        name: data.user.name,
+        email: data.user.email
       })
       toast.success("Account created!", {
-      description: "Thank You have great day.",
-      });
+        description: "Thank you. Have a great day!",
+      })
       router.push('/dashboard')
-      // console.log('User signed up:', data)
     } catch (err: any) {
       console.error('Signup failed:', err.response?.data?.message || err.message)
       toast.error("Signup failed", {
-      description: "Email may already be in use.",
-    });
+        description: "Email may already be in use.",
+      })
     }
   }
 
-
   return (
-    <div className="w-screen h-screen flex flex-col items-center justify-center">
-      <div>
-        <Link href='/'><Image src={logo} width={40} height={40} className="mb-4 rounded-sm" alt=""  /></Link>
-      </div>
-      <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-      <div className="flex flex-col gap-3 border rounded-lg shadow-2xl px-6 py-8">
-        <div className="flex flex-col gap-4 items-center">
-          <p className="text-2xl font-bold">Sign up to FocusMate</p>
-          <p className="text-gray-500 text-sm mb-3">Already have Account ? <Link href='/auth/signin' className="text-blue-500">Login</Link></p>
+    <div className="w-screen h-screen flex items-center justify-center px-4">
+      <div className="w-full max-w-md">
+        <div className="flex justify-center mb-4">
+          <Link href="/">
+            <Image src={logo} width={55} height={40} alt="FocusMate Logo" className="rounded" />
+          </Link>
         </div>
-        <Separator className="my-4"/>
-        <div className="flex flex-col gap-2">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input placeholder="Jhon" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
 
-          {/* Email Field */}
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input type="email" placeholder="you@example.com" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 border border-gray-300 bg-white dark:bg-neutral-900 shadow-xl rounded-xl p-8">
+            <div className="text-center">
+              <h1 className="text-2xl font-bold mb-1">Create your <span className="text-blue-500">FocusMate</span> account</h1>
+              <p className="text-sm text-muted-foreground">Already have an account? <Link href="/auth/signin" className="text-blue-500 underline">Login</Link></p>
+            </div>
 
-          {/* Password Field */}
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input type="password" placeholder="••••••••" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button type="submit" className="mt-2 px-36">Create account</Button>
-        </div>
-      </div>
-      </form>
-      </Form>
-      <div >
-        <p className="text-xs mt-4 text-gray-400 ">By creating an account, your agree to the <span className="underline text-blue-500">Terms & Conditions</span></p>
+            <Separator />
+
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input placeholder="John" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input type="email" placeholder="you@example.com" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input type="password" placeholder="••••••••" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <Button type="submit" className="w-full text-lg">Create account</Button>
+          </form>
+        </Form>
+
+        <p className="text-xs mt-4 text-center text-muted-foreground">
+          By creating an account, you agree to our <span className="underline text-blue-500">Terms & Conditions</span>
+        </p>
       </div>
     </div>
   )

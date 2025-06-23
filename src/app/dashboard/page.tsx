@@ -1,3 +1,4 @@
+'use client'
 
 import { Separator } from "@/components/ui/separator"
 import {
@@ -5,55 +6,60 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 import Link from "next/link"
-import { Turret_Road } from "next/font/google"
 import Calendar from './schedule/Calendar'
 import UserChart from './progress/UserChart'
+import { motion } from 'framer-motion'
+import ChatBotPopup from '@/components/ChatBox' // ⬅️ Add this
 
-
-const troad = Turret_Road({
-  weight: ['400'],
-  style: ['normal'],
-  subsets: ['latin', 'latin-ext']
-});
-
-export default function Page() {
+export default function DashboardPage() {
   return (
     <>
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 h-4" />
-          </div>
+        {/* Header */}
+        <header className="flex h-16 items-center gap-2 px-4 border-b">
+          <SidebarTrigger className="-ml-1" />
+          <Separator orientation="vertical" className="h-5" />
+          <h2 className="text-xl font-semibold">Dashboard</h2>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className={`${troad.className} grid auto-rows-min gap-4 md:grid-cols-3`}>
-            <Link href='/tabs/draw'>
-            <div className="aspect-video  flex items-center justify-center  hover:border-2 rounded-2xl bg-gray-400 text-black opacity-90 hover:opacity-100 duration-100">
-              <p className="text-3xl ">Create Note</p>
-            </div>
-            </Link>
-            <Link href='/tabs/schedule'>
-            <div className="aspect-video  flex items-center justify-center hover:border-2 rounded-2xl bg-gray-400 text-black opacity-90 hover:opacity-100 duration-100">
-              <p className="text-3xl ">Create Schedule</p>
-            </div>
-            </Link>
-            <Link href='/dashboard/playlist'>
-            <div className="aspect-video  flex items-center justify-center hover:border-2 rounded-2xl bg-gray-400 text-black opacity-90 hover:opacity-100 duration-100">
-              <p className=' text-3xl'>My PlayList</p>
-            </div>
-            </Link>
+
+        {/* Main Content */}
+        <div className="flex flex-col gap-6 p-4">
+          {/* Shortcut Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[
+              { label: "Create Note", link: "/tabs/draw" },
+              { label: "Create Schedule", link: "/tabs/schedule" },
+              { label: "My Playlist", link: "/dashboard/playlist" },
+            ].map((item, i) => (
+              <Link href={item.link} key={i}>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  className="aspect-video flex items-center justify-center rounded-2xl bg-gradient-to-br from-gray-300 to-gray-400 dark:from-neutral-800 dark:to-neutral-700 text-black dark:text-white shadow-md transition-all"
+                >
+                  <p className="text-2xl font-semibold">{item.label}</p>
+                </motion.div>
+              </Link>
+            ))}
           </div>
-          <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" >
-          <Calendar view={'timeGridDay'}/>
+
+          {/* Calendar Section */}
+          <div className="rounded-xl bg-muted/50 p-4 shadow-sm">
+            <h3 className="text-lg font-semibold mb-2">Today&apos;s Schedule</h3>
+            <Calendar view={'timeGridDay'} />
           </div>
-          <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" >
-          <div className="p-10">
-            <UserChart/>
-          </div>
+
+          {/* Chart Section */}
+          <div className="rounded-xl bg-muted/50 p-4 shadow-sm">
+            <h3 className="text-lg font-semibold mb-2">Progress Overview</h3>
+            <div className="p-4">
+              <UserChart />
+            </div>
           </div>
         </div>
-        </SidebarInset>
-      </>
-      )
+      </SidebarInset>
+
+      {/* Chatbot Popup Floating Component */}
+      <ChatBotPopup />
+    </>
+  )
 }

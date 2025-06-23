@@ -4,6 +4,13 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import Loading from "@/components/loading";
 import { Suspense } from "react";
+import { Turret_Road } from "next/font/google";
+
+const troad = Turret_Road({
+  weight: ['400'],
+  style: ['normal'],
+  subsets: ['latin', 'latin-ext']
+});
 
 export const metadata: Metadata = {
   title: "FocusMate",
@@ -13,18 +20,18 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning className={troad.className}>
       <body className="antialiased">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
+          enableSystem
           disableTransitionOnChange
         >
-          {/* Wrap children in Suspense with Loading fallback */}
           <Suspense fallback={<Loading />}>
             {children}
           </Suspense>
@@ -32,5 +39,5 @@ export default function RootLayout({
         </ThemeProvider>
       </body>
     </html>
-  );
+  )
 }

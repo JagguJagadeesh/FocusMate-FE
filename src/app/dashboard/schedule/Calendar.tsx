@@ -5,19 +5,26 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle
+} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Turret_Road } from 'next/font/google'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import axiosInstance from '@/lib/axiosInstence'
 import useUserStore from '@/stores/useUserStore'
 import { toast } from 'sonner'
-
-const caveat = Turret_Road({
-  subsets: ['latin'],
-  weight: '500'
-})
 
 type Task = {
   id: string
@@ -28,44 +35,43 @@ type Task = {
 }
 
 const categoryColors: Record<string, string> = {
-  work: '#3b82f6',
-  personal: '#10b981',
-  urgent: '#ef4444',
-  other: '#a855f7',
+  work: 'blue-600',
+  personal: 'green-500',
+  urgent: 'red-500',
+  other: 'white',
 }
 
-export default function Scheduler({view}: {view: string}) {
+export default function Scheduler({ view }: { view: string }) {
   const [events, setEvents] = useState<Task[]>([])
   const [open, setOpen] = useState(false)
   const [editingEventId, setEditingEventId] = useState<string | null>(null)
-  
+
   const [title, setTitle] = useState('')
   const [datetime, setDatetime] = useState('')
   const [category, setCategory] = useState('work')
-  
+
   const calendarRef = useRef<FullCalendar>(null)
-  const { user, hasHydrated } = useUserStore();
-  
+  const { user, hasHydrated } = useUserStore()
+
   async function getAllTasks(userID: string) {
-    const res = await axiosInstance.post('/getalltasks',{userID})
-    // console.log(res)
+    const res = await axiosInstance.post('/getalltasks', { userID })
     return res.data
   }
+
   useEffect(() => {
-  if (!hasHydrated || !user.id) return; // wait for hydration and valid user
+    if (!hasHydrated || !user.id) return
 
-  const fetchTasks = async () => {
-    try {
-      const data = await getAllTasks(user.id);
-      setEvents(data.tasks);
-    } catch (err) {
-      console.error("Failed to fetch tasks:", err);
+    const fetchTasks = async () => {
+      try {
+        const data = await getAllTasks(user.id)
+        setEvents(data.tasks)
+      } catch (err) {
+        console.error("Failed to fetch tasks:", err)
+      }
     }
-  };
 
-      fetchTasks();
-  }, [hasHydrated, user.id]);
-
+    fetchTasks()
+  }, [hasHydrated, user.id])
 
   const handleDateClick = (arg: DateClickArg) => {
     setTitle('')
@@ -94,30 +100,31 @@ export default function Scheduler({view}: {view: string}) {
       userID: user.id,
       category,
     }
+
     try {
-      const res = await axiosInstance.post('/addtask',newEvent);
-      // console.log(res)
+      await axiosInstance.post('/addtask', newEvent)
     } catch (e) {
-      console.log(e)
+      console.error(e)
     }
+
     toast.success('Task Added Successfully...')
     setEvents(prev =>
       editingEventId
         ? prev.map(e => (e.id === editingEventId ? newEvent : e))
         : [...prev, newEvent]
     )
-    // console.log(events)
+
     setOpen(false)
   }
 
   const handleDelete = async () => {
     if (!editingEventId) return
     try {
-      const res = await axiosInstance.post('/deletetask',{id: editingEventId});
-      // console.log(res)
+      await axiosInstance.post('/deletetask', { id: editingEventId })
     } catch (e) {
-      console.log(e)
+      console.error(e)
     }
+
     toast.success('Task Deleted Successfully...')
     setEvents(prev => prev.filter(e => e.id !== editingEventId))
     setOpen(false)
@@ -131,35 +138,37 @@ export default function Scheduler({view}: {view: string}) {
     )
     setEvents(updated)
   }
-  if (!hasHydrated) {
-    return <div>Loading...</div>;
-  }
-  return (
-    <div className={`p-4 ${caveat.className}`}>
-      <h2 className="text-3xl font-bold text-center mb-6">My Schedule</h2>
 
-      <FullCalendar
-        ref={calendarRef}
-        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-        initialView={view}
-        headerToolbar={{
-          left: 'prev,next today',
-          center: 'title',
-          right: 'dayGridMonth,timeGridDay',
-        }}
-        events={events}
-        dateClick={handleDateClick}
-        eventClick={handleEventClick}
-        editable={true}
-        eventDrop={handleEventDrop}
-        eventContent={renderEventContent}
-        height="auto"
-      />
+  if (!hasHydrated) {
+    return <div className="w-full text-center p-6">Loading...</div>
+  }
+
+  return (
+    <div className=" w-full max-w-screen-2xl mx-auto">
+      <div className="w-full border-2 p-1 overflow-x-auto rounded-lg bg-white dark:bg-zinc-900 shadow">
+        <FullCalendar
+          ref={calendarRef}
+          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+          initialView={view}
+          headerToolbar={{
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridDay',
+          }}
+          events={events}
+          dateClick={handleDateClick}
+          eventClick={handleEventClick}
+          editable={true}
+          eventDrop={handleEventDrop}
+          eventContent={renderEventContent}
+          height="auto"
+        />
+      </div>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="w-[95%] max-w-md rounded-lg p-6">
+        <DialogContent className="w-full max-w-md p-6 rounded-lg">
           <DialogHeader>
-            <DialogTitle className="text-xl flex justify-between items-center">
+            <DialogTitle className="text-xl">
               {editingEventId ? 'Edit Task' : 'Add Task'}
             </DialogTitle>
           </DialogHeader>
@@ -175,14 +184,13 @@ export default function Scheduler({view}: {view: string}) {
               value={datetime}
               onChange={e => setDatetime(e.target.value)}
             />
-            <div className='w-full'>
             <Select value={category} onValueChange={setCategory}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Work" />
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select Category" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectLabel>Importance</SelectLabel>
+                  <SelectLabel>Category</SelectLabel>
                   <SelectItem value="work">Work</SelectItem>
                   <SelectItem value="personal">Personal</SelectItem>
                   <SelectItem value="urgent">Urgent</SelectItem>
@@ -190,13 +198,10 @@ export default function Scheduler({view}: {view: string}) {
                 </SelectGroup>
               </SelectContent>
             </Select>
-            </div>
+
             <div className="flex justify-end gap-2 pt-4">
               {editingEventId && (
-                <Button
-                  variant="destructive"
-                  onClick={handleDelete}
-                >
+                <Button variant="destructive" onClick={handleDelete}>
                   Delete
                 </Button>
               )}
@@ -210,15 +215,27 @@ export default function Scheduler({view}: {view: string}) {
 }
 
 function renderEventContent(eventInfo: any) {
-  const color = categoryColors[eventInfo.event.extendedProps.category] || '#6b7280'
+  const colorMap: Record<string, string> = {
+    work: '#FFFF00',      
+    personal: '#22c55e', 
+    urgent: '#ef4444',    
+    other: '#ffff',   }
+
+  const color = colorMap[eventInfo.event.extendedProps.category] || '#000'
+
   return (
     <div
+      className="fc-custom-event bg-none flex items-center gap-1"
       style={{
-        backgroundColor: color,
+        backgroundColor: 'transparent',
+        color,
       }}
-      className={`text-white text-wrap rounded-lg px-1 py-1 text-xl`}
     >
-      <p className='text-sm'>{eventInfo.event.title}</p>
+      <div className='text-2xl'>{eventInfo.event.title}</div>/
+      <div className='text-xs'>{eventInfo.timeText}</div>
     </div>
   )
 }
+
+
+
