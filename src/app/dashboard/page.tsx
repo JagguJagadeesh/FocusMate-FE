@@ -9,7 +9,6 @@ import Link from "next/link"
 import Calendar from './schedule/Calendar'
 import UserChart from './progress/UserChart'
 import { motion } from 'framer-motion'
-import ChatBotPopup from '@/components/ChatBox' // ⬅️ Add this
 
 export default function DashboardPage() {
   return (
@@ -57,9 +56,6 @@ export default function DashboardPage() {
           </div>
         </div>
       </SidebarInset>
-
-      {/* Chatbot Popup Floating Component */}
-      <ChatBotPopup />
     </>
   )
 }

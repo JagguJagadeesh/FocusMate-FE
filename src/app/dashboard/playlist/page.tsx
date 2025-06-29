@@ -14,13 +14,21 @@ import { addVideo, deleteVideo, getAllVideos } from '@/services/userService'
 import { toast } from 'sonner'
 import { Input } from '@/components/ui/input'
 
-type Video = { title: string; link: string; id: string }
+type Video = { title: string; link: string; id: string; type: 'video' | 'playlist' }
 
 function getYouTubeEmbedUrl(url: string): string {
-  const regex = /(?:youtu\.be\/|v=|\/embed\/)([\w-]+)/;
-  const match = url.match(regex)
-  return match ? `https://www.youtube.com/embed/${match[1]}` : ''
+  const videoRegex = /(?:youtu\.be\/|v=|\/embed\/)([\w-]+)/;
+  const playlistRegex = /[?&]list=([\w-]+)/;
+
+  const playlistMatch = url.match(playlistRegex);
+  if (playlistMatch) {
+    return `https://www.youtube.com/embed/videoseries?list=${playlistMatch[1]}`;
+  }
+
+  const videoMatch = url.match(videoRegex);
+  return videoMatch ? `https://www.youtube.com/embed/${videoMatch[1]}` : '';
 }
+
 
 export default function PlayList() {
   const userData = useUserStore(s => s.user)
@@ -79,7 +87,7 @@ export default function PlayList() {
         <header className="sticky top-0 z-20 flex h-16 items-center gap-2 px-4 border-b bg-background/80 backdrop-blur">
           <SidebarTrigger />
           <Separator orientation="vertical" />
-          <h2 className="text-xl font-semibold">{userData.name}'s Playlist</h2>
+          <h2 className="text-xl font-semibold">{userData.name}&apos;s Playlist</h2>
         </header>
       </SidebarInset>
 

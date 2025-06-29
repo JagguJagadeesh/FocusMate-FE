@@ -14,6 +14,9 @@ const troad = Turret_Road({
 
 export const metadata: Metadata = {
   title: "FocusMate",
+  icons:{
+    icon:'./hatlogo.jpeg'
+  },
   description:
     "Whether you're preparing for exams, managing class deadlines, or just trying to stay productive, FocusMate helps you create personalized study plans, track progress, and stay focused using AI-powered insights and reminders.",
 };

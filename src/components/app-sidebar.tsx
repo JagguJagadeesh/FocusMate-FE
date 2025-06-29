@@ -6,15 +6,11 @@ import {
   BookOpen,
   ChartNoAxesGantt,
   Command,
-  Frame,
   GalleryVerticalEnd,
-  Map,
-  PieChart,
   Telescope
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
 import { NavUser } from "@/components/nav-user"
 // import { TeamSwitcher } from "@/components/team-switcher"
 import {
@@ -23,13 +19,14 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-  useSidebar,
 } from "@/components/ui/sidebar"
 import Image from "next/image"
 import logo from '@/lib/logo.png'
 import smallLogo from '@/lib/hatlogo.jpeg'
 import Link from "next/link"
 import useUserStore from "@/stores/useUserStore"
+import TaskSidebar from '@/components/task-sidebar'
+
 
 // This is sample data.
 const data = {
@@ -73,6 +70,10 @@ const data = {
           title: "Notes",
           url: "/dashboard/notes",
         },
+        {
+          title: "Pomodoro",
+          url: "/dashboard/pomodour",
+        },
       ],
     },
     {
@@ -110,23 +111,6 @@ const data = {
       ],
     },
   ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
-    },
-  ],
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -159,7 +143,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        <TaskSidebar/>
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={userData} />

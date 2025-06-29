@@ -1,10 +1,11 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { MessageCircle, Send } from 'lucide-react'
+import { Send, SquareX } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { motion } from 'framer-motion'
+import { Bot } from 'lucide-react'
 
 type Message = {
   sender: 'user' | 'bot'
@@ -43,8 +44,8 @@ export default function ChatBotPopup() {
           onClick={() => setIsOpen(prev => !prev)}
           className="rounded-full border border-muted p-4 shadow-xl cursor-pointer flex items-center gap-2 backdrop-blur-sm bg-background/80"
         >
-          <MessageCircle className="w-5 h-5" />
-          <span className="hidden sm:inline font-medium">Ask Mate</span>
+          {/* <MessageCircle className="w-5 h-5" /> */}
+          <span className="hidden sm:inline font-medium">{isOpen ? <SquareX />: <Bot /> }</span>
         </motion.div>
       </div>
 
