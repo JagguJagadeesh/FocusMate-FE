@@ -4,8 +4,23 @@ import React, { useEffect, useState } from 'react'
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
 } from '@/components/ui/dialog'
-import { motion } from 'framer-motion'
-import { PlusIcon, Trash2 } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import {
+  PlusIcon,
+  Trash2,
+  Play,
+  Video,
+  Music,
+  ExternalLink,
+  Search,
+  Grid3X3,
+  List,
+  Share2,
+  X,
+  Youtube,
+  Eye,
+  Calendar
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { SidebarInset, SidebarTrigger } from '@/components/ui/sidebar'
 import { Separator } from '@/components/ui/separator'
@@ -13,8 +28,25 @@ import useUserStore from '@/stores/useUserStore'
 import { addVideo, deleteVideo, getAllVideos } from '@/services/userService'
 import { toast } from 'sonner'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
-type Video = { title: string; link: string; id: string; type: 'video' | 'playlist' }
+type Video = {
+  title: string;
+  link: string;
+  id: string;
+  type: 'video' | 'playlist';
+  createdAt?: string;
+}
 
 function getYouTubeEmbedUrl(url: string): string {
   const videoRegex = /(?:youtu\.be\/|v=|\/embed\/)([\w-]+)/;
@@ -29,22 +61,39 @@ function getYouTubeEmbedUrl(url: string): string {
   return videoMatch ? `https://www.youtube.com/embed/${videoMatch[1]}` : '';
 }
 
+function getVideoType(url: string): 'video' | 'playlist' {
+  return url.includes('list=') ? 'playlist' : 'video';
+}
 
 export default function PlayList() {
   const userData = useUserStore(s => s.user)
   const [videos, setVideos] = useState<Video[]>([])
+  const [filteredVideos, setFilteredVideos] = useState<Video[]>([])
   const [active, setActive] = useState<Video | null>(null)
   const [openVideo, setOpenVideo] = useState(false)
   const [openAdd, setOpenAdd] = useState(false)
   const [title, setTitle] = useState('')
   const [link, setLink] = useState('')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [isLoading, setIsLoading] = useState(true)
+  const [isAdding, setIsAdding] = useState(false)
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
 
   const fetchVideos = async () => {
+    setIsLoading(true)
     try {
       const res = await getAllVideos(userData.id)
-      setVideos(res.data || [])
+      const videosWithType = (res.data || []).map(video => ({
+        ...video,
+        type: getVideoType(video.link) as 'video' | 'playlist'
+      }))
+      setVideos(videosWithType)
+      setFilteredVideos(videosWithType)
     } catch {
       toast.error('Failed to fetch videos')
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -54,20 +103,43 @@ export default function PlayList() {
     }
   }, [userData])
 
-  const onAdd = async () => {
-    if (!title || !link) return toast.error('Required')
-    const embed = getYouTubeEmbedUrl(link)
-    if (!embed) return toast.error('Invalid URL')
+  useEffect(() => {
+    const filtered = videos.filter(video =>
+      video.title.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    setFilteredVideos(filtered)
+  }, [searchQuery, videos])
 
+  const onAdd = async () => {
+    if (!title.trim() || !link.trim()) {
+      toast.error('Please fill in all fields')
+      return
+    }
+
+    const embed = getYouTubeEmbedUrl(link)
+    if (!embed) {
+      toast.error('Please enter a valid YouTube URL')
+      return
+    }
+
+    setIsAdding(true)
     try {
-      await addVideo({ ownerID: userData.id, title, link: embed })
-      toast.success('Video Added!')
+      const videoType = getVideoType(link)
+      await addVideo({
+        ownerID: userData.id,
+        title: title.trim(),
+        link: embed,
+        type: videoType
+      })
+      toast.success(`${videoType === 'playlist' ? 'Playlist' : 'Video'} added successfully!`)
       setTitle('')
       setLink('')
       setOpenAdd(false)
-      await fetchVideos() 
+      await fetchVideos()
     } catch {
       toast.error('Failed to add video')
+    } finally {
+      setIsAdding(false)
     }
   }
 
@@ -75,110 +147,455 @@ export default function PlayList() {
     try {
       await deleteVideo(id)
       setVideos(videos.filter(v => v.id !== id))
-      toast.success('Video Deleted')
+      setFilteredVideos(filteredVideos.filter(v => v.id !== id))
+      toast.success('Video deleted successfully')
+      setDeleteConfirm(null)
     } catch {
-      toast.error('Delete failed')
+      toast.error('Failed to delete video')
     }
   }
 
+  const stats = {
+    total: videos.length,
+    videos: videos.filter(v => v.type === 'video').length,
+    playlists: videos.filter(v => v.type === 'playlist').length,
+    thisWeek: videos.filter(video => {
+      if (!video.createdAt) return false
+      const videoDate = new Date(video.createdAt)
+      const weekAgo = new Date()
+      weekAgo.setDate(weekAgo.getDate() - 7)
+      return videoDate >= weekAgo
+    }).length
+  }
+
   return (
-    <div className="w-full">
+    <div className="w-full min-h-screen bg-gradient-to-br from-gray-50/50 via-white to-purple-50/30 dark:from-gray-950 dark:via-gray-900 dark:to-purple-950/30">
+      {/* Enhanced Header */}
       <SidebarInset>
-        <header className="sticky top-0 z-20 flex h-16 items-center gap-2 px-4 border-b bg-background/80 backdrop-blur">
-          <SidebarTrigger />
-          <Separator orientation="vertical" />
-          <h2 className="text-xl font-semibold">{userData.name}&apos;s Playlist</h2>
+        <header className="sticky top-0 z-20 bg-white/80 dark:bg-gray-950/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
+          <div className="flex h-16 items-center justify-between px-6">
+            <div className="flex items-center gap-3">
+              <SidebarTrigger />
+              <Separator orientation="vertical" className="h-6" />
+              <div>
+                <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+                  My Playlist
+                </h2>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {stats.total} items • {stats.videos} videos • {stats.playlists} playlists
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              {/* Search */}
+              <div className="relative hidden sm:block">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Input
+                  placeholder="Search videos..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 w-64 h-10 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                />
+              </div>
+
+              {/* View Toggle */}
+              <div className="flex items-center bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+                <Button
+                  variant={viewMode === 'grid' ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={() => setViewMode('grid')}
+                  className="h-8 px-3"
+                >
+                  <Grid3X3 className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant={viewMode === 'list' ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={() => setViewMode('list')}
+                  className="h-8 px-3"
+                >
+                  <List className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile Search */}
+          <div className="sm:hidden px-6 pb-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Input
+                placeholder="Search videos..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 h-10 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-xl"
+              />
+            </div>
+          </div>
         </header>
       </SidebarInset>
 
-      <main className="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {videos?.filter(v => v?.link && v?.id && v?.title).map((v, i) => (
-          <motion.div
-            key={v.id}
-            className="group cursor-pointer overflow-hidden rounded-lg bg-white dark:bg-zinc-900 shadow-lg"
-            whileHover={{ scale: 1.02 }}
-            onClick={() => { setActive(v); setOpenVideo(true); }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
-          >
-            <div className="relative aspect-video group-hover:brightness-110 transition">
-              <iframe
-                src={v.link}
-                title={v.title}
-                className="w-full h-full pointer-events-none"
-                loading="lazy"
-              />
-            </div>
-            <div className="flex justify-between items-center p-3">
-              <p className="truncate font-medium">{v.title}</p>
-              <Button
-                size="icon"
-                variant="ghost"
-                onClick={(e) => { e.stopPropagation(); onDelete(v.id) }}
-              >
-                <Trash2 size={18} />
-              </Button>
-            </div>
-          </motion.div>
-        ))}
-
-        <div
-          onClick={() => setOpenAdd(true)}
-          className="w-full cursor-pointer rounded-xl  bg-muted hover:bg-muted/70 shadow-2xl transition-all"
-        >
-          <div className="aspect-video w-full flex items-center justify-center rounded-t-xl text-violet-700 bg-gradient-to-br from-gray-300 to-gray-500">
-            <PlusIcon className="w-10 h-10" />
-          </div>
-          <div className="p-4 flex items-center justify-center font-medium">
-            Add New Video
-          </div>
+      {/* Stats Overview */}
+      <div className="px-6 py-6">
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8">
+          {[
+            {
+              label: "Total Items",
+              value: stats.total,
+              icon: <Video className="w-5 h-5" />,
+              color: "from-purple-500 to-pink-500"
+            },
+            {
+              label: "Videos",
+              value: stats.videos,
+              icon: <Play className="w-5 h-5" />,
+              color: "from-blue-500 to-cyan-500"
+            },
+            {
+              label: "Playlists",
+              value: stats.playlists,
+              icon: <Music className="w-5 h-5" />,
+              color: "from-green-500 to-emerald-500"
+            },
+            {
+              label: "This Week",
+              value: stats.thisWeek,
+              icon: <Calendar className="w-5 h-5" />,
+              color: "from-orange-500 to-red-500"
+            }
+          ].map((stat, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: i * 0.1 }}
+              className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 group"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
+                    {stat.label}
+                  </p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white">
+                    {stat.value}
+                  </p>
+                </div>
+                <div className={`p-3 rounded-xl bg-gradient-to-br ${stat.color} text-white shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                  {stat.icon}
+                </div>
+              </div>
+            </motion.div>
+          ))}
         </div>
+      </div>
+
+      {/* Main Content */}
+      <main className="px-6 pb-12">
+        <AnimatePresence>
+          {isLoading ? (
+            <div className="flex justify-center items-center h-64">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="text-center"
+              >
+                <div className="w-8 h-8  rounded-full animate-spin mx-auto mb-4"></div>
+                <p className="text-gray-600 dark:text-gray-400">Loading your playlist...</p>
+              </motion.div>
+            </div>
+          ) : filteredVideos.length === 0 && searchQuery ? (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="flex flex-col items-center justify-center h-96 text-center"
+            >
+              <div className="w-24 h-24 bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-950/30 dark:to-pink-950/30 rounded-full flex items-center justify-center mb-6">
+                <Search className="w-12 h-12 text-purple-600 dark:text-purple-400" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                No videos found
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-md">
+                No videos match {searchQuery}. Try adjusting your search terms.
+              </p>
+            </motion.div>
+          ) : (
+            <div className={`grid gap-6 ${viewMode === 'grid'
+              ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
+              : 'grid-cols-1 max-w-4xl mx-auto'
+              }`}>
+              {/* Add Video Card */}
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => setOpenAdd(true)}
+                className="cursor-pointer rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-purple-400 dark:hover:border-purple-500 transition-colors duration-200"
+              >
+                <div className="aspect-video flex items-center justify-center p-6">
+                  <div className="text-center">
+                    <PlusIcon className="w-8 h-8 text-gray-400 dark:text-gray-500 mx-auto mb-2" />
+                    <p className="text-base font-medium text-gray-900 dark:text-white">Add New Video</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Upload or link videos</p>
+                  </div>
+                </div>
+              </motion.div>
+
+
+              {/* Video Cards */}
+              {filteredVideos.filter(v => v?.link && v?.id && v?.title).map((video, i) => (
+                <motion.div
+                  key={video.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05 }}
+                  whileHover={{ y: -2 }}
+                  className="group cursor-pointer rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all duration-200"
+                  onClick={() => { setActive(video); setOpenVideo(true); }}
+                >
+                  {/* Video Thumbnail */}
+                  <div className="relative aspect-video overflow-hidden rounded-t-lg bg-gray-100 dark:bg-gray-800">
+                    <iframe
+                      src={video.link}
+                      title={video.title}
+                      className="w-full h-full"
+                      loading="lazy"
+                    />
+
+                    {/* Type Badge */}
+                    <div className="absolute top-2 left-2">
+                      <span className={`px-2 py-1 text-xs font-medium text-white rounded ${video.type === 'playlist' ? 'bg-green-500' : 'bg-blue-500'
+                        }`}>
+                        {video.type === 'playlist' ? 'Playlist' : 'Video'}
+                      </span>
+                    </div>
+
+                    {/* Delete Button */}
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setDeleteConfirm(video.id);
+                      }}
+                      className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 h-8 w-8 p-0 bg-white dark:bg-gray-900 text-red-500 rounded"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+
+                  {/* Video Info */}
+                  <div className="p-3">
+                    <h3 className="font-medium text-gray-900 dark:text-white line-clamp-2 text-sm">
+                      {video.title}
+                    </h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 flex items-center gap-1">
+                      <Youtube className="w-3 h-3 text-red-500" />
+                      YouTube {video.type}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+
+
+              {/* Empty State */}
+              {filteredVideos.length === 0 && !searchQuery && !isLoading && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="col-span-full flex flex-col items-center justify-center h-96 text-center"
+                >
+                  <div className="w-24 h-24 bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-950/30 dark:to-pink-950/30 rounded-full flex items-center justify-center mb-6">
+                    <Video className="w-12 h-12 text-purple-600 dark:text-purple-400" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                    Your playlist is empty
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-md">
+                    Start building your collection! Add YouTube videos and playlists to keep your favorite content organized.
+                  </p>
+                  <Button
+                    onClick={() => setOpenAdd(true)}
+                    className="h-12 px-8 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 group"
+                  >
+                    <PlusIcon className="w-5 h-5 mr-2 group-hover:rotate-90 transition-transform duration-300" />
+                    Add Your First Video
+                  </Button>
+                </motion.div>
+              )}
+            </div>
+          )}
+        </AnimatePresence>
       </main>
 
+      {/* Enhanced Video Dialog */}
       <Dialog open={openVideo} onOpenChange={setOpenVideo}>
-        <DialogContent className="w-full max-w-6xl p-6 flex flex-col gap-4 rounded-xl">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-semibold text-center">
-              {active?.title}
-            </DialogTitle>
-          </DialogHeader>
+        <DialogContent className="w-full max-w-7xl max-h-[95vh] p-0 overflow-hidden rounded-3xl border-0 shadow-2xl bg-white dark:bg-gray-900">
+          {/* Dialog Header */}
+          <div className="relative bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 p-8 border-b border-gray-200 dark:border-gray-800">
+            
+            <DialogHeader className="space-y-3">
+              <DialogTitle className="text-3xl font-bold text-gray-900 dark:text-white text-left pr-12">
+                {active?.title}
+              </DialogTitle>
+              {/* Video Player */}
+              <div className="p-8">
+                <div className="aspect-video w-full rounded-2xl overflow-hidden shadow-lg border border-gray-200 dark:border-gray-700">
+                  <iframe
+                    src={active?.link || ''}
+                    title={active?.title || ''}
+                    className="w-full h-full"
+                    allowFullScreen
+                    loading="lazy"
+                  />
+                </div>
+              </div>
+              <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+                <div className="flex items-center gap-2">
+                  <Youtube className="w-4 h-4 text-red-500" />
+                  <span>YouTube {active?.type}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Eye className="w-4 h-4" />
+                  <span>Now playing</span>
+                </div>
+              </div>
+            </DialogHeader>
 
-          <div className="aspect-video w-full">
-            <iframe
-              src={active?.link || ''}
-              title={active?.title || ''}
-              className="w-full h-full rounded-lg"
-              allowFullScreen
-              loading="lazy"
-            />
+            {/* Action Buttons */}
+            <div className="flex items-center gap-3 mt-6">
+              <Button
+                variant="outline"
+                size="sm"
+                className="rounded-xl border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800"
+                onClick={() => window.open(active?.link.replace('/embed/', '/watch?v='), '_blank')}
+              >
+                <ExternalLink className="w-4 h-4 mr-2" />
+                Open in YouTube
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="rounded-xl border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800"
+              >
+                <Share2 className="w-4 h-4 mr-2" />
+                Share
+              </Button>
+            </div>
           </div>
+
         </DialogContent>
       </Dialog>
 
+      {/* Enhanced Add Video Dialog */}
       <Dialog open={openAdd} onOpenChange={setOpenAdd}>
-        <DialogContent className="w-full max-w-md p-6 rounded-lg">
-          <DialogHeader>
-            <DialogTitle>Add a YouTube Video</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 mt-4">
-            <Input
-              placeholder="Title"
-              value={title}
-              onChange={e => setTitle(e.target.value)}
-            />
-            <Input
-              placeholder="YouTube URL"
-              value={link}
-              onChange={e => setLink(e.target.value)}
-            />
+        <DialogContent className="w-full max-w-lg p-0 overflow-hidden rounded-3xl border-0 shadow-2xl bg-white dark:bg-gray-900">
+          <div className="relative bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 p-8 border-b border-gray-200 dark:border-gray-800">
+            <button
+              onClick={() => setOpenAdd(false)}
+              className="absolute top-4 right-4 p-2 hover:bg-white/50 dark:hover:bg-gray-800/50 rounded-full transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-bold text-gray-900 dark:text-white text-left pr-12">
+                Add YouTube Content
+              </DialogTitle>
+              <p className="text-gray-600 dark:text-gray-400 text-left">
+                Add videos or playlists from YouTube to your collection
+              </p>
+            </DialogHeader>
           </div>
-          <div className="flex justify-end mt-6 space-x-2">
-            <Button variant="outline" onClick={() => setOpenAdd(false)}>Cancel</Button>
-            <Button onClick={onAdd}>Add</Button>
+
+          <div className="p-8 space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="title" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                Title
+              </Label>
+              <Input
+                id="title"
+                placeholder="Enter a descriptive title..."
+                value={title}
+                onChange={e => setTitle(e.target.value)}
+                className="h-12 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="url" className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                YouTube URL
+              </Label>
+              <Input
+                id="url"
+                placeholder="https://www.youtube.com/watch?v=..."
+                value={link}
+                onChange={e => setLink(e.target.value)}
+                className="h-12 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              />
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                Supports both individual videos and playlists
+              </p>
+            </div>
+
+            <div className="flex justify-end gap-3 pt-4">
+              <Button
+                variant="outline"
+                onClick={() => setOpenAdd(false)}
+                className="h-12 px-6 rounded-xl border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={onAdd}
+                disabled={isAdding}
+                className="h-12 px-6 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              >
+                {isAdding ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                    Adding...
+                  </>
+                ) : (
+                  <>
+                    <PlusIcon className="w-4 h-4 mr-2" />
+                    Add to Playlist
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={!!deleteConfirm} onOpenChange={() => setDeleteConfirm(null)}>
+        <AlertDialogContent className="rounded-2xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-xl">Delete Video?</AlertDialogTitle>
+            <AlertDialogDescription className="text-base">
+              This action cannot be undone. The video will be permanently removed from your playlist.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              onClick={() => setDeleteConfirm(null)}
+              className="rounded-xl"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => deleteConfirm && onDelete(deleteConfirm)}
+              className="bg-red-600 hover:bg-red-700 rounded-xl"
+            >
+              <Trash2 className="w-4 h-4 mr-2" />
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

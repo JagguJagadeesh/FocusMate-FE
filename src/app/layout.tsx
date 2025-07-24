@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
-import Loading from "@/components/loading";
+import Loading from "@/components/Loaders/loading";
 import { Suspense } from "react";
 import { Turret_Road } from "next/font/google";
 
