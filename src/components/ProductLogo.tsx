@@ -4,6 +4,7 @@ import { GraduationCap } from 'lucide-react'
 
 const globalFont = Chewy({
     weight:['400'],
+    subsets:['latin']
 });
 
 function ProductLogo() {
