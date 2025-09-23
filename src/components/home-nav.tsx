@@ -1,12 +1,11 @@
 'use client'
 
-import logo from '@/lib/logo.png'
-import Image from 'next/image'
 import { Button } from './ui/button'
 import Link from 'next/link'
 import { ModeToggle } from './theme-button'
 import { useState, useEffect } from 'react'
 import { Menu, X } from 'lucide-react'
+import ProductLogo from './ProductLogo'
 
 function HomeNav() {
   const [isOpen, setIsOpen] = useState(false)
@@ -41,23 +40,15 @@ function HomeNav() {
       className={`
         fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out
         ${scrolled
-          ? 'bg-white/80 dark:bg-black/80 backdrop-blur-md shadow-lg border-b border-gray-200 dark:border-gray-800'
-          : 'bg-transparent'
+          ? 'bg-white/80 dark:bg-black/80 backdrop-blur-md shadow-lg '
+          : ' opacity-85'
         }
       `}
     >
       <div className='flex items-center justify-between max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4'>
         {/* Logo */}
         <Link href='/' className='flex items-center group'>
-          <div className='relative overflow-hidden rounded-xl'>
-            <Image
-              src={logo}
-              width={150}
-              height={150}
-              className='rounded-xl transition-transform duration-300 group-hover:scale-105'
-              alt='logo'
-            />
-          </div>
+          <ProductLogo/>
         </Link>
 
         {/* Desktop Menu */}

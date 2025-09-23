@@ -33,6 +33,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { ModeToggle } from './theme-button'
 import { useRouter } from 'next/navigation'
+import { logoutUser } from '@/services/authService'
+import { toast } from 'sonner'
 
 // Types
 interface User {
@@ -179,21 +181,15 @@ export function NavUser({ user }: NavUserProps) {
   }
 
   const handleLogout = async () => {
-  try {
-    const response = await fetch('/api/logout', {
-      method: 'POST',
-      credentials: 'include' // Important: includes cookies
-    })
-
-    if (response.ok) {
-      // Redirect to home page or login page
-      window.location.href = '/'
-      // or use Next.js router: router.push('/')
+    try {
+      await logoutUser()
+      toast.success("We'll miss u")
+      router.push('/auth/signin')
+    } catch (e) {
+      console.log(e)
     }
-  } catch (error) {
-    console.error('Logout failed:', error)
+
   }
-}
 
   const userInitials = user.name
     ? user.name.split(' ').map(n => n[0]).join('').toUpperCase()

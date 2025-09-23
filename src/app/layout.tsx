@@ -4,10 +4,10 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import Loading from "@/components/Loaders/loading";
 import { Suspense } from "react";
-import { Turret_Road } from "next/font/google";
+import { Poppins } from "next/font/google";
 
-const troad = Turret_Road({
-  weight: ['400'],
+const globalFont = Poppins({
+  weight: ['300'],
   style: ['normal'],
   subsets: ['latin', 'latin-ext']
 });
@@ -27,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning className={troad.className}>
+    <html lang="en" suppressHydrationWarning className={globalFont.className}>
       <body className="antialiased">
         <ThemeProvider
           attribute="class"
@@ -38,7 +38,7 @@ export default function RootLayout({
           <Suspense fallback={<Loading />}>
             {children}
           </Suspense>
-          <Toaster position="top-right" />
+          <Toaster position="top-center" />
         </ThemeProvider>
       </body>
     </html>

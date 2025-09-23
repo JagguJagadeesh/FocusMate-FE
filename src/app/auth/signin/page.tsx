@@ -4,7 +4,6 @@ import { Input } from '@/components/ui/input'
 import Link from 'next/link'
 import React from 'react'
 import Image from 'next/image'
-import logo from '@/lib/hatlogo.jpeg'
 import analyticsPic from '@/images/chatbotpic.png'
 import {
   Form,
@@ -21,7 +20,7 @@ import { z } from 'zod'
 import { useRouter } from 'next/navigation'
 import useUserStore from "@/stores/useUserStore"
 import { toast } from "sonner"
-import { Eye, EyeOff, Mail, Lock, ArrowRight, Loader2, BarChart3, TrendingUp, Users } from 'lucide-react'
+import { Eye, EyeOff, Mail, Lock, Loader2, BarChart3, TrendingUp, Users } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 const formSchema = z.object({
@@ -67,7 +66,11 @@ function Login() {
   }
 
   return (
-    <div className="h-screen flex bg-white dark:text-white dark:bg-black overflow-hidden">
+    <div style={{
+
+      background: `radial-gradient(circle at center, #F3E8FF 0%, #DDD6FE 30%, #C4B5FD 60%, #A78BFA 100%)`,
+
+    }} className="h-screen flex bg-white dark:text-white dark:bg-black overflow-hidden">
       {/* Left Side - Image Section */}
       <div className="hidden lg:flex lg:w-1/2 relative ">
         {/* Content Overlay */}
@@ -141,26 +144,7 @@ function Login() {
       {/* Right Side - Form Section */}
       <div className="w-full lg:w-1/2 flex items-center justify-center px-4 py-6 ">
         <div className="w-full max-w-sm">
-          {/* Logo Section */}
-          <motion.div 
-            className="flex justify-center mb-6"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <Link href="/" className="group">
-              <div className="relative">
-                <div className="absolute -inset-2 rounded-lg blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <Image 
-                  src={logo} 
-                  width={56} 
-                  height={56} 
-                  alt="FocusMate Logo" 
-                  className="relative rounded-md shadow-lg group-hover:scale-105 transition-transform duration-300" 
-                />
-              </div>
-            </Link>
-          </motion.div>
+
 
           {/* Form Card */}
           <motion.div
@@ -176,15 +160,11 @@ function Login() {
                     <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-2">
                       Welcome back
                     </h1>
-                    <p className="text-gray-600 dark:text-gray-400 mb-3 text-sm">
-                      Sign in to your{' '}
-                      <span className="font-semibold text-blue-600 dark:text-blue-400">FocusMate</span>{' '}
-                      account
-                    </p>
+                    
                     <p className="text-xs text-gray-500 dark:text-gray-500">
                       Don&apos;t have an account?{' '}
-                      <Link 
-                        href="/auth/signup" 
+                      <Link
+                        href="/auth/signup"
                         className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium hover:underline transition-colors"
                       >
                         Create one
@@ -205,11 +185,11 @@ function Login() {
                           <FormControl>
                             <div className="relative">
                               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                              <Input 
-                                type="email" 
+                              <Input
+                                type="email"
                                 placeholder="you@example.com"
                                 className="pl-10 h-10 bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm"
-                                {...field} 
+                                {...field}
                               />
                             </div>
                           </FormControl>
@@ -228,8 +208,8 @@ function Login() {
                             <FormLabel className="text-xs font-medium text-gray-700 dark:text-gray-300">
                               Password
                             </FormLabel>
-                            <Link 
-                              href="/auth/forgot-password" 
+                            <Link
+                              href="/#"
                               className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:underline transition-colors"
                             >
                               Forgot password?
@@ -238,11 +218,11 @@ function Login() {
                           <FormControl>
                             <div className="relative">
                               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                              <Input 
+                              <Input
                                 type={showPassword ? "text" : "password"}
                                 placeholder="••••••••"
                                 className="pl-10 pr-10 h-10 bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm"
-                                {...field} 
+                                {...field}
                               />
                               <button
                                 type="button"
@@ -259,10 +239,10 @@ function Login() {
                     />
 
                     {/* Sign In Button */}
-                    <Button 
-                      type="submit" 
+                    <Button
+                      type="submit"
                       disabled={isLoading}
-                      className="w-full h-10 text-sm font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none group mt-6"
+                      className="w-full h-11 text-sm font-medium bg-violet-500 hover:bg-violet-700 active:bg-violet-800 text-white rounded-lg transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2"
                     >
                       {isLoading ? (
                         <>
@@ -270,23 +250,21 @@ function Login() {
                           Signing in...
                         </>
                       ) : (
-                        <>
-                          Sign in
-                          <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                        </>
+                        "Sign in"
                       )}
                     </Button>
+
                   </div>
 
                   {/* Terms */}
                   <div className="mt-4 text-center">
                     <p className="text-[10px] text-gray-500 dark:text-gray-500">
                       By signing in, you agree to our{' '}
-                      <Link href="/terms" className="text-blue-600 dark:text-blue-400 hover:underline">
+                      <Link href="/#" className="text-blue-600 dark:text-blue-400 hover:underline">
                         Terms of Service
                       </Link>{' '}
                       and{' '}
-                      <Link href="/privacy" className="text-blue-600 dark:text-blue-400 hover:underline">
+                      <Link href="/#" className="text-blue-600 dark:text-blue-400 hover:underline">
                         Privacy Policy
                       </Link>
                     </p>

@@ -4,6 +4,7 @@ import * as React from "react"
 import {
   BookOpen,
   ChartNoAxesGantt,
+  GraduationCap,
   Telescope
 } from "lucide-react"
 import { NavMain } from "@/components/nav-main"
@@ -16,12 +17,10 @@ import {
   SidebarRail,
   useSidebar
 } from "@/components/ui/sidebar"
-import Image from "next/image"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import useUserStore from "@/stores/useUserStore"
-import logo from '@/lib/logo.png'
-import smallLogo from '@/lib/hatlogo.jpeg'
+import ProductLogo from "./ProductLogo"
 
 // Navigation configuration
 const navigationConfig = {
@@ -103,30 +102,18 @@ const SidebarLogo = React.memo(({ collapsed }: { collapsed: boolean }) => {
           scale: { duration: 0.3, ease: "easeInOut" },
           opacity: { duration: 2, repeat: Infinity }
         }}
-        className="relative overflow-hidden rounded-lg bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-sm"
+        className="relative overflow-hidden rounded-lg "
       >
         {collapsed ? (
-          <Image
-            src={smallLogo}
-            alt="Logo"
-            width={60}
-            height={60}
-            className="transition-all duration-300 group-hover:scale-110"
-            priority
-          />
+          <div className="flex items-center">
+            <GraduationCap width={30} height={40}/>
+          </div>
         ) : (
-          <Image
-            src={logo}
-            alt="Dashboard Logo"
-            width={180}
-            height={60}
-            className="transition-all duration-300 group-hover:scale-105 rounded-lg"
-            priority
-          />
+          <ProductLogo/>
         )}
         
         {/* Hover effect overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
+        <div className="absolute inset-0  opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
       </motion.div>
     </Link>
   )
@@ -153,7 +140,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
       {/* Main Content */}
       <SidebarContent className="bg-gradient-to-b from-transparent via-zinc-50/20 to-zinc-100/20 dark:from-transparent dark:via-zinc-800/20 dark:to-zinc-900/20">
-        <div className="flex flex-col gap-2 p-2">
+        <div className="flex flex-col gap-2">
           {/* Main Navigation */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}

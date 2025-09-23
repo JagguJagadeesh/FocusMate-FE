@@ -20,4 +20,8 @@ const signinUser = async (data: signINPayload) =>{
     return res.data
 }
 
-export { signupUser , signinUser}
+const logoutUser = async ()=>{
+    return await axiosInstance.get('/logout')
+}
+
+export { signupUser , signinUser,logoutUser}
