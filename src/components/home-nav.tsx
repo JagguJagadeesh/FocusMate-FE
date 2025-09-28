@@ -6,20 +6,25 @@ import { ModeToggle } from './theme-button'
 import { useState, useEffect } from 'react'
 import { Menu, X } from 'lucide-react'
 import ProductLogo from './ProductLogo'
+import useUserStore from '@/stores/useUserStore'
 
 function HomeNav() {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const { user } = useUserStore()
+  let userExist = true;
+
 
   // Simple scroll effect
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20)
     }
+    if(user) userExist = false;
 
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [user])
 
   // Close mobile menu
   const closeMobileMenu = () => setIsOpen(false)
@@ -58,6 +63,8 @@ function HomeNav() {
 
         {/* Desktop Actions */}
         <div className='hidden md:flex items-center space-x-4'>
+          {!userExist && 
+          <div>
           <div className='flex items-center shadow-xs shadow-neutral-600 rounded-lg gap-3'>
             <Link
               href='/auth/signin'
@@ -70,6 +77,7 @@ function HomeNav() {
               Get started
             </Link>
           </div>
+          </div>}
 
           <ModeToggle />
         </div>
@@ -99,6 +107,8 @@ function HomeNav() {
             ))}
 
             <div className='pt-4 border-t flex flex-col space-y-3'>
+              {!userExist &&
+              <div>
               <Link
                 href='/auth/signin'
                 onClick={closeMobileMenu}
@@ -112,6 +122,7 @@ function HomeNav() {
                   Get started
                 </Button>
               </Link>
+              </div>}
 
               <div className='flex justify-center'>
                 <ModeToggle />
