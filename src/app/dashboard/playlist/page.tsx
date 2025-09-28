@@ -241,12 +241,6 @@ export default function PlayList() {
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8">
           {[
             {
-              label: "Total Items",
-              value: stats.total,
-              icon: <Video className="w-5 h-5" />,
-              color: "from-purple-500 to-pink-500"
-            },
-            {
               label: "Videos",
               value: stats.videos,
               icon: <Play className="w-5 h-5" />,
@@ -257,14 +251,7 @@ export default function PlayList() {
               value: stats.playlists,
               icon: <Music className="w-5 h-5" />,
               color: "from-green-500 to-emerald-500"
-            },
-            {
-              label: "This Week",
-              value: stats.thisWeek,
-              icon: <Calendar className="w-5 h-5" />,
-              color: "from-orange-500 to-red-500"
-            }
-          ].map((stat, i) => (
+            }].map((stat, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 20 }}

@@ -11,207 +11,115 @@ function HomeNav() {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
 
-  // Add scroll effect
+  // Simple scroll effect
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20)
     }
+
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Close mobile menu when clicking outside
-  useEffect(() => {
-    const handleClickOutside = () => {
-      if (isOpen) setIsOpen(false)
-    }
-    document.addEventListener('click', handleClickOutside)
-    return () => document.removeEventListener('click', handleClickOutside)
-  }, [isOpen])
+  // Close mobile menu
+  const closeMobileMenu = () => setIsOpen(false)
 
   const navItems = [
     { href: '/', label: 'Home' },
     { href: '/community', label: 'Community' },
     { href: '/contact', label: 'Contact' },
+    { href: '/helpus', label: 'Help Us' },
   ]
 
   return (
-    <nav
-      className={`
-        fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out
-        ${scrolled
-          ? 'bg-white/80 dark:bg-black/80 backdrop-blur-md shadow-lg '
-          : ' opacity-85'
-        }
-      `}
-    >
-      <div className='flex items-center justify-between max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4'>
+    <nav className={`fixed top-0 left-0 right-0 z-50 shadow-sm transition-all duration-300 ${scrolled
+        ? 'bg-white/95 dark:bg-gray-950/95 backdrop-blur-xl '
+        : 'bg-transparent'
+      }`}>
+      <div className='flex items-center justify-between max-w-7xl mx-auto px-4 sm:px-1 lg:px-3 h-16'>
+
         {/* Logo */}
-        <Link href='/' className='flex items-center group'>
-          <ProductLogo/>
+        <Link href='/' className='flex items-center mb-1'>
+          <ProductLogo />
         </Link>
 
-        {/* Desktop Menu */}
-        <ul className='hidden md:flex items-center space-x-8'>
+        {/* Desktop Navigation */}
+        <div className='hidden md:flex items-center space-x-8'>
           {navItems.map((item) => (
-            <li key={item.href}>
-              <Link
-                href={item.href}
-                className='
-                  relative text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white
-                  font-medium text-lg transition-colors duration-200
-                  after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 
-                  after:bg-gradient-to-r after:from-blue-500 after:to-purple-600
-                  after:transition-all after:duration-300 hover:after:w-full
-                '
-              >
-                {item.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
-
-        {/* Desktop Auth + Theme Toggle */}
-        <div className='hidden md:flex items-center space-x-4'>
-          <div className='flex items-center rounded-lg border border-gray-300 dark:border-gray-600 overflow-hidden bg-gray-50 dark:bg-gray-800/50 shadow-sm'>
             <Link
-              href='/auth/signin'
-              className='
-      px-5 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 
-      hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700
-      transition-all duration-200 flex items-center justify-center min-w-[70px]
-    '
+              key={item.href}
+              href={item.href}
+              className='text-gray-700 dark:text-gray-300 hover:text-violet-700 dark:hover:text-violet-700 font-bold transition-colors duration-200'
             >
-              Sign In
+              {item.label}
             </Link>
-            <div className='w-px h-6 bg-gray-300 dark:bg-gray-600'></div>
-            <Link href='/auth/signup'>
-              <button
-                className='
-        rounded-l-none rounded-r-lg bg-gradient-to-r cursor-pointer from-blue-500 to-purple-600 
-        hover:from-blue-600 hover:to-purple-700 text-white border-0
-        shadow-md hover:shadow-lg transition-all duration-200 px-5 py-2.5
-        hover:scale-105 active:scale-95
-      '
-              >
-                Sign Up
-              </button>
-            </Link>
-          </div>
-
-          <div className='p-1'>
-            <ModeToggle />
-          </div>
+          ))}
         </div>
 
-        {/* Mobile Hamburger */}
-        <button
-          className='
-            md:hidden p-2 rounded-lg bg-gray-100 dark:bg-gray-800 
-            hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200
-          '
-          onClick={(e) => {
-            e.stopPropagation()
-            setIsOpen(!isOpen)
-          }}
-          aria-label="Toggle menu"
-        >
-          <div className='relative w-6 h-6'>
-            <Menu
-              className={`
-                absolute inset-0 w-6 h-6 transition-all duration-300 
-                ${isOpen ? 'opacity-0 rotate-90' : 'opacity-100 rotate-0'}
-              `}
-            />
-            <X
-              className={`
-                absolute inset-0 w-6 h-6 transition-all duration-300 
-                ${isOpen ? 'opacity-100 rotate-0' : 'opacity-0 -rotate-90'}
-              `}
-            />
+        {/* Desktop Actions */}
+        <div className='hidden md:flex items-center space-x-4'>
+          <div className='flex items-center shadow-xs shadow-neutral-600 rounded-lg gap-3'>
+            <Link
+              href='/auth/signin'
+              className=' pl-2 py-2 cursor-pointer'
+            >
+              Sign in
+            </Link>
+
+            <Link href='/auth/signup' className='bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white hover:shadow px-2 border-l cursor-pointer py-2 rounded-r-lg duration-150 '>
+              Get started
+            </Link>
           </div>
+
+          <ModeToggle />
+        </div>
+
+        {/* Mobile Menu Button */}
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className='md:hidden p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+        >
+          {isOpen ? <X className='w-5 h-5' /> : <Menu className='w-5 h-5' />}
         </button>
       </div>
 
-      {/* Mobile Menu Overlay */}
-      <div
-        className={`
-          md:hidden fixed inset-0 bg-black/20 backdrop-blur-sm transition-opacity duration-300 z-40
-          ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}
-        `}
-        onClick={() => setIsOpen(false)}
-      />
+      {/* Mobile Menu */}
+      {isOpen && (
+        <div className='md:hidden absolute top-full left-0 right-0 bg-white dark:bg-gray-950 border-b shadow-lg'>
+          <div className='px-6 py-4 space-y-4'>
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={closeMobileMenu}
+                className='block py-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white text-center hover:shadow-lg rounded-lg'
+              >
+                {item.label}
+              </Link>
+            ))}
 
-      {/* Mobile Dropdown Menu */}
-      <div
-        className={`
-          md:hidden absolute top-full left-4 right-4 mt-2 transition-all duration-300 ease-out z-50
-          ${isOpen
-            ? 'opacity-100 translate-y-0'
-            : 'opacity-0 -translate-y-4 pointer-events-none'
-          }
-        `}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className='
-          bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700
-          overflow-hidden backdrop-blur-lg
-        '>
-          {/* Mobile Navigation Links */}
-          <div className='px-6 py-4'>
-            <ul className='space-y-3'>
-              {navItems.map((item, index) => (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    onClick={() => setIsOpen(false)}
-                    className={`
-                      block py-3 px-4 rounded-xl font-medium text-gray-700 dark:text-gray-300
-                      hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800
-                      transition-all duration-200 transform hover:translate-x-1
-                      animate-in slide-in-from-left-5 fill-mode-both
-                    `}
-                    style={{ animationDelay: `${index * 50}ms` }}
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Mobile Auth Section */}
-          <div className='px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50'>
-            <div className='space-y-3'>
+            <div className='pt-4 border-t flex flex-col space-y-3'>
               <Link
                 href='/auth/signin'
-                onClick={() => setIsOpen(false)}
-                className='
-                  block w-full py-3 px-4 text-center font-medium text-gray-700 dark:text-gray-300
-                  hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700
-                  rounded-xl transition-all duration-200
-                '
+                onClick={closeMobileMenu}
+                className='block py-2 text-center text-gray-700 dark:text-gray-300'
               >
-                Sign In
+                Sign in
               </Link>
-              <Link href='/auth/signup' onClick={() => setIsOpen(false)}>
-                <Button
-                  className='
-                    w-full bg-gradient-to-r from-blue-500 to-purple-600 
-                    hover:from-blue-600 hover:to-purple-700 text-white
-                    shadow-md hover:shadow-lg transition-all duration-200 rounded-xl
-                  '
-                >
-                  Sign Up
+
+              <Link href='/auth/signup' onClick={closeMobileMenu}>
+                <Button className='w-full bg-gray-900 text-white py-2'>
+                  Get started
                 </Button>
               </Link>
-              <div className='flex justify-center pt-2'>
+
+              <div className='flex justify-center'>
                 <ModeToggle />
               </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </nav>
   )
 }

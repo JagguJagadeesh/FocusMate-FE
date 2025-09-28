@@ -21,6 +21,7 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 import useUserStore from "@/stores/useUserStore"
 import ProductLogo from "./ProductLogo"
+import SidebarTimerPomodoro from "./Pomodoro"
 
 // Navigation configuration
 const navigationConfig = {
@@ -42,11 +43,7 @@ const navigationConfig = {
         {
           title: "Notes", 
           url: "/dashboard/notes",
-        },
-        {
-          title: "Pomodoro",
-          url: "/dashboard/pomodoro",
-        },
+        }
       ],
     },
     {
@@ -76,11 +73,7 @@ const navigationConfig = {
         {
           title: "Events",
           url: "/dashboard/events",
-        },
-        {
-          title: "Team",
-          url: "/dashboard/team",
-        },
+        }
       ],
     },
   ],
@@ -150,6 +143,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <NavMain items={navigationConfig.navMain} />
           </motion.div>
           
+          {/* Responsive Pomodoro Timer */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
+            <SidebarTimerPomodoro isCollapsed={isCollapsed} />
+          </motion.div>
         </div>
       </SidebarContent>
 

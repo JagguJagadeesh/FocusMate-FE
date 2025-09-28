@@ -4,18 +4,17 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import Loading from "@/components/Loaders/loading";
 import { Suspense } from "react";
-import { Poppins } from "next/font/google";
+import { Roboto_Flex } from "next/font/google";
 
-const globalFont = Poppins({
-  weight: ['300'],
-  style: ['normal'],
-  subsets: ['latin', 'latin-ext']
+const globalFont = Roboto_Flex({
+  weight: ['400'],
+  subsets: ['latin']
 });
 
 export const metadata: Metadata = {
   title: "FocusMate",
   icons:{
-    icon:'./hatlogo.jpeg'
+    icon:'./HatIcon.png'
   },
   description:
     "Whether you're preparing for exams, managing class deadlines, or just trying to stay productive, FocusMate helps you create personalized study plans, track progress, and stay focused using AI-powered insights and reminders.",

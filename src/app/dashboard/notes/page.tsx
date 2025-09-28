@@ -185,18 +185,6 @@ export default function Page() {
               value: stats.total,
               icon: <FileText className="w-5 h-5" />,
               color: "from-blue-500 to-cyan-500"
-            },
-            {
-              label: "This Week",
-              value: stats.thisWeek,
-              icon: <Calendar className="w-5 h-5" />,
-              color: "from-purple-500 to-pink-500"
-            },
-            {
-              label: "With Images",
-              value: stats.withImages,
-              icon: <BookOpen className="w-5 h-5" />,
-              color: "from-green-500 to-emerald-500"
             }
           ].map((stat, i) => (
             <motion.div

@@ -140,10 +140,7 @@ const TestimonialCard = ({ name, role, quote, img, rating, location }: typeof re
       <blockquote className="text-gray-700 dark:text-gray-300 text-base leading-relaxed italic">
         {quote}
       </blockquote>
-
-      {/* Bottom Border */}
-      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-b-2xl"></div>
-    </div>
+</div>
   </motion.div>
 )
 

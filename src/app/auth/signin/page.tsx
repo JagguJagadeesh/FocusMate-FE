@@ -66,82 +66,8 @@ function Login() {
   }
 
   return (
-    <div style={{
-
-      background: `radial-gradient(circle at center, #F3E8FF 0%, #DDD6FE 30%, #C4B5FD 60%, #A78BFA 100%)`,
-
-    }} className="h-screen flex bg-white dark:text-white dark:bg-black overflow-hidden">
+    <div className="h-screen flex bg-white dark:text-white dark:bg-black overflow-hidden">
       {/* Left Side - Image Section */}
-      <div className="hidden lg:flex lg:w-1/2 relative ">
-        {/* Content Overlay */}
-        <div className="relative w-full z-10 flex flex-col justify-center p-8 text-white text-center h-full">
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="mb-6"
-          >
-            <h2 className="text-3xl font-bold text-black dark:text-white mb-3">
-              Welcome back to{' '}
-              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                FocusMate
-              </span>
-            </h2>
-            <p className="text-lg text-black dark:text-white max-w-sm mx-auto leading-relaxed">
-              Continue your productivity journey with powerful analytics and insights
-            </p>
-          </motion.div>
-
-          {/* Analytics Image */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative max-w-md mx-auto mb-6"
-          >
-            <div className="relative">
-              <div className="absolute -inset-3 bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-2xl blur-xl"></div>
-              <div className="relative object-cover bg-white dark:bg-gray-900 rounded-2xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700 p-3">
-                <Image
-                  src={analyticsPic}
-                  alt="FocusMate Analytics Dashboard"
-                  className="w-full h-auto rounded-xl"
-                  priority
-                />
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Feature Highlights */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="grid grid-cols-3 gap-3"
-          >
-            <div className="flex flex-col items-center">
-              <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mb-1">
-                <BarChart3 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-              </div>
-              <p className="text-xs font-medium text-black dark:text-white">Analytics</p>
-            </div>
-            <div className="flex flex-col items-center">
-              <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center mb-1">
-                <TrendingUp className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-              </div>
-              <p className="text-xs font-medium text-black dark:text-white">Progress</p>
-            </div>
-            <div className="flex flex-col items-center">
-              <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center mb-1">
-                <Users className="w-5 h-5 text-green-600 dark:text-green-400" />
-              </div>
-              <p className="text-xs font-medium text-black dark:text-white">Community</p>
-            </div>
-          </motion.div>
-        </div>
-      </div>
-
-      {/* Right Side - Form Section */}
       <div className="w-full lg:w-1/2 flex items-center justify-center px-4 py-6 ">
         <div className="w-full max-w-sm">
 
@@ -275,6 +201,49 @@ function Login() {
           </motion.div>
         </div>
       </div>
+      <div className="hidden lg:flex lg:w-1/2 relative ">
+        {/* Content Overlay */}
+        <div className="relative w-full z-10 flex flex-col justify-center p-8 text-white text-center h-full">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            className="mb-6"
+          >
+            <h2 className="text-3xl font-bold text-black dark:text-white mb-3">
+              Welcome back to{' '}
+              <span className="">
+                Focus<span className='bg-gradient-to-r from-violet-400 via-purple-600 to-pink-600 bg-clip-text text-transparent'>Mate</span>
+              </span>
+            </h2>
+            <p className="text-lg text-black dark:text-white max-w-sm mx-auto leading-relaxed">
+              Continue your productivity journey with powerful analytics and insights
+            </p>
+          </motion.div>
+
+          {/* Analytics Image */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="relative max-w-md mx-auto mb-6"
+          >
+            <div className="relative">
+              <div className="absolute -inset-3 bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-2xl blur-xl"></div>
+              <div className="relative object-cover bg-white dark:bg-gray-900 rounded-2xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700 p-3">
+                <Image
+                  src={analyticsPic}
+                  alt="FocusMate Analytics Dashboard"
+                  className="w-full h-auto rounded-xl"
+                  priority
+                />
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+
+      
     </div>
   )
 }

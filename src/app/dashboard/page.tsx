@@ -23,6 +23,7 @@ import {
   ArrowRight,
   Sparkles
 } from 'lucide-react'
+import useUserStore from "@/stores/useUserStore"
 
 const quickStats = [
   {
@@ -79,7 +80,7 @@ const shortcuts = [
   },
   { 
     label: "Schedule Session", 
-    link: "/tabs/schedule",
+    link: "/dashboard/schedule",
     icon: <CalendarIcon className="w-6 h-6" />,
     description: "Plan and organize your study time",
     color: "text-purple-600",
@@ -100,27 +101,22 @@ const shortcuts = [
 export default function DashboardPage() {
   const currentTime = new Date().toLocaleString('en-US', {
     weekday: 'long',
-    year: 'numeric',
     month: 'long',
     day: 'numeric'
   })
+  const userData = useUserStore()
 
   return (
     <>
       <SidebarInset>
         {/* Clean Header */}
-        <header className="sticky top-0 z-10 flex h-16 items-center gap-2 px-6 bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-800/50">
+        <header className="sticky top-0 z-10 flex h-16 items-center gap-2 px-6 pt-1 bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-800/50">
           <SidebarTrigger className="-ml-1" />
-          <Separator orientation="vertical" className="h-5" />
-          <div className="flex-1">
-            <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-              Dashboard
+          <div className="ml-2 flex-1">
+            <h1 className="text-xl tracking-widest font-bold text-gray-900 dark:text-white">
+              Hello {userData.user.name}!
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">{currentTime}</p>
-          </div>
-          <div className="hidden sm:flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-            <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-            <span className="font-medium">All systems operational</span>
           </div>
         </header>
 
@@ -148,7 +144,7 @@ export default function DashboardPage() {
           </motion.div>
           
           {/* Quick Stats */}
-          <motion.section
+          {/* <motion.section
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
@@ -198,7 +194,7 @@ export default function DashboardPage() {
                 </motion.div>
               ))}
             </div>
-          </motion.section>
+          </motion.section> */}
 
           {/* Quick Actions */}
           <motion.section
@@ -246,7 +242,7 @@ export default function DashboardPage() {
           </motion.section>
 
           {/* Content Grid */}
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+          <div className="flex">
             {/* Calendar Section */}
             <motion.div
               initial={{ opacity: 0, x: -30 }}
@@ -275,6 +271,7 @@ export default function DashboardPage() {
               </div>
             </motion.div>
 
+          </div>
             {/* Chart Section */}
             <motion.div
               initial={{ opacity: 0, x: 30 }}
@@ -302,7 +299,6 @@ export default function DashboardPage() {
                 <UserChart />
               </div>
             </motion.div>
-          </div>
 
           {/* Recent Activity */}
           <motion.div

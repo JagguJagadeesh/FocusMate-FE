@@ -2,15 +2,10 @@
 
 import { useState } from 'react'
 import {
-  BadgeCheck,
   Bell,
   ChevronsUpDown,
-  CreditCard,
   LogOut,
-  Settings,
   User,
-  Shield,
-  HelpCircle,
   Palette
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -49,65 +44,20 @@ interface NavUserProps {
   user: User
 }
 
-// Menu Items Configuration
-const menuSections = [
+// Simple Menu Items - Account only
+const menuItems = [
   {
-    label: 'Account',
-    items: [
-      {
-        icon: User,
-        label: 'Profile',
-        href: '/dashboard/profile',
-        description: 'Manage your profile'
-      },
-      {
-        icon: Settings,
-        label: 'Settings',
-        href: '/dashboard/settings',
-        description: 'Preferences and configuration'
-      },
-      {
-        icon: Bell,
-        label: 'Notifications',
-        href: '/dashboard/notifications',
-        description: 'Manage your notifications',
-        badge: true
-      }
-    ]
+    icon: User,
+    label: 'Profile',
+    href: '/user/profile',
+    description: 'Manage your profile'
   },
   {
-    label: 'Billing',
-    items: [
-      {
-        icon: CreditCard,
-        label: 'Billing',
-        href: '/dashboard/billing',
-        description: 'Manage your subscription'
-      },
-      {
-        icon: BadgeCheck,
-        label: 'Plan',
-        href: '/dashboard/plan',
-        description: 'Upgrade your plan'
-      }
-    ]
-  },
-  {
-    label: 'Support',
-    items: [
-      {
-        icon: HelpCircle,
-        label: 'Help Center',
-        href: '/help',
-        description: 'Get help and support'
-      },
-      {
-        icon: Shield,
-        label: 'Privacy',
-        href: '/privacy',
-        description: 'Privacy settings'
-      }
-    ]
+    icon: Bell,
+    label: 'Notifications',
+    href: '#',
+    description: 'Manage your notifications',
+    badge: true
   }
 ]
 
@@ -145,7 +95,7 @@ const MenuItem = ({
   return (
     <DropdownMenuItem 
       onClick={onClick}
-      className="group cursor-pointer p-3 focus:bg-accent/80 transition-colors"
+      className="group cursor-pointer p-3 focus:bg-accent/80 transition-colors rounded-lg"
     >
       <div className="flex items-center gap-3 w-full">
         <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-muted/50 group-hover:bg-muted transition-colors">
@@ -188,7 +138,6 @@ export function NavUser({ user }: NavUserProps) {
     } catch (e) {
       console.log(e)
     }
-
   }
 
   const userInitials = user.name
@@ -248,7 +197,7 @@ export function NavUser({ user }: NavUserProps) {
                   exit={{ opacity: 0, scale: 0.95, y: 10 }}
                   transition={{ duration: 0.2, ease: "easeOut" }}
                 >
-                  {/* Enhanced User Info Header */}
+                  {/* User Info Header */}
                   <DropdownMenuLabel className="p-4 bg-gradient-to-r from-muted/50 to-muted/30 rounded-xl mb-2">
                     <div className="flex items-center gap-4">
                       <Avatar className="h-12 w-12 border-2 border-border/50">
@@ -266,10 +215,7 @@ export function NavUser({ user }: NavUserProps) {
                           <PlanBadge plan={user.plan} />
                         </div>
                         <p className="text-sm text-muted-foreground truncate">{user.email}</p>
-                        <div className="flex items-center gap-2 mt-2">
-                          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                          <span className="text-xs text-muted-foreground">Online</span>
-                        </div>
+                        
                       </div>
                     </div>
                   </DropdownMenuLabel>
@@ -289,29 +235,17 @@ export function NavUser({ user }: NavUserProps) {
 
                   <DropdownMenuSeparator className="my-2" />
 
-                  {/* Menu Sections */}
-                  {menuSections.map((section, sectionIndex) => (
-                    <div key={section.label}>
-                      <DropdownMenuGroup>
-                        <div className="px-2 py-1 mb-1">
-                          <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                            {section.label}
-                          </span>
-                        </div>
-                        {section.items.map((item, itemIndex) => (
-                          <MenuItem
-                            key={item.label}
-                            item={item}
-                            onClick={() => handleNavigation(item.href)}
-                            notifications={item.label === 'Notifications' ? user.notifications : undefined}
-                          />
-                        ))}
-                      </DropdownMenuGroup>
-                      {sectionIndex < menuSections.length - 1 && (
-                        <DropdownMenuSeparator className="my-2" />
-                      )}
-                    </div>
-                  ))}
+                  {/* Account Menu Items */}
+                  <DropdownMenuGroup>
+                    {menuItems.map((item) => (
+                      <MenuItem
+                        key={item.label}
+                        item={item}
+                        onClick={() => handleNavigation(item.href)}
+                        notifications={item.label === 'Notifications' ? user.notifications : undefined}
+                      />
+                    ))}
+                  </DropdownMenuGroup>
 
                   <DropdownMenuSeparator className="my-2" />
 
