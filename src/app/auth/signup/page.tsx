@@ -20,9 +20,12 @@ import { signupUser } from "@/services/authService"
 import { useRouter } from "next/navigation"
 import useUserStore from "@/stores/useUserStore"
 import { toast } from "sonner"
-import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Loader2, CheckCircle, Zap, Shield, Heart } from 'lucide-react'
+import { Eye, EyeOff, Mail, Lock, User, Loader2, CheckCircle} from 'lucide-react'
 import { motion } from 'framer-motion'
 import React from 'react'
+import { withoutAuth } from "@/utils/AuthWarpper"
+import ProductLogo from "@/components/ProductLogo"
+
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
@@ -33,11 +36,13 @@ const formSchema = z.object({
     .regex(/(?=.*\d)/, "Password must contain at least one number."),
 })
 
+
 function Signup() {
   const [showPassword, setShowPassword] = React.useState(false)
   const [isLoading, setIsLoading] = React.useState(false)
   const setUser = useUserStore(state => state.setUser)
   const router = useRouter()
+
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -48,7 +53,9 @@ function Signup() {
     },
   })
 
+
   const password = form.watch("password")
+
 
   const passwordStrength = {
     hasLower: /(?=.*[a-z])/.test(password),
@@ -56,6 +63,7 @@ function Signup() {
     hasNumber: /(?=.*\d)/.test(password),
     hasLength: password.length >= 6
   }
+
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true)
@@ -80,12 +88,12 @@ function Signup() {
     }
   }
 
-  return (
-    <div className="h-screen flex  overflow-hidden">
-      {/* Left Side - Image Section */}
-       <div className="w-full lg:w-1/2 flex items-center justify-center px-4 py-6 ">
-        <div className="w-full max-w-sm">
 
+  return (
+    <div className="h-screen flex bg-white dark:text-white dark:bg-black overflow-hidden">
+      {/* Left Side - Form Section */}
+      <div className="w-full h-full lg:w-2/5 flex items-center justify-center px-4 py-6">
+        <div className="w-full max-w-sm">
           {/* Form Card */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -97,9 +105,7 @@ function Signup() {
                 <div className="bg-white dark:bg-black border border-gray-200 dark:border-gray-700 shadow-xl rounded-2xl p-5">
                   {/* Header */}
                   <div className="text-center mb-4">
-                    <h1 className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-1">
-                      Create your account
-                    </h1>
+                    <div className='flex w-full justify-center mb-2'><ProductLogo/></div>
 
                     <p className="text-xs text-gray-500 dark:text-gray-500">
                       Already have an account?{' '}
@@ -232,7 +238,6 @@ function Signup() {
                         "Create account"
                       )}
                     </Button>
-
                   </div>
 
                   {/* Terms */}
@@ -254,52 +259,44 @@ function Signup() {
           </motion.div>
         </div>
       </div>
-      <div className="hidden w-full lg:flex lg:w-1/2 relative ">
-        {/* Content Overlay */}
-        <div className="relative w-full z-10 flex flex-col justify-center p-8 text-center h-full">
+
+      {/* Right Side - Full Coverage Background Image */}
+      <div className="hidden lg:flex lg:w-3/5 h-full relative overflow-hidden">
+        {/* Full coverage background image */}
+        <Image
+          src={analyticsPic}
+          alt="FocusMate Analytics Dashboard"
+          fill
+          priority
+          style={{
+            objectFit: 'cover',
+          }}
+          className="absolute inset-0"
+        />
+        
+       
+        {/* Content overlay */}
+        <div className="relative z-10 flex flex-col justify-end items-end p-8 pb-10 text-white w-full h-full">
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className="mb-6"
+            className="text-center"
           >
-            <h2 className="text-3xl font-bold text-black dark:text-white mb-3">
+            <h2 className="text-4xl font-bold mb-4">
               Join{' '}
               <span className="">
-                Focus<span className='bg-gradient-to-r from-violet-400 via-purple-600 to-pink-600 bg-clip-text text-transparent'>Mate</span>
-              </span>{' '}
+                Focus<span className='bg-gradient-to-r from-violet-400 via-purple-400 to-pink-400 bg-clip-text text-transparent'>Mate</span>
+              </span>
             </h2>
-            <p className="text-lg text-black dark:text-white max-w-sm mx-auto leading-relaxed">
+            <p className="text-xl opacity-90 leading-relaxed max-w-md mb-8">
               Start your productivity journey with powerful analytics and AI-driven insights
             </p>
           </motion.div>
-
-          {/* Analytics Image */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative max-w-md mx-auto mb-6"
-          >
-            <div className="relative">
-              <div className="absolute -inset-3  rounded-2xl blur-xl"></div>
-              <div className="relative bg-white dark:bg-gray-900 rounded-2xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700 p-3">
-                <Image
-                  src={analyticsPic}
-                  alt="FocusMate Analytics Dashboard"
-                  className="w-full h-auto rounded-xl"
-                  priority
-                />
-              </div>
-            </div>
-          </motion.div>
         </div>
       </div>
-
-      {/* Right Side - Form Section */}
-     
     </div>
   )
 }
 
-export default Signup
+export default withoutAuth(Signup)

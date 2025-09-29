@@ -1,10 +1,12 @@
+'use client'
 import { AppSidebar } from "@/components/app-sidebar"
 import Loading from "@/components/Loaders/loading"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { Suspense } from "react"
 import ChatBotPopup from '@/app/tabs/ChatBox'
+import {withAuth} from "@/utils/AuthWarpper"
 
-export default function DashboardLayout({
+function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
@@ -31,3 +33,5 @@ export default function DashboardLayout({
     </SidebarProvider>
   )
 }
+
+export default withAuth(DashboardLayout)

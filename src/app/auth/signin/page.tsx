@@ -20,8 +20,10 @@ import { z } from 'zod'
 import { useRouter } from 'next/navigation'
 import useUserStore from "@/stores/useUserStore"
 import { toast } from "sonner"
-import { Eye, EyeOff, Mail, Lock, Loader2, BarChart3, TrendingUp, Users } from 'lucide-react'
+import { Eye, EyeOff, Mail, Lock, Loader2 } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { withoutAuth } from '@/utils/AuthWarpper'
+import ProductLogo from '@/components/ProductLogo'
 
 const formSchema = z.object({
   email: z.string().email("Invalid email address."),
@@ -68,7 +70,7 @@ function Login() {
   return (
     <div className="h-screen flex bg-white dark:text-white dark:bg-black overflow-hidden">
       {/* Left Side - Image Section */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center px-4 py-6 ">
+      <div className="w-full h-full lg:w-2/5 flex items-center justify-center px-4 py-6 ">
         <div className="w-full max-w-sm">
 
 
@@ -83,10 +85,8 @@ function Login() {
                 <div className="bg-white dark:bg-black border border-gray-200 dark:border-gray-700 shadow-xl rounded-2xl p-6">
                   {/* Header */}
                   <div className="text-center mb-5">
-                    <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-2">
-                      Welcome back
-                    </h1>
-                    
+                    <div className='flex w-full justify-center mb-2'><ProductLogo /></div>
+
                     <p className="text-xs text-gray-500 dark:text-gray-500">
                       Don&apos;t have an account?{' '}
                       <Link
@@ -201,51 +201,45 @@ function Login() {
           </motion.div>
         </div>
       </div>
-      <div className="hidden lg:flex lg:w-1/2 relative ">
-        {/* Content Overlay */}
-        <div className="relative w-full z-10 flex flex-col justify-center p-8 text-white text-center h-full">
+      <div className="hidden lg:flex lg:w-3/5 h-full pb-7 relative overflow-hidden">
+        {/* Full coverage background image */}
+        <Image
+          src={analyticsPic}
+          alt="FocusMate Analytics Dashboard"
+          fill
+          priority
+          style={{
+            objectFit: 'cover',
+          }}
+          className="absolute inset-0"
+        />
+
+        {/* Content overlay */}
+        <div className="relative z-10 flex flex-col justify-end items-end p-8 text-white w-full h-full">
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className="mb-6"
+            className="text-center"
           >
-            <h2 className="text-3xl font-bold text-black dark:text-white mb-3">
+            <h2 className="text-4xl font-bold mb-4">
               Welcome back to{' '}
               <span className="">
-                Focus<span className='bg-gradient-to-r from-violet-400 via-purple-600 to-pink-600 bg-clip-text text-transparent'>Mate</span>
+                Focus<span className='bg-gradient-to-r from-violet-400 via-purple-400 to-pink-400 bg-clip-text text-transparent'>Mate</span>
               </span>
             </h2>
-            <p className="text-lg text-black dark:text-white max-w-sm mx-auto leading-relaxed">
+            <p className="text-xl opacity-90 leading-relaxed max-w-md">
               Continue your productivity journey with powerful analytics and insights
             </p>
-          </motion.div>
-
-          {/* Analytics Image */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative max-w-md mx-auto mb-6"
-          >
-            <div className="relative">
-              <div className="absolute -inset-3 bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-2xl blur-xl"></div>
-              <div className="relative object-cover bg-white dark:bg-gray-900 rounded-2xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700 p-3">
-                <Image
-                  src={analyticsPic}
-                  alt="FocusMate Analytics Dashboard"
-                  className="w-full h-auto rounded-xl"
-                  priority
-                />
-              </div>
-            </div>
           </motion.div>
         </div>
       </div>
 
-      
+
+
+
     </div>
   )
 }
 
-export default Login
+export default withoutAuth(Login)

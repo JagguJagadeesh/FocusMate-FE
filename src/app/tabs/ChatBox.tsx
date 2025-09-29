@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Send, X, Bot, User, Sparkles, Minimize2, Maximize2, Minus, Copy, ThumbsUp, ThumbsDown } from 'lucide-react'
+import { Send, X, Bot, User, Sparkles, Minimize2, Maximize2, Minus, Copy } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -51,7 +51,7 @@ export default function ChatBotPopup() {
 
   // Save state to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem('chatbot-state', JSON.stringify({
+    sessionStorage.setItem('chatbot-state', JSON.stringify({
       chatState,
       messages: messages.slice(-50)
     }))
@@ -179,11 +179,7 @@ export default function ChatBotPopup() {
                 className="relative"
               >
                 <Bot  className="w-6 h-6 text-white" />
-                <motion.div
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full"
-                />
+                
               </motion.div>
             </motion.button>
 
@@ -269,7 +265,6 @@ export default function ChatBotPopup() {
                           <Bot className="w-6 h-6" />
                         </AvatarFallback>
                       </Avatar>
-                      <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 border-2 border-white rounded-full shadow-sm" />
                     </motion.div>
                   </div>
                   <div>
@@ -277,12 +272,7 @@ export default function ChatBotPopup() {
                       ChatMate
                       <Sparkles className="w-5 h-5 text-yellow-300" />
                     </h3>
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                      <p className="text-sm text-white/90">
-                        AI Assistant • {chatState === 'expanded' ? 'Expanded Mode' : 'Normal Mode'}
-                      </p>
-                    </div>
+                    
                   </div>
                 </div>
                 
@@ -413,22 +403,7 @@ export default function ChatBotPopup() {
                                 >
                                   <Copy className="w-3 h-3 text-slate-600 dark:text-slate-300" />
                                 </motion.button>
-                                <motion.button
-                                  whileHover={{ scale: 1.1 }}
-                                  whileTap={{ scale: 0.9 }}
-                                  className="p-1.5 bg-white dark:bg-slate-700 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 ring-1 ring-slate-200 dark:ring-slate-600"
-                                  title="Good response"
-                                >
-                                  <ThumbsUp className="w-3 h-3 text-green-600" />
-                                </motion.button>
-                                <motion.button
-                                  whileHover={{ scale: 1.1 }}
-                                  whileTap={{ scale: 0.9 }}
-                                  className="p-1.5 bg-white dark:bg-slate-700 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 ring-1 ring-slate-200 dark:ring-slate-600"
-                                  title="Poor response"
-                                >
-                                  <ThumbsDown className="w-3 h-3 text-red-600" />
-                                </motion.button>
+                                
                               </div>
                             )}
 
@@ -542,23 +517,7 @@ export default function ChatBotPopup() {
                   </motion.div>
                 </div>
                 
-                {/* Enhanced Quick Actions */}
-                <div className="flex gap-2 mt-4 flex-wrap">
-                  {['Help', 'Examples', 'Features', 'Documentation', 'Support'].map((action, index) => (
-                    <motion.button
-                      key={action}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.1 + index * 0.05 }}
-                      whileHover={{ scale: 1.05, y: -1 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => setInput(`Tell me about ${action.toLowerCase()}`)}
-                      className="px-4 py-2 text-xs font-medium rounded-full bg-gradient-to-r from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 text-slate-700 dark:text-slate-300 hover:from-slate-200 hover:to-slate-300 dark:hover:from-slate-700 dark:hover:to-slate-600 transition-all duration-200 border border-slate-300 dark:border-slate-600 shadow-sm hover:shadow-md"
-                    >
-                      {action}
-                    </motion.button>
-                  ))}
-                </div>
+                
               </div>
             </div>
           </motion.div>
