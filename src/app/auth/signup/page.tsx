@@ -1,6 +1,5 @@
 'use client'
 import Image from "next/image"
-import logo from '@/lib/hatlogo.jpeg'
 import analyticsPic from '@/images/chatbotpic.png'
 import Link from "next/link"
 import { Button } from "@/components/ui/button"

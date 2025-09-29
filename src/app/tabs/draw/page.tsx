@@ -1,6 +1,5 @@
 import React from 'react'
 import NotesClient from './NotesClient'
-import { withAuth } from '@/utils/AuthWarpper'
 
 function Draw() {
   return (
@@ -10,4 +9,4 @@ function Draw() {
   )
 }
 
-export default withAuth(Draw)
+export default Draw
