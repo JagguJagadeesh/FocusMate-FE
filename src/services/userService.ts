@@ -3,7 +3,7 @@ import axiosInstance from "@/lib/axiosInstence";
 
 // Notes Services
 const getAllNotesData = async (id: string) => {
-    const res = await axiosInstance.post('/getallnotes',{ownerId:id})
+    const res = await axiosInstance.post('/getallnotes',{autherID:id})
     return res.data
 }
 

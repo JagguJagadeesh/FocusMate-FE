@@ -61,7 +61,7 @@ function HomeNav() {
 
         {/* Desktop Actions */}
         <div className='hidden md:flex items-center space-x-4'>
-          {user ? "":
+          {user.id ? "":
           <div>
           <div className='flex items-center shadow-xs shadow-neutral-600 rounded-lg gap-3'>
             <Link
@@ -105,7 +105,7 @@ function HomeNav() {
 
             <div className='pt-4 border-t flex flex-col space-y-3'>
               
-              {user ? "" :<div>
+              {user.id ? "" :<div>
               <Link
                 href='/auth/signin'
                 onClick={closeMobileMenu}
