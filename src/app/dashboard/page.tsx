@@ -93,59 +93,7 @@ export default function DashboardPage() {
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
             <div className="absolute bottom-0 right-8 w-20 h-20 bg-white/5 rounded-full translate-y-10"></div>
           </motion.div>
-          
-          {/* Quick Stats */}
-          {/* <motion.section
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-          >
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Today&apos;s Progress</h3>
-              <Link 
-                href="/analytics" 
-                className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium text-sm transition-colors"
-              >
-                View Analytics
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {quickStats.map((stat, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.1 + i * 0.05 }}
-                  whileHover={{ y: -4 }}
-                  className={`relative overflow-hidden rounded-2xl bg-white dark:bg-gray-900 border ${stat.borderColor} shadow-sm hover:shadow-lg transition-all duration-300`}
-                >
-                  <div className="p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className={`p-3 rounded-xl ${stat.bgColor} ${stat.color}`}>
-                        {stat.icon}
-                      </div>
-                      <span className={`text-xs font-semibold px-2 py-1 rounded-full ${
-                        stat.trend === 'up' 
-                          ? 'text-emerald-700 bg-emerald-100 dark:text-emerald-400 dark:bg-emerald-900/30' 
-                          : 'text-red-700 bg-red-100 dark:text-red-400 dark:bg-red-900/30'
-                      }`}>
-                        {stat.change}
-                      </span>
-                    </div>
-                    
-                    <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
-                      {stat.value}
-                    </div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400 font-medium">
-                      {stat.label}
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.section> */}
+        
 
           {/* Quick Actions */}
           <motion.section
@@ -159,7 +107,7 @@ export default function DashboardPage() {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {shortcuts.map((item, i) => (
+              {(shortcuts || []).map((item, i) => (
                 <Link href={item.link} key={i}>
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}

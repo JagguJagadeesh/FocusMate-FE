@@ -260,17 +260,20 @@ export default function Scheduler({ view }: { view: string }) {
     setDescription('');
   };
 
-  const stats = {
-    total: events.length,
-    work: events.filter(e => e.category === 'work').length,
-    personal: events.filter(e => e.category === 'personal').length,
-    urgent: events.filter(e => e.category === 'urgent').length,
-    today: events.filter(e => {
-      const today = new Date().toDateString();
-      const taskDate = new Date(e.start).toDateString();
-      return today === taskDate;
-    }).length
-  };
+  const safeEvents = events || [];
+
+const stats = {
+  total: safeEvents.length,
+  work: safeEvents.filter(e => e.category === 'work').length,
+  personal: safeEvents.filter(e => e.category === 'personal').length,
+  urgent: safeEvents.filter(e => e.category === 'urgent').length,
+  today: safeEvents.filter(e => {
+    const today = new Date().toDateString();
+    const taskDate = new Date(e.start).toDateString();
+    return today === taskDate;
+  }).length
+};
+
 
   if (!hasHydrated) {
     return (
@@ -435,7 +438,7 @@ export default function Scheduler({ view }: { view: string }) {
                   <SelectContent className="rounded-lg">
                     <SelectGroup>
                       <SelectLabel>Choose Category</SelectLabel>
-                      {Object.entries(categoryConfig).map(([key, config]) => (
+                      {Object.entries((categoryConfig || [])).map(([key, config]) => (
                         <SelectItem key={key} value={key} className="flex items-center gap-2">
                           <div className="flex items-center gap-2">
                             {config.icon}
