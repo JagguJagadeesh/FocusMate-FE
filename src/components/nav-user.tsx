@@ -30,6 +30,7 @@ import { ModeToggle } from './theme-button'
 import { useRouter } from 'next/navigation'
 import { logoutUser } from '@/services/authService'
 import { toast } from 'sonner'
+import useUserStore from '@/stores/useUserStore'
 
 // Types
 interface User {
@@ -124,6 +125,7 @@ export function NavUser({ user }: NavUserProps) {
   const { isMobile } = useSidebar()
   const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
+  const { clearUser } = useUserStore();
 
   const handleNavigation = (href: string) => {
     router.push(href)
@@ -133,7 +135,8 @@ export function NavUser({ user }: NavUserProps) {
   const handleLogout = async () => {
     try {
       await logoutUser()
-      toast.success("We'll miss u")
+      clearUser()
+      toast.success("Logged out successfuly")
       router.push('/auth/signin')
     } catch (e) {
       console.log(e)

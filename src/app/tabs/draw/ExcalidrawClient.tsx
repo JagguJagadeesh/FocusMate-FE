@@ -149,7 +149,7 @@ const ExcalidrawWrapper: React.FC = () => {
       }
 
       await createNote({
-        ownerID: user.id,
+        autherID: user.id,
         title: noteData.title,
         description: noteData.description,
         imgData: noteData.imageData,
