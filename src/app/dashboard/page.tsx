@@ -1,6 +1,5 @@
 'use client'
 
-import { Separator } from "@/components/ui/separator"
 import {
   SidebarInset,
   SidebarTrigger,
@@ -12,13 +11,7 @@ import { motion } from 'framer-motion'
 import { 
   PenTool, 
   Calendar as CalendarIcon, 
-  Music, 
-  Clock,
-  Target,
-  TrendingUp,
-  CheckCircle,
-  Flame,
-  BookOpen,
+  Music,
   BarChart3,
   ArrowRight,
   Sparkles
@@ -205,67 +198,6 @@ export default function DashboardPage() {
                 <UserChart />
               </div>
             </motion.div>
-
-          {/* Recent Activity */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            className="rounded-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden"
-          >
-            <div className="p-6 border-b border-gray-200 dark:border-gray-800">
-              <div className="flex items-center justify-between">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white">Recent Activity</h3>
-                <Link href="/activity" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium text-sm transition-colors">
-                  View All →
-                </Link>
-              </div>
-            </div>
-            <div className="p-6">
-              <div className="space-y-3">
-                {[
-                  { 
-                    action: "Completed Mathematics Study Session", 
-                    time: "2 hours ago", 
-                    icon: <BookOpen className="w-4 h-4" />,
-                    color: "text-blue-600",
-                    bgColor: "bg-blue-50 dark:bg-blue-950/20"
-                  },
-                  { 
-                    action: "Added new goal: Complete React Tutorial", 
-                    time: "4 hours ago", 
-                    icon: <Target className="w-4 h-4" />,
-                    color: "text-emerald-600",
-                    bgColor: "bg-emerald-50 dark:bg-emerald-950/20"
-                  },
-                  { 
-                    action: "Achieved 7-day study streak", 
-                    time: "Yesterday", 
-                    icon: <Flame className="w-4 h-4" />,
-                    color: "text-orange-600",
-                    bgColor: "bg-orange-50 dark:bg-orange-950/20"
-                  },
-                ].map((activity, i) => (
-                  <motion.div 
-                    key={i}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.5 + i * 0.1 }}
-                    className="flex items-center gap-4 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-750 transition-all duration-200 group"
-                  >
-                    <div className={`p-2 ${activity.bgColor} rounded-lg ${activity.color} group-hover:scale-110 transition-transform duration-200`}>
-                      {activity.icon}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-gray-900 dark:text-white truncate">{activity.action}</p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">{activity.time}</p>
-                    </div>
-                    <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0" />
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          </motion.div>
         </div>
       </SidebarInset>
     </>

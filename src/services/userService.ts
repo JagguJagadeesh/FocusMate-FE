@@ -1,5 +1,6 @@
 import axiosInstance from "@/lib/axiosInstence";
 
+
 // Notes Services
 const getAllNotesData = async (id: string) => {
     const res = await axiosInstance.post('/getallnotes',{ownerId:id})
@@ -38,4 +39,9 @@ const deleteVideo = async (videoId: string) => {
     return res.data
 }
 
-export { getAllNotesData , getANoteData , createNote , deleteNote ,addVideo , getAllVideos , deleteVideo}
+async function getAllTasks(userID: string) {
+    const res = await axiosInstance.post('/getalltasks', { userID });
+    return res.data;
+}
+
+export { getAllNotesData , getANoteData , createNote , deleteNote ,addVideo , getAllVideos , deleteVideo, getAllTasks}

@@ -53,6 +53,7 @@ import {
   FileText,
   Loader2
 } from 'lucide-react';
+import { getAllTasks } from '@/services/userService';
 
 type Task = {
   id: string;
@@ -111,10 +112,7 @@ export default function Scheduler({ view }: { view: string }) {
   const calendarRef = useRef<FullCalendar>(null);
   const { user, hasHydrated } = useUserStore();
 
-  async function getAllTasks(userID: string) {
-    const res = await axiosInstance.post('/getalltasks', { userID });
-    return res.data;
-  }
+  
 
   useEffect(() => {
     if (!hasHydrated || !user.id) return;
@@ -125,7 +123,7 @@ export default function Scheduler({ view }: { view: string }) {
         const data = await getAllTasks(user.id);
         setEvents(data.tasks);
       } catch (err) {
-        console.error('Failed to fetch tasks:', err);
+        // console.error('Failed to fetch tasks:', err);
         toast.error('Failed to load tasks');
       } finally {
         setIsLoading(false);
