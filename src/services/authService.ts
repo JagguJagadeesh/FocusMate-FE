@@ -25,6 +25,7 @@ const signinUser = async (data: signINPayload) =>{
 
 const logoutUser = async ()=>{
     localStorage.removeItem("token");
+    localStorage.removeItem("user-store");
 }
 
 export { signupUser , signinUser,logoutUser}

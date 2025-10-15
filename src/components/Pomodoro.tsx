@@ -148,7 +148,7 @@ export default function SidebarTimerPomodoro({ isCollapsed }: SidebarTimerPomodo
     return (
       <div className="flex justify-center py-2">
         <motion.div
-          className={`relative w-10 h-10 rounded-lg ${colors.icon} flex items-center justify-center shadow-lg ${isRunning ? `ring-2 ${colors.ring}` : ''}`}
+          className={`relative w-10 h-10 text-xs rounded-lg ${colors.icon} flex items-center justify-center shadow-lg ${isRunning ? `ring-2 ${colors.ring}` : ''}`}
           animate={{
             scale: isRunning ? [1, 1.1, 1] : 1,
             opacity: secondsLeft <= 10 && isRunning ? [1, 0.5, 1] : 1
@@ -159,7 +159,8 @@ export default function SidebarTimerPomodoro({ isCollapsed }: SidebarTimerPomodo
           }}
           title={`${currentConfig.label}: ${formatTime(secondsLeft)}`}
         >
-          <Icon className="w-4 h-4 text-white" />
+          {/* <Icon className="w-4 h-4 text-white" /> */}
+          {formatTime(secondsLeft)}
           {/* Tiny progress indicator */}
           <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-6 h-1 bg-white/20 rounded-full overflow-hidden">
             <motion.div
