@@ -24,11 +24,9 @@ import {
   Search, 
   Plus, 
   FileText, 
-  Calendar,
   Grid3X3,
   List,
   PenTool,
-  BookOpen,
 } from "lucide-react"
 
 
