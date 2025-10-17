@@ -5,9 +5,12 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
 import { SidebarInset, SidebarTrigger } from '@/components/ui/sidebar'
-import { Calendar as CalendarIcon, Search, Ticket, Grid3X3, List } from 'lucide-react'
+import { Calendar as CalendarIcon, Search, Grid3X3, List, LoaderCircle } from 'lucide-react'
 import { getAllEvents } from '@/services/userService'
 import Link from 'next/link'
+import EventCard from './EventCard'
+import DashboardLoading from '@/components/Loaders/loading'
+import TypingLoader from '@/components/Loaders/TypingLoader'
 
 const categories = ['All', 'Coding', 'Conference', 'Workshop', 'Business']
 const eventTypes = ['All', 'Virtual', 'In-Person', 'Hybrid']
@@ -135,7 +138,7 @@ export default function EventsPage() {
       <div className={`grid gap-6 px-6 pb-16 ${viewMode === 'grid' ? 'sm:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1 max-w-4xl mx-auto'}`}>
         <AnimatePresence>
           {loading ? (
-            <p className="text-center text-gray-500 dark:text-gray-400">Loading events...</p>
+            <TypingLoader/>
           ) : filteredEvents.length === 0 ? (
             <div className="text-center py-20 text-gray-500 dark:text-gray-400">
               <CalendarIcon className="mx-auto w-10 h-10 mb-4 text-purple-500" />
@@ -159,39 +162,3 @@ export default function EventsPage() {
   )
 }
 
-function EventCard({ event, formatDate }) {
-  const [imgError, setImgError] = useState(false)
-  // const progress = Math.round((event.registered / event.capacity) * 100)
-
-  return (
-    <div className="flex flex-col h-full">
-      <div className="h-40 bg-gray-100 dark:bg-gray-900 relative flex items-center justify-center overflow-hidden">
-        {!imgError && event.image ? (
-          <img
-            src={event.image}
-            alt={event.title}
-            onError={() => setImgError(true)}
-            className="object-cover w-full h-full"
-          />
-        ) : (
-          <CalendarIcon className="w-12 h-12 text-gray-400" />
-        )}
-      </div>
-
-      <div className="p-4 flex-1 flex flex-col justify-between">
-        <div>
-          <h3 className="font-semibold text-gray-900 dark:text-white">{event.title}</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 line-clamp-2">{event.desc}</p>
-          <p className="text-sm text-gray-500 mt-2">{formatDate(event.date)}</p>
-        </div>
-
-        <div className="flex items-center justify-between mt-4 pt-2 border-t border-gray-200 dark:border-gray-700">
-          <span className="text-sm font-medium text-purple-600 dark:text-purple-400">{event.price}</span>
-          <Button className="bg-purple-600 hover:bg-purple-700 text-white text-sm rounded-lg">
-            <Ticket className="w-4 h-4 mr-1" /> Register
-          </Button>
-        </div>
-      </div>
-    </div>
-  )
-}
