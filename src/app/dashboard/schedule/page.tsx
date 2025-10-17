@@ -5,7 +5,7 @@ import Scheduler from './Calendar'
 import { SidebarInset, SidebarTrigger } from '@/components/ui/sidebar'
 import { Separator } from '@/components/ui/separator'
 import { motion } from 'framer-motion'
-import {  Plus, Filter, Download } from 'lucide-react'
+import { Filter } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import useUserStore from '@/stores/useUserStore'
 

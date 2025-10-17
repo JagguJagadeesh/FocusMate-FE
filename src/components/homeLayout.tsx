@@ -9,9 +9,9 @@ import ReviewLayout from './review-layout'
 import FooterLayout from './footerLayout'
 import { motion } from 'framer-motion'
 import {
-  Sparkles, Clock, CheckCircle, ArrowRight, Play, Shield, Zap,
-  Star, Users, TrendingUp, Award, BookOpen, Target, Brain,
-  Timer, BarChart3, Rocket, ChevronRight, Quote
+  Sparkles, CheckCircle, Shield, Zap,
+  Users, TrendingUp, Award, BookOpen, Target, Brain,
+  Timer, BarChart3, ChevronRight, Quote
 } from 'lucide-react'
 
 const OPTIONS: EmblaOptionsType = { loop: true }
@@ -63,65 +63,61 @@ function HomeLayout() {
     <div className="min-h-screen bg-white dark:bg-gray-950 overflow-x-hidden">
 
       {/* Hero Section */}
-      <section className="relative pt-24 pb-16 px-6 max-w-7xl mx-auto">
-
-        <div className="grid lg:grid-cols-2 mt-4 gap-16 items-center">
+      <section className="relative pt-24 pb-20 px-6 md:px-10 max-w-7xl mx-auto overflow-hidden">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
 
           {/* Left Column - Content */}
           <motion.div
-            className="space-y-8"
+            className="space-y-10"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            {/* Main Headline */}
-            <div className="space-y-4">
-              <h1 className="text-3xl lg:text-5xl font-bold leading-[1.1] tracking-tight">
-                Your Personal Study Planner,{' '}
+            <div className="flex flex-col text-center lg:text-left space-y-6">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.15] tracking-tight max-w-3xl mx-auto lg:mx-0">
+                Your Personal Study Planner,{" "}
                 <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
                   Achieve More
                 </span>
               </h1>
 
-              <p className="text-lg font-extralight text-gray-600 dark:text-gray-400 leading-relaxed max-w-lg">
+              <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-400 font-light leading-relaxed max-w-2xl mx-auto lg:mx-0">
                 Organize tasks, track progress, and beat procrastination with smart reminders.
-                Study smarter, stay consistent, and achieve your goals faster.</p>
+                Study smarter, stay consistent, and achieve your goals faster.
+              </p>
             </div>
 
-
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 pt-4">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-6">
               <Link href="/auth/signup">
-                <Button className="group h-14 px-8 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-base font-semibold rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105">
+                <Button className="group h-14 px-8 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-2xl shadow-xl hover:shadow-blue-500/20 transition-all duration-300 hover:scale-105">
                   Start Learning Today
                 </Button>
               </Link>
             </div>
-
-
           </motion.div>
 
           {/* Right Column - Visual */}
           <motion.div
             className="relative"
-            initial={{ opacity: 0, x: 30 }}
+            initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
+            transition={{ duration: 0.7, delay: 0.4 }}
           >
             <div className="relative">
-              {/* Glow Effects */}
-              <div className="absolute -inset-6 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-3xl blur-3xl"></div>
-              <div className="absolute -inset-4 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-3xl blur-2xl"></div>
+              {/* Layered Glow Effects */}
+              <div className="absolute -inset-6 bg-gradient-to-r from-blue-500/25 to-purple-500/25 rounded-3xl blur-3xl"></div>
+              <div className="absolute -inset-4 bg-gradient-to-r from-purple-500/15 to-pink-500/15 rounded-3xl blur-2xl"></div>
 
-              {/* Main Container */}
-              <div className="relative bg-white dark:bg-gray-900 p-6 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-800">
+              {/* Main Visual Container */}
+              <div className="relative bg-white dark:bg-gray-900 p-6 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-800 backdrop-blur-lg">
                 <EmblaCarousel slides={SLIDES} options={OPTIONS} />
               </div>
-
             </div>
           </motion.div>
         </div>
       </section>
+
 
       {/* Mini Testimonials */}
       <section className="py-16 px-6 bg-gray-50/50 dark:bg-gray-900/20">
@@ -209,7 +205,7 @@ function HomeLayout() {
                   <TrendingUp className="w-4 h-4" />
                   {feature.stat}
                 </div>
-                </motion.div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -329,7 +325,7 @@ function HomeLayout() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
           >
-           
+
             {/* Content */}
             <div className="relative z-10 space-y-8">
               <h2 className="text-4xl lg:text-5xl font-bold leading-tight">

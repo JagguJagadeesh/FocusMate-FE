@@ -6,12 +6,10 @@ const getAllNotesData = async (id: string) => {
     const res = await axiosInstance.post('/getallnotes',{autherID:id})
     return res.data
 }
-
 const getANoteData = async (noteId: string) => {
     const res = await axiosInstance.post('/getnote',noteId)
     return res.data
 }
-
 const createNote = async (note: object) => {
     const res = await axiosInstance.post('/createnote',note);
     return res.data
@@ -22,26 +20,34 @@ const deleteNote = async (noteId: string) => {
     const res = await axiosInstance.post('/deletenote',{noteId})
     return res.data
 }
-
 const addVideo = async (video: object) => {
     const res = await axiosInstance.post('/addvideo',video)
     return res.data
 }
-
 const getAllVideos = async (id: string) => {
     const res = await axiosInstance.post('/getallvideos',{ownerID: id})
     // console.log(res)
     return res.data
 }
-
 const deleteVideo = async (videoId: string) => {
     const res = await axiosInstance.post('/deletevideo',{id: videoId})
     return res.data
 }
 
+// Tasks
 async function getAllTasks(userID: string) {
     const res = await axiosInstance.post('/getalltasks', { userID });
     return res.data;
 }
 
-export { getAllNotesData , getANoteData , createNote , deleteNote ,addVideo , getAllVideos , deleteVideo, getAllTasks}
+// Events
+async function getAllEvents() {
+    const res = await axiosInstance.get('/events/getallevents')
+    return res.data
+}
+async function createEvent(data) {
+    const res = await axiosInstance.post('/events/createevent',data)
+    return res.data
+}
+
+export { createEvent, getAllNotesData , getANoteData , createNote , deleteNote ,addVideo , getAllVideos , deleteVideo, getAllTasks ,getAllEvents}
