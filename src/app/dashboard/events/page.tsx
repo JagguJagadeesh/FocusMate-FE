@@ -5,11 +5,10 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
 import { SidebarInset, SidebarTrigger } from '@/components/ui/sidebar'
-import { Calendar as CalendarIcon, Search, Grid3X3, List, LoaderCircle } from 'lucide-react'
+import { Calendar as CalendarIcon, Search, Grid3X3, List } from 'lucide-react'
 import { getAllEvents } from '@/services/userService'
 import Link from 'next/link'
 import EventCard from './EventCard'
-import DashboardLoading from '@/components/Loaders/loading'
 import TypingLoader from '@/components/Loaders/TypingLoader'
 
 const categories = ['All', 'Coding', 'Conference', 'Workshop', 'Business']

@@ -4,7 +4,7 @@ import { Button } from './ui/button'
 import Link from 'next/link'
 import { ModeToggle } from './theme-button'
 import { useState, useEffect } from 'react'
-import { Menu, X } from 'lucide-react'
+import { Menu, User, X } from 'lucide-react'
 import ProductLogo from './ProductLogo'
 import useUserStore from '@/stores/useUserStore'
 
@@ -31,13 +31,12 @@ function HomeNav() {
     { href: '/', label: 'Home' },
     { href: '/community', label: 'Community' },
     { href: '/contact', label: 'Contact' },
-    { href: '/helpus', label: 'Help Us' },
   ]
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 shadow-sm transition-all duration-300 ${scrolled
-        ? 'bg-white/95 dark:bg-gray-950/95 backdrop-blur-xl '
-        : 'bg-transparent'
+      ? 'bg-white/95 dark:bg-gray-950/95 backdrop-blur-xl '
+      : 'bg-transparent'
       }`}>
       <div className='flex items-center justify-between max-w-7xl mx-auto px-4 sm:px-1 lg:px-3 h-16'>
 
@@ -61,21 +60,23 @@ function HomeNav() {
 
         {/* Desktop Actions */}
         <div className='hidden md:flex items-center space-x-4'>
-          {user.id ? "":
-          <div>
-          <div className='flex items-center shadow-xs shadow-neutral-600 rounded-lg gap-3'>
-            <Link
-              href='/auth/signin'
-              className=' pl-2 py-2 cursor-pointer'
-            >
-              Sign in
-            </Link>
+          {user.id ? <Link href={'user/profile'} className='border border-neutral-400 cursor-pointer rounded-lg p-1.5'>
+            <User />
+          </Link> :
+            <div>
+              <div className='flex items-center shadow-xs shadow-neutral-600 rounded-lg gap-3'>
+                <Link
+                  href='/auth/signin'
+                  className=' pl-2 py-2 cursor-pointer'
+                >
+                  Sign in
+                </Link>
 
-            <Link href='/auth/signup' className='bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white hover:shadow px-2 border-l cursor-pointer py-2 rounded-r-lg duration-150 '>
-              Get started
-            </Link>
-          </div>
-          </div>}
+                <Link href='/auth/signup' className='bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white hover:shadow px-2 border-l cursor-pointer py-2 rounded-r-lg duration-150 '>
+                  Get started
+                </Link>
+              </div>
+            </div>}
           <ModeToggle />
         </div>
 
@@ -103,22 +104,24 @@ function HomeNav() {
               </Link>
             ))}
 
-            <div className='pt-4 border-t flex flex-col space-y-3'>
-              
-              {user.id ? "" :<div>
-              <Link
-                href='/auth/signin'
-                onClick={closeMobileMenu}
-                className='block py-2 text-center text-gray-700 dark:text-gray-300'
-              >
-                Sign in
-              </Link>
+            <div className='pt-4 border-t flex justify-around space-y-3 '>
 
-              <Link href='/auth/signup' onClick={closeMobileMenu}>
-                <Button className='w-full bg-gray-900 text-white py-2'>
-                  Get started
-                </Button>
-              </Link>
+              {user.id ? <div className='flex items-center justify-center'><Link href={'user/profile'} className='border border-neutral-400 cursor-pointer rounded-lg p-1.5'>
+                <User />
+              </Link></div> : <div>
+                <Link
+                  href='/auth/signin'
+                  onClick={closeMobileMenu}
+                  className='block py-2 text-center text-gray-700 dark:text-gray-300'
+                >
+                  Sign in
+                </Link>
+
+                <Link href='/auth/signup' onClick={closeMobileMenu}>
+                  <Button className='w-full bg-gray-900 text-white py-2'>
+                    Get started
+                  </Button>
+                </Link>
               </div>}
 
               <div className='flex justify-center'>

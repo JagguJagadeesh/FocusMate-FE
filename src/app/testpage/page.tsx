@@ -1,10 +1,10 @@
 import React from 'react'
-import Loading from '@/components/Loaders/loading'
+import {Component} from '@/components/loding'
 
 function page() {
   return (
     <div>
-        <Loading />
+        <Component />
     </div>
   )
 }
