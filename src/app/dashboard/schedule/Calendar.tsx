@@ -288,39 +288,26 @@ const stats = {
 
   return (
     <div className="w-full space-y-6">
-      {/* Stats Overview */}
-      {view==='dayGridMonth'?
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
-        {[
-          { label: 'Total Tasks', value: stats.total, icon: <CalendarIcon className="w-5 h-5" />, color: 'from-blue-500 to-cyan-500' },
-          { label: 'Work', value: stats.work, icon: <Briefcase className="w-5 h-5" />, color: 'from-blue-500 to-blue-600' },
-          { label: 'Personal', value: stats.personal, icon: <User className="w-5 h-5" />, color: 'from-green-500 to-green-600' },
-          { label: 'Urgent', value: stats.urgent, icon: <AlertTriangle className="w-5 h-5" />, color: 'from-red-500 to-red-600' },
-          { label: 'Today', value: stats.today, icon: <Clock className="w-5 h-5" />, color: 'from-purple-500 to-pink-500' }
-        ].map((stat, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: i * 0.1 }}
-            className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 group"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
-                  {stat.label}
-                </p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {stat.value}
-                </p>
-              </div>
-              <div className={`p-3 rounded-xl bg-gradient-to-br ${stat.color} text-white shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                {stat.icon}
-              </div>
-            </div>
-          </motion.div>
-        ))}
-      </div>: ''}
+      {view === 'dayGridMonth' && (
+  <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+    {[
+      { label: 'Total Tasks', value: stats.total, icon: <CalendarIcon className="w-4 h-4" /> },
+      { label: 'Work', value: stats.work, icon: <Briefcase className="w-4 h-4" /> },
+      { label: 'Personal', value: stats.personal, icon: <User className="w-4 h-4" /> },
+      { label: 'Urgent', value: stats.urgent, icon: <AlertTriangle className="w-4 h-4" /> },
+      { label: 'Today', value: stats.today, icon: <Clock className="w-4 h-4" /> }
+    ].map((stat, i) => (
+      <div key={i} className="bg-white dark:bg-gray-800 rounded-lg p-4 border">
+        <div className="flex items-center gap-2 text-gray-500 mb-2">
+          {stat.icon}
+          <span className="text-xs">{stat.label}</span>
+        </div>
+        <p className="text-2xl font-bold">{stat.value}</p>
+      </div>
+    ))}
+  </div>
+)}
+
 
       {/* Calendar Container */}
       <motion.div

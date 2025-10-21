@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
-import Loading from "@/components/Loaders/loading";
+import { Component } from "@/components/loding";
 import { Suspense } from "react";
 import { Roboto_Flex } from "next/font/google";
 
@@ -34,7 +34,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Suspense fallback={<Loading />}>
+          <Suspense fallback={<Component />}>
             {children}
           </Suspense>
           <Toaster position="top-center" />

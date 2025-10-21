@@ -28,6 +28,7 @@ import {
   List,
   PenTool,
 } from "lucide-react"
+import { Component } from "@/components/loding"
 
 
 type Note = {
@@ -174,41 +175,6 @@ export default function Page() {
         </header>
       </SidebarInset>
 
-      {/* Stats Overview */}
-      <div className="px-6 py-6">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-          {[
-            {
-              label: "Total Notes",
-              value: stats.total,
-              icon: <FileText className="w-5 h-5" />,
-              color: "from-blue-500 to-cyan-500"
-            }
-          ].map((stat, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: i * 0.1 }}
-              className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 group"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
-                    {stat.label}
-                  </p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white">
-                    {stat.value}
-                  </p>
-                </div>
-                <div className={`p-3 rounded-xl bg-gradient-to-br ${stat.color} text-white shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                  {stat.icon}
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
 
       {/* Notes Content */}
       <main className="px-6 pb-12">
@@ -221,8 +187,7 @@ export default function Page() {
                 exit={{ opacity: 0 }}
                 className="text-center"
               >
-                <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                <p className="text-gray-600 dark:text-gray-400">Loading your notes...</p>
+                <Component/>
               </motion.div>
             </div>
           ) : filteredNotes.length === 0 ? (

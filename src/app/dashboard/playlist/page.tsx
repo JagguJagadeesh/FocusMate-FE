@@ -8,19 +8,13 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   PlusIcon,
   Trash2,
-  Play,
   Video,
-  Music,
   ExternalLink,
   Search,
   Grid3X3,
   List,
-  Share2,
-  X,
   Youtube,
-  Eye,
-  Calendar
-} from 'lucide-react'
+  } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { SidebarInset, SidebarTrigger } from '@/components/ui/sidebar'
 import { Separator } from '@/components/ui/separator'
@@ -39,6 +33,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import { Component } from '@/components/loding'
 
 type Video = {
   title: string;
@@ -236,61 +231,12 @@ export default function PlayList() {
         </header>
       </SidebarInset>
 
-      {/* Stats Overview */}
-      <div className="px-6 py-6">
-        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8">
-          {[
-            {
-              label: "Videos",
-              value: stats.videos,
-              icon: <Play className="w-5 h-5" />,
-              color: "from-blue-500 to-cyan-500"
-            },
-            {
-              label: "Playlists",
-              value: stats.playlists,
-              icon: <Music className="w-5 h-5" />,
-              color: "from-green-500 to-emerald-500"
-            }].map((stat, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: i * 0.1 }}
-              className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 group"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
-                    {stat.label}
-                  </p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white">
-                    {stat.value}
-                  </p>
-                </div>
-                <div className={`p-3 rounded-xl bg-gradient-to-br ${stat.color} text-white shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                  {stat.icon}
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-
       {/* Main Content */}
-      <main className="px-6 pb-12">
+      <main className="px-6 pb-12 mt-6">
         <AnimatePresence>
           {isLoading ? (
-            <div className="flex justify-center items-center h-64">
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="text-center"
-              >
-                <div className="w-8 h-8  rounded-full animate-spin mx-auto mb-4"></div>
-                <p className="text-gray-600 dark:text-gray-400">Loading your playlist...</p>
-              </motion.div>
+            <div className="h-96 flex justify-center items-center ">
+              <Component/>
             </div>
           ) : filteredVideos.length === 0 && searchQuery ? (
             <motion.div
@@ -419,74 +365,48 @@ export default function PlayList() {
 
       {/* Enhanced Video Dialog */}
       <Dialog open={openVideo} onOpenChange={setOpenVideo}>
-        <DialogContent className="w-full max-w-7xl max-h-[95vh] p-0 overflow-hidden rounded-3xl border-0 shadow-2xl bg-white dark:bg-gray-900">
-          {/* Dialog Header */}
-          <div className="relative bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 p-8 border-b border-gray-200 dark:border-gray-800">
-            
-            <DialogHeader className="space-y-3">
-              <DialogTitle className="text-3xl font-bold text-gray-900 dark:text-white text-left pr-12">
-                {active?.title}
-              </DialogTitle>
-              {/* Video Player */}
-              <div className="p-8">
-                <div className="aspect-video w-full rounded-2xl overflow-hidden shadow-lg border border-gray-200 dark:border-gray-700">
-                  <iframe
-                    src={active?.link || ''}
-                    title={active?.title || ''}
-                    className="w-full h-full"
-                    allowFullScreen
-                    loading="lazy"
-                  />
-                </div>
-              </div>
-              <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-                <div className="flex items-center gap-2">
-                  <Youtube className="w-4 h-4 text-red-500" />
-                  <span>YouTube {active?.type}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Eye className="w-4 h-4" />
-                  <span>Now playing</span>
-                </div>
-              </div>
-            </DialogHeader>
-
-            {/* Action Buttons */}
-            <div className="flex items-center gap-3 mt-6">
-              <Button
-                variant="outline"
-                size="sm"
-                className="rounded-xl border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800"
-                onClick={() => window.open(active?.link.replace('/embed/', '/watch?v='), '_blank')}
-              >
-                <ExternalLink className="w-4 h-4 mr-2" />
-                Open in YouTube
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="rounded-xl border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800"
-              >
-                <Share2 className="w-4 h-4 mr-2" />
-                Share
-              </Button>
+        <DialogContent className="max-w-[60vw] w-full h-auto p-0 border-0 bg-black rounded-xl overflow-hidden">
+          {/* Header Bar */}
+          <div className="relative bg-gray-900 px-6 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Youtube className="w-5 h-5 text-red-500" />
+              <h2 className="text-white font-semibold text-lg">{active?.title}</h2>
             </div>
           </div>
 
+          {/* Video Player */}
+          <div className="aspect-video w-full bg-black">
+            <iframe
+              src={active?.link || ''}
+              title={active?.title || ''}
+              className="w-full h-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+
+          {/* Footer Bar */}
+          <div className="bg-gray-900 px-6 py-4 flex items-center justify-end gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-gray-300 hover:text-white hover:bg-gray-800"
+              onClick={() => window.open(active?.link.replace('/embed/', '/watch?v='), '_blank')}
+            >
+              <ExternalLink className="w-4 h-4 mr-2" />
+              Open in YouTube
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
+
+
 
       {/* Enhanced Add Video Dialog */}
       <Dialog open={openAdd} onOpenChange={setOpenAdd}>
         <DialogContent className="w-full max-w-lg p-0 overflow-hidden rounded-3xl border-0 shadow-2xl bg-white dark:bg-gray-900">
           <div className="relative bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 p-8 border-b border-gray-200 dark:border-gray-800">
-            <button
-              onClick={() => setOpenAdd(false)}
-              className="absolute top-4 right-4 p-2 hover:bg-white/50 dark:hover:bg-gray-800/50 rounded-full transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
+            
             <DialogHeader>
               <DialogTitle className="text-2xl font-bold text-gray-900 dark:text-white text-left pr-12">
                 Add YouTube Content
@@ -538,7 +458,7 @@ export default function PlayList() {
               <Button
                 onClick={onAdd}
                 disabled={isAdding}
-                className="h-12 px-6 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                className="h-12 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               >
                 {isAdding ? (
                   <>
@@ -547,7 +467,6 @@ export default function PlayList() {
                   </>
                 ) : (
                   <>
-                    <PlusIcon className="w-4 h-4 mr-2" />
                     Add to Playlist
                   </>
                 )}

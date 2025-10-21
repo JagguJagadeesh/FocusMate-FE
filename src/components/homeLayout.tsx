@@ -63,7 +63,7 @@ function HomeLayout() {
     <div className="min-h-screen bg-white dark:bg-gray-950 overflow-x-hidden">
 
       {/* Hero Section */}
-      <section className="relative pt-24 pb-20 px-6 md:px-10 max-w-7xl mx-auto overflow-hidden">
+      <section className="relative mt-8 pt-28 pb-20 px-6 md:px-20 max-w-full mx-auto overflow-hidden">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
 
           {/* Left Column - Content */}
@@ -107,7 +107,7 @@ function HomeLayout() {
             <div className="relative">
               {/* Layered Glow Effects */}
               <div className="absolute -inset-6 bg-gradient-to-r from-blue-500/25 to-purple-500/25 rounded-3xl blur-3xl"></div>
-              <div className="absolute -inset-4 bg-gradient-to-r from-purple-500/15 to-pink-500/15 rounded-3xl blur-2xl"></div>
+              <div className="absolute -inset-6 bg-gradient-to-r from-purple-500/15 to-pink-500/15 rounded-3xl blur-2xl"></div>
 
               {/* Main Visual Container */}
               <div className="relative bg-white dark:bg-gray-900 p-6 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-800 backdrop-blur-lg">
@@ -312,59 +312,7 @@ function HomeLayout() {
               From Harvard to MIT, students are achieving their academic dreams with FocusMate
             </p>
           </motion.div>
-          <ReviewLayout />
-        </div>
-      </section>
-
-      {/* Final CTA */}
-      <section className="py-24 px-6">
-        <div className="max-w-4xl mx-auto">
-          <motion.div
-            className="relative bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 rounded-3xl p-12 text-center text-white overflow-hidden"
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-          >
-
-            {/* Content */}
-            <div className="relative z-10 space-y-8">
-              <h2 className="text-4xl lg:text-5xl font-bold leading-tight">
-                Ready to 10x your
-                <br />
-                academic performance?
-              </h2>
-
-              <p className="text-xl opacity-90 max-w-2xl mx-auto">
-                Join 50,000+ successful students who&apos;ve transformed their study habits and achieved their dreams
-              </p>
-
-              {/* CTA Button */}
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Link href="/auth/signup">
-                  <Button className="h-14 px-10 bg-white text-blue-600 hover:bg-gray-50 font-bold text-lg rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105 group">
-                    Start Your Free Account Now
-                    <ChevronRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-                </Link>
-              </div>
-
-              {/* Trust Indicators */}
-              <div className="flex flex-wrap items-center justify-center gap-8 pt-8 border-t border-white/20">
-                <div className="flex items-center gap-2 text-white/90">
-                  <CheckCircle className="w-5 h-5" />
-                  <span className="font-medium">Free Forever Plan</span>
-                </div>
-                <div className="flex items-center gap-2 text-white/90">
-                  <Shield className="w-5 h-5" />
-                  <span className="font-medium">Bank-Level Security</span>
-                </div>
-                <div className="flex items-center gap-2 text-white/90">
-                  <Zap className="w-5 h-5" />
-                  <span className="font-medium">Instant Setup</span>
-                </div>
-              </div>
-            </div>
-          </motion.div>
+          {/* <ReviewLayout /> */}
         </div>
       </section>
 

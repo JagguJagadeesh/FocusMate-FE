@@ -30,17 +30,6 @@ export default function Schedule() {
                 </p>
               </div>
             </div>
-            
-            <div className="flex items-center gap-3">
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-10 px-4 rounded-xl border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800"
-              >
-                <Filter className="w-4 h-4 mr-2" />
-                Filter
-              </Button>
-            </div>
           </div>
         </header>
       </SidebarInset>

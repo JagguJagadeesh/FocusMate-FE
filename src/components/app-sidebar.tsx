@@ -68,7 +68,7 @@ const navigationConfig = {
       items: [
         {
           title: "Community",
-          url: "/community",
+          url: "/dashboard/community",
         },
         {
           title: "Events",

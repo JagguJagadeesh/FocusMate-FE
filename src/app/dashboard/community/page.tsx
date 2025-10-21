@@ -1,6 +1,7 @@
-import { SidebarInset, SidebarTrigger } from '@/components/ui/sidebar'
+import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 
-function page() {
+export default function CommunityPage() {
+  
   return (
     <div className=''>
       <SidebarInset>
@@ -10,7 +11,7 @@ function page() {
               <SidebarTrigger />
               <div>
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
-                  My Books
+                  Join Community
                 </h2>
                 
               </div>
@@ -24,5 +25,3 @@ function page() {
     </div>
   )
 }
-
-export default page

@@ -1,10 +1,10 @@
 'use client'
 import { AppSidebar } from "@/components/app-sidebar"
-import Loading from "@/components/Loaders/loading"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { Suspense } from "react"
 import ChatBotPopup from '@/app/tabs/ChatBox'
 import {withAuth} from "@/utils/AuthWarpper"
+import { Component } from "@/components/loding"
 
 function DashboardLayout({
   children,
@@ -19,7 +19,7 @@ function DashboardLayout({
           <Suspense 
             fallback={
               <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-purple-50/50 via-blue-50/30 to-indigo-100/40 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-800">
-                <Loading />
+                <Component />
               </div>
             }
           >
