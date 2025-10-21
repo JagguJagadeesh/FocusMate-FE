@@ -10,6 +10,7 @@ import { getAllEvents } from '@/services/userService'
 import Link from 'next/link'
 import EventCard from './EventCard'
 import TypingLoader from '@/components/Loaders/TypingLoader'
+import { Component } from '@/components/loding'
 
 const categories = ['All', 'Coding', 'Conference', 'Workshop', 'Business']
 const eventTypes = ['All', 'Virtual', 'In-Person', 'Hybrid']
@@ -137,7 +138,7 @@ export default function EventsPage() {
       <div className={`grid gap-6 px-6 pb-16 ${viewMode === 'grid' ? 'sm:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1 max-w-4xl mx-auto'}`}>
         <AnimatePresence>
           {loading ? (
-            <TypingLoader/>
+            <div className='h-96 flex items-center justify-center'><Component/></div>
           ) : filteredEvents.length === 0 ? (
             <div className="text-center py-20 text-gray-500 dark:text-gray-400">
               <CalendarIcon className="mx-auto w-10 h-10 mb-4 text-purple-500" />
