@@ -63,6 +63,29 @@ async function getAllBooks({ id }) {
   return res.data;
 }
 
+// Files
+async function getFiles({ handlerId }: { handlerId: string }) {
+  const res = await axiosInstance.get(`/getfiles/${handlerId}`);
+  return res.data;
+}
+
+async function uploadFile(formData: FormData) {
+  const res = await axiosInstance.post("/uploadfile", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return res.data;
+}
+
+async function deleteFile({
+  handlerId,
+  id,
+}: {
+  handlerId: string;
+  id: string;
+}) {
+  const res = await axiosInstance.post("/deletefile", { handlerId, id });
+  return res.data;
+}
 export {
   createEvent,
   getAllNotesData,
@@ -77,4 +100,7 @@ export {
   addBook,
   deleteBook,
   getAllBooks,
+  getFiles,
+  deleteFile,
+  uploadFile,
 };
