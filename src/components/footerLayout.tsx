@@ -1,39 +1,50 @@
 import React from 'react'
 import ProductLogo from './ProductLogo'
 import Link from 'next/link'
-import { Github, Phone } from 'lucide-react'
+import { Github, Twitter, Mail } from 'lucide-react'
 
-function footerLayout() {
+function FooterLayout() {
   return (
-    <footer className='border-t border-neutral-200 bg-neutral-50 mt-12'>
-      <div className='max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-8'>
+    <footer className='bg-white dark:bg-gray-950 border-t border-gray-200 dark:border-gray-800'>
+      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12'>
+        {/* Single Row Layout */}
         <div className='flex flex-col md:flex-row items-center justify-between gap-6'>
-          {/* Logo and Copyright Section */}
-          <div className='flex flex-col items-center md:items-start space-y-3'>
-            <div className='flex items-center'>
-              <ProductLogo/>
-            </div>
-            <p className='text-sm text-neutral-600 text-center md:text-left'>
-              Copyright © 2025 FocusMate. All rights reserved.
+          {/* Left: Logo & Copyright */}
+          <div className='flex items-center gap-8'>
+            <ProductLogo />
+            <p className='text-sm text-gray-500 dark:text-gray-400'>
+              © 2025 FocusMate
             </p>
           </div>
 
-          {/* Action Links Section */}
+          {/* Center: Quick Links */}
+          <nav className='flex flex-wrap justify-center gap-6'>
+            {['Features', 'Pricing', 'About', 'Contact', 'Privacy'].map((item) => (
+              <Link 
+                key={item}
+                href='#' 
+                className='text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors'
+              >
+                {item}
+              </Link>
+            ))}
+          </nav>
+
+          {/* Right: Social Icons */}
           <div className='flex gap-3'>
-            <Link 
-              className='flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-neutral-700 bg-white border border-neutral-200 rounded-lg transition-all duration-200 hover:shadow-md hover:border-neutral-300 hover:-translate-y-0.5' 
-              href={'#'}
-            >
-              <Phone className='w-4 h-4' />
-              <span className='hidden sm:inline'>Contact Us</span>
-            </Link>
-            <Link 
-              className='flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-neutral-700 bg-white border border-neutral-200 rounded-lg transition-all duration-200 hover:shadow-md hover:border-neutral-300 hover:-translate-y-0.5' 
-              href={'#'}
-            >
-              <Github className='w-4 h-4' />
-              <span className='hidden sm:inline'>Help Us</span>
-            </Link>
+            {[
+              { icon: Twitter, href: 'https://github.com/JagguJagadeesh/FocusMate-FE' },
+              { icon: Github, href: 'https://github.com/JagguJagadeesh/FocusMate-FE' },
+              { icon: Mail, href: 'https://github.com/JagguJagadeesh/FocusMate-FE' }
+            ].map((social, i) => (
+              <Link 
+                key={i}
+                href={social.href}
+                className='w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 hover:bg-blue-600 hover:text-white transition-all'
+              >
+                <social.icon className='w-4 h-4' />
+              </Link>
+            ))}
           </div>
         </div>
       </div>
@@ -41,4 +52,4 @@ function footerLayout() {
   )
 }
 
-export default footerLayout
+export default FooterLayout

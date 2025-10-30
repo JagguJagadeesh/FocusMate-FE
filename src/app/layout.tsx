@@ -7,18 +7,19 @@ import { Suspense } from "react";
 import { Roboto_Flex } from "next/font/google";
 
 const globalFont = Roboto_Flex({
-  weight: ['400'],
-  subsets: ['latin']
-});
+  weight: ['400', '500', '600', '700'],
+  subsets: ['latin'],
+  display: 'swap',
+  preload: true
+})
+
 
 export const metadata: Metadata = {
-  title: "FocusMate",
-  icons:{
-    icon:'./HatIcon.png'
-  },
-  description:
-    "Whether you're preparing for exams, managing class deadlines, or just trying to stay productive, FocusMate helps you create personalized study plans, track progress, and stay focused using AI-powered insights and reminders.",
-};
+  title: "FocusMate - Smart Study Platform for Students | Focus Timer & AI Planner",
+  description: "Stay focused and achieve more with FocusMate's Pomodoro timer, visual note-taking, YouTube playlists, day scheduler, and PDF library. Join 10,000+ students studying smarter.",
+  keywords: ["study planner", "focus timer", "pomodoro app", "student productivity", "study app"],
+}
+
 
 export default function RootLayout({
   children,

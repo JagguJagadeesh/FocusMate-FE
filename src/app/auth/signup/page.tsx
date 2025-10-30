@@ -1,30 +1,28 @@
 'use client'
-import Image from "next/image"
-import analyticsPic from '@/images/chatbotpic.png'
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import Link from 'next/link'
+import React from 'react'
+import Image from 'next/image'
+import authImage from '@/images/authimage.png'
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { signupUser } from "@/services/authService"
-import { useRouter } from "next/navigation"
+  FormMessage
+} from '@/components/ui/form'
+import { signupUser } from '@/services/authService'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { useRouter } from 'next/navigation'
 import useUserStore from "@/stores/useUserStore"
 import { toast } from "sonner"
-import { Eye, EyeOff, Mail, Lock, User, Loader2, CheckCircle} from 'lucide-react'
+import { Eye, EyeOff, Mail, Lock, User, Loader2, CheckCircle } from 'lucide-react'
 import { motion } from 'framer-motion'
-import React from 'react'
-import { withoutAuth } from "@/utils/AuthWarpper"
-import ProductLogo from "@/components/ProductLogo"
-
+import { withoutAuth } from '@/utils/AuthWarpper'
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
@@ -35,13 +33,11 @@ const formSchema = z.object({
     .regex(/(?=.*\d)/, "Password must contain at least one number."),
 })
 
-
 function Signup() {
   const [showPassword, setShowPassword] = React.useState(false)
   const [isLoading, setIsLoading] = React.useState(false)
   const setUser = useUserStore(state => state.setUser)
   const router = useRouter()
-
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -52,9 +48,7 @@ function Signup() {
     },
   })
 
-
   const password = form.watch("password")
-
 
   const passwordStrength = {
     hasLower: /(?=.*[a-z])/.test(password),
@@ -62,7 +56,6 @@ function Signup() {
     hasNumber: /(?=.*\d)/.test(password),
     hasLength: password.length >= 6
   }
-
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true)
@@ -87,212 +80,223 @@ function Signup() {
     }
   }
 
-
   return (
-    <div className="h-screen flex bg-white dark:text-white dark:bg-black overflow-hidden">
-      {/* Left Side - Form Section */}
-      <div className="w-full h-full lg:w-2/5 flex items-center justify-center px-4 py-6">
-        <div className="w-full max-w-sm">
-          {/* Form Card */}
+    <div className="min-h-screen flex">
+
+      {/* Left Side - Form Section (Full Width) */}
+      <div className="w-full lg:w-5/12 flex flex-col justify-center px-6 sm:px-8 py-2 bg-white dark:bg-gray-950">
+        <div className="w-full max-w-md mx-auto">
+
+          {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
+            className="mb-6"
+          >
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+              Get Started
+            </h1>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Create your account and start your study journey with FocusMate
+            </p>
+          </motion.div>
+
+          {/* Form */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
           >
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)}>
-                <div className="bg-white dark:bg-black border border-gray-200 dark:border-gray-700 shadow-xl rounded-2xl p-5">
-                  {/* Header */}
-                  <div className="text-center mb-4">
-                    <div className='flex w-full justify-center mb-2'><ProductLogo/></div>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
 
-                    <p className="text-xs text-gray-500 dark:text-gray-500">
-                      Already have an account?{' '}
-                      <Link
-                        href="/auth/signin"
-                        className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium hover:underline transition-colors"
-                      >
-                        Sign in
-                      </Link>
-                    </p>
+                {/* Name Field */}
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        Full Name
+                      </FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                          <Input
+                            placeholder="John Doe"
+                            className="pl-12 h-12 bg-gray-50 dark:bg-gray-900 border-gray-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all text-base"
+                            {...field}
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage className="text-red-500 text-sm mt-1" />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Email Field */}
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        Email Address
+                      </FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                          <Input
+                            type="email"
+                            placeholder="you@example.com"
+                            className="pl-12 h-12 bg-gray-50 dark:bg-gray-900 border-gray-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all text-base"
+                            {...field}
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage className="text-red-500 text-sm mt-1" />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Password Field */}
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        Password
+                      </FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                          <Input
+                            type={showPassword ? "text" : "password"}
+                            placeholder="••••••••"
+                            className="pl-12 pr-12 h-12 bg-gray-50 dark:bg-gray-900 border-gray-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all text-base"
+                            {...field}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                          >
+                            {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                          </button>
+                        </div>
+                      </FormControl>
+
+                      {/* Password Strength Indicators */}
+                      {password && (
+                        <div className="mt-3 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                          <div className="flex gap-3 flex-wrap">
+                            <div className="flex items-center gap-2">
+                              <CheckCircle className={`w-4 h-4 ${passwordStrength.hasLength ? 'text-green-500' : 'text-gray-300'}`} />
+                              <span className={`text-xs ${passwordStrength.hasLength ? 'text-green-600 dark:text-green-400' : 'text-gray-500'}`}>
+                                6+ characters
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <CheckCircle className={`w-4 h-4 ${passwordStrength.hasLower ? 'text-green-500' : 'text-gray-300'}`} />
+                              <span className={`text-xs ${passwordStrength.hasLower ? 'text-green-600 dark:text-green-400' : 'text-gray-500'}`}>
+                                Lowercase
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <CheckCircle className={`w-4 h-4 ${passwordStrength.hasUpper ? 'text-green-500' : 'text-gray-300'}`} />
+                              <span className={`text-xs ${passwordStrength.hasUpper ? 'text-green-600 dark:text-green-400' : 'text-gray-500'}`}>
+                                Uppercase
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <CheckCircle className={`w-4 h-4 ${passwordStrength.hasNumber ? 'text-green-500' : 'text-gray-300'}`} />
+                              <span className={`text-xs ${passwordStrength.hasNumber ? 'text-green-600 dark:text-green-400' : 'text-gray-500'}`}>
+                                Number
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      <FormMessage className="text-red-500 text-sm mt-1" />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Sign Up Button - Simple Design */}
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full h-12 text-base font-semibold bg-gray-900 hover:bg-gray-800 dark:bg-white dark:hover:bg-gray-100 text-white dark:text-gray-900 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                      Creating account...
+                    </>
+                  ) : (
+                    "Create account"
+                  )}
+                </Button>
+
+                {/* Divider */}
+                <div className="relative my-2">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-gray-300 dark:border-gray-700"></div>
                   </div>
-
-                  <div className="space-y-3">
-                    {/* Name Field */}
-                    <FormField
-                      control={form.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                            Full Name
-                          </FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                              <Input
-                                placeholder="John Doe"
-                                className="pl-10 h-9 bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm"
-                                {...field}
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage className="text-red-500 text-xs" />
-                        </FormItem>
-                      )}
-                    />
-
-                    {/* Email Field */}
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                            Email Address
-                          </FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                              <Input
-                                type="email"
-                                placeholder="you@example.com"
-                                className="pl-10 h-9 bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm"
-                                {...field}
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage className="text-red-500 text-xs" />
-                        </FormItem>
-                      )}
-                    />
-
-                    {/* Password Field */}
-                    <FormField
-                      control={form.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                            Password
-                          </FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                              <Input
-                                type={showPassword ? "text" : "password"}
-                                placeholder="••••••••"
-                                className="pl-10 pr-10 h-9 bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm"
-                                {...field}
-                              />
-                              <button
-                                type="button"
-                                onClick={() => setShowPassword(!showPassword)}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-                              >
-                                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                              </button>
-                            </div>
-                          </FormControl>
-
-                          {/* Compact Password Strength Indicators */}
-                          {password && (
-                            <div className="mt-1 flex gap-2 text-[10px]">
-                              <div className="flex items-center gap-1">
-                                <CheckCircle className={`w-2 h-2 ${passwordStrength.hasLength ? 'text-green-500' : 'text-gray-300'}`} />
-                                <span className={passwordStrength.hasLength ? 'text-green-600' : 'text-gray-500'}>6+</span>
-                              </div>
-                              <div className="flex items-center gap-1">
-                                <CheckCircle className={`w-2 h-2 ${passwordStrength.hasLower ? 'text-green-500' : 'text-gray-300'}`} />
-                                <span className={passwordStrength.hasLower ? 'text-green-600' : 'text-gray-500'}>a-z</span>
-                              </div>
-                              <div className="flex items-center gap-1">
-                                <CheckCircle className={`w-2 h-2 ${passwordStrength.hasUpper ? 'text-green-500' : 'text-gray-300'}`} />
-                                <span className={passwordStrength.hasUpper ? 'text-green-600' : 'text-gray-500'}>A-Z</span>
-                              </div>
-                              <div className="flex items-center gap-1">
-                                <CheckCircle className={`w-2 h-2 ${passwordStrength.hasNumber ? 'text-green-500' : 'text-gray-300'}`} />
-                                <span className={passwordStrength.hasNumber ? 'text-green-600' : 'text-gray-500'}>0-9</span>
-                              </div>
-                            </div>
-                          )}
-
-                          <FormMessage className="text-red-500 text-xs" />
-                        </FormItem>
-                      )}
-                    />
-
-                    {/* Create Account Button */}
-                    <Button
-                      type="submit"
-                      disabled={isLoading}
-                      className="w-full h-11 text-sm font-medium bg-violet-500 hover:bg-violet-700 active:bg-violet-800 text-white rounded-lg transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2"
-                    >
-                      {isLoading ? (
-                        <>
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                          Creating account...
-                        </>
-                      ) : (
-                        "Create account"
-                      )}
-                    </Button>
+                  <div className="relative flex justify-center text-sm">
+                    <span className="px-4 bg-white dark:bg-gray-950 text-gray-500 dark:text-gray-400">
+                      Already have an account?
+                    </span>
                   </div>
+                </div>
 
-                  {/* Terms */}
-                  <div className="mt-3 text-center">
-                    <p className="text-[10px] text-gray-500 dark:text-gray-500">
-                      By creating an account, you agree to our{' '}
-                      <Link href="/#" className="text-blue-600 dark:text-blue-400 hover:underline">
-                        Terms of Service
-                      </Link>{' '}
-                      and{' '}
-                      <Link href="/#" className="text-blue-600 dark:text-blue-400 hover:underline">
-                        Privacy Policy
-                      </Link>
-                    </p>
-                  </div>
+                {/* Sign In Link */}
+                <div className="text-center">
+                  <Link
+                    href="/auth/signin"
+                    className="text-sm font-semibold text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 hover:underline transition-colors"
+                  >
+                    Sign in instead
+                  </Link>
                 </div>
               </form>
             </Form>
           </motion.div>
-        </div>
-      </div>
 
-      {/* Right Side - Full Coverage Background Image */}
-      <div className="hidden lg:flex lg:w-3/5 h-full relative overflow-hidden">
-        {/* Full coverage background image */}
-        <Image
-          src={analyticsPic}
-          alt="FocusMate Analytics Dashboard"
-          fill
-          priority
-          style={{
-            objectFit: 'cover',
-          }}
-          className="absolute inset-0"
-        />
-        
-       
-        {/* Content overlay */}
-        <div className="relative z-10 flex flex-col justify-end items-end p-8 pb-10 text-white w-full h-full">
+          {/* Terms */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="mt-2 text-center"
           >
-            <h2 className="text-4xl font-bold mb-4">
-              Join{' '}
-              <span className="">
-                Focus<span className='bg-gradient-to-r from-violet-400 via-purple-400 to-pink-400 bg-clip-text text-transparent'>Mate</span>
-              </span>
-            </h2>
-            <p className="text-xl opacity-90 leading-relaxed max-w-md mb-8">
-              Start your productivity journey with powerful analytics and AI-driven insights
+            <p className="text-xs text-gray-500 dark:text-gray-500">
+              By creating an account, you agree to our{' '}
+              <Link href="/#" className="text-violet-600 dark:text-violet-400 hover:underline">
+                Terms of Service
+              </Link>{' '}
+              and{' '}
+              <Link href="/#" className="text-violet-600 dark:text-violet-400 hover:underline">
+                Privacy Policy
+              </Link>
             </p>
           </motion.div>
         </div>
+      </div>
+
+      {/* Right Side - Image Section */}
+      <div className="hidden lg:flex lg:w-7/12 relative overflow-hidden">
+        {/* Background Image */}
+        <Image
+          src={authImage}
+          alt="FocusMate Study Platform"
+          fill
+          priority
+          className="object-fill"
+        />
       </div>
     </div>
   )
