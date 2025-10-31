@@ -1,3 +1,4 @@
+import UnderConstructionPage from "@/components/myuicomponents/UnderConstruction";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 
 export default function CommunityPage() {
@@ -20,7 +21,7 @@ export default function CommunityPage() {
         </header>
       </SidebarInset>
       <main className='h-96 flex items-center justify-center'>
-        <h1>Comming Soon...</h1>
+        <UnderConstructionPage/>
       </main>
     </div>
   )

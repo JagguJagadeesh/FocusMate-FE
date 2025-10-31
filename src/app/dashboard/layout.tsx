@@ -4,7 +4,7 @@ import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import { Suspense } from "react"
 import ChatBotPopup from '@/app/tabs/ChatBox'
 import {withAuth} from "@/utils/AuthWarpper"
-import { Component } from "@/components/loding"
+import { Component } from "@/components/Loaders/loding"
 
 function DashboardLayout({
   children,

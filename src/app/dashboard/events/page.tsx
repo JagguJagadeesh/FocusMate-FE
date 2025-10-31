@@ -10,7 +10,7 @@ import { getAllEvents } from '@/services/userService'
 import Link from 'next/link'
 import EventCard from './EventCard'
 import TypingLoader from '@/components/Loaders/TypingLoader'
-import { Component } from '@/components/loding'
+import { Component } from '@/components/Loaders/loding'
 
 const categories = ['All', 'Coding', 'Conference', 'Workshop', 'Business']
 const eventTypes = ['All', 'Virtual', 'In-Person', 'Hybrid']

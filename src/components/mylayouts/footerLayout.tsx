@@ -1,5 +1,5 @@
 import React from 'react'
-import ProductLogo from './ProductLogo'
+import ProductLogo from '../ProductLogo'
 import Link from 'next/link'
 import { Github, Twitter, Mail } from 'lucide-react'
 

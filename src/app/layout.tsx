@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
-import { Component } from "@/components/loding";
+import { Component } from "@/components/Loaders/loding";
 import { Suspense } from "react";
 import { Roboto_Flex } from "next/font/google";
 

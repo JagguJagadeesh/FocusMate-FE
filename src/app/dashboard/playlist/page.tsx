@@ -33,7 +33,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { Component } from '@/components/loding'
+import { Component } from '@/components/Loaders/loding'
 
 type Video = {
   title: string;

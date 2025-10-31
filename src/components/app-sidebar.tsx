@@ -21,7 +21,7 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 import useUserStore from "@/stores/useUserStore"
 import ProductLogo from "./ProductLogo"
-import SidebarTimerPomodoro from "./Pomodoro"
+import SidebarTimerPomodoro from "./myuicomponents/Pomodoro"
 
 // Navigation configuration
 const navigationConfig = {

@@ -2,8 +2,8 @@
 
 import React from 'react'
 import Link from 'next/link'
-import { Button } from './ui/button'
-import EmblaCarousel from './myui/EmblaCarousel'
+import { Button } from '../ui/button'
+import EmblaCarousel from '../myuicomponents/EmblaCarousel'
 import FooterLayout from './footerLayout'
 import { motion } from 'framer-motion'
 import {
@@ -15,6 +15,7 @@ import {
   FileText,
   Youtube
 } from 'lucide-react'
+import useUserStore from '@/stores/useUserStore'
 
 const SLIDES = Array.from(Array(6).keys())
 
@@ -65,6 +66,9 @@ const featureList = [
 
 
 function HomeLayout() {
+
+  const { user } = useUserStore()
+
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950 overflow-x-hidden">
 
@@ -93,13 +97,21 @@ function HomeLayout() {
             </div>
 
             {/* CTA Buttons */}
+            {user.id ? 
+            <div className="w-full flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-6">
+              <Link href="/dashboard">
+                <Button className="group h-14 px-8 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-2xl shadow-xl hover:shadow-blue-500/20 transition-all duration-300 hover:scale-105">
+                  Start Focusing
+                </Button>
+              </Link>
+            </div> : 
             <div className="w-full flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-6">
               <Link href="/auth/signup">
                 <Button className="group h-14 px-8 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-2xl shadow-xl hover:shadow-blue-500/20 transition-all duration-300 hover:scale-105">
                   Get Started Free
                 </Button>
               </Link>
-            </div>
+            </div>}
           </motion.div>
 
 
