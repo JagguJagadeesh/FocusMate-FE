@@ -28,7 +28,7 @@ import {
   List,
   PenTool,
 } from "lucide-react"
-import { Component } from "@/components/loding"
+import { Component } from "@/components/Loaders/loding"
 
 
 type Note = {

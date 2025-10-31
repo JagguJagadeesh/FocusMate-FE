@@ -73,7 +73,7 @@ const EmblaCarousel: React.FC<PropType> = ({ slides }) => {
             src={images[selectedIndex]}
             alt={imageLabels[selectedIndex]}
             fill
-            className="object-fit"
+            className="object-fill"
             priority={selectedIndex === 0}
           />
           {/* Light overlay */}

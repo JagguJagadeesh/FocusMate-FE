@@ -1,4 +1,4 @@
-'use client'
+"use client"
 
 import * as React from "react"
 import {
@@ -7,8 +7,9 @@ import {
   GraduationCap,
   Telescope
 } from "lucide-react"
+
 import { NavMain } from "@/components/nav-main"
-import { NavUser } from "@/components/nav-user" 
+import { NavUser } from "@/components/nav-user"
 import {
   Sidebar,
   SidebarContent,
@@ -18,13 +19,12 @@ import {
   useSidebar
 } from "@/components/ui/sidebar"
 import Link from "next/link"
-import { motion } from "framer-motion"
 import useUserStore from "@/stores/useUserStore"
 import ProductLogo from "./ProductLogo"
-import SidebarTimerPomodoro from "./Pomodoro"
+import SidebarTimerPomodoro from "./myuicomponents/Pomodoro"
 
-// Navigation configuration
-const navigationConfig = {
+// Configuration data
+const navigationData = {
   navMain: [
     {
       title: "My Learning",
@@ -75,97 +75,55 @@ const navigationConfig = {
           url: "/dashboard/events",
         }
       ],
-    },
+    }
   ],
 }
 
 // Logo Component
-const SidebarLogo = React.memo(({ collapsed }: { collapsed: boolean }) => {
+const SidebarLogo = React.memo(({ isCollapsed }: { isCollapsed: boolean }) => {
   return (
-    <Link 
-      href="/dashboard" 
-      className="flex items-center justify-center group"
-    >
-      <motion.div
-        animate={{ 
-          scale: collapsed ? 0.8 : 1,
-          opacity: [0.8, 1, 0.8]
-        }}
-        transition={{ 
-          scale: { duration: 0.3, ease: "easeInOut" },
-          opacity: { duration: 2, repeat: Infinity }
-        }}
-        className="relative overflow-hidden rounded-lg "
-      >
-        {collapsed ? (
-          <div className="flex items-center">
-            <GraduationCap width={30} height={40}/>
-          </div>
-        ) : (
-          <ProductLogo/>
-        )}
-        
-        {/* Hover effect overlay */}
-        <div className="absolute inset-0  opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
-      </motion.div>
+    <Link href="/dashboard" className="flex items-center justify-center w-full">
+      {isCollapsed ? (
+        <div className="flex items-center justify-center mt-1.5 rounded-lg font-bold">
+          <GraduationCap width={24} height={24} />
+        </div>
+      ) : (
+        <div className="flex">
+          <ProductLogo />
+        </div>
+      )}
     </Link>
   )
 })
 
 SidebarLogo.displayName = "SidebarLogo"
 
-// Main Sidebar Component
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const userData = useUserStore(state => state.user)
   const { state } = useSidebar()
   const isCollapsed = state === "collapsed"
 
   return (
-    <Sidebar 
-      collapsible="icon" 
-      className="border-r border-zinc-200/50 dark:border-zinc-700/50 bg-white/80 dark:bg-black backdrop-blur-xl"
-      {...props}
-    >
-      {/* Header Section */}
-      <SidebarHeader className="border-b border-zinc-200/30 dark:border-zinc-700/30 bg-gradient-to-r from-purple-50/30 to-blue-50/30 dark:from-purple-900/10 dark:to-blue-900/10">
-        <SidebarLogo collapsed={isCollapsed} />
+    <Sidebar collapsible="icon" {...props}>
+      {/* Header */}
+      <SidebarHeader>
+        <SidebarLogo isCollapsed={isCollapsed} />
       </SidebarHeader>
 
       {/* Main Content */}
-      <SidebarContent className="bg-gradient-to-b from-transparent via-zinc-50/20 to-zinc-100/20 dark:from-transparent dark:via-zinc-800/20 dark:to-zinc-900/20">
-        <div className="flex flex-col gap-2">
-          {/* Main Navigation */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <NavMain items={navigationConfig.navMain} />
-          </motion.div>
-          
-          {/* Responsive Pomodoro Timer */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-          >
-            <SidebarTimerPomodoro isCollapsed={isCollapsed} />
-          </motion.div>
+      <SidebarContent className="space-y-4">
+        <NavMain items={navigationData.navMain} />
+        <div className="px-2 py-2">
+          <SidebarTimerPomodoro isCollapsed={isCollapsed} />
         </div>
       </SidebarContent>
 
-      {/* Footer Section */}
-      <SidebarFooter className="border-t border-zinc-200/30 dark:border-zinc-700/30 bg-gradient-to-r from-zinc-50/50 to-zinc-100/50 dark:from-zinc-800/50 dark:to-zinc-900/50 backdrop-blur-sm">
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          <NavUser user={userData} />
-        </motion.div>
+      {/* Footer */}
+      <SidebarFooter>
+        <NavUser user={userData} />
       </SidebarFooter>
 
-      {/* Sidebar Rail */}
+      {/* Rail */}
       <SidebarRail />
     </Sidebar>
   )

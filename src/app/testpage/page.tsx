@@ -1,5 +1,5 @@
 import React from 'react'
-import {Component} from '@/components/loding'
+import {Component} from '@/components/Loaders/loding'
 
 function page() {
   return (
