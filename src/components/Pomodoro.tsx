@@ -1,21 +1,33 @@
 "use client";
 
 import { Coffee, Pause, Play, RotateCcw, Timer } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
 
 interface SidebarTimerPomodoroProps {
   isCollapsed: boolean;
 }
 
+type TimerMode = 'work' | 'short' | 'long';
+
+interface ModeConfig {
+  label: string;
+  icon: typeof Timer;
+  duration: number;
+  color: 'purple' | 'green' | 'blue';
+  description: string;
+}
+
 export default function SidebarTimerPomodoro({ isCollapsed }: SidebarTimerPomodoroProps) {
-  const [mode, setMode] = useState<'work' | 'short' | 'long'>('work');
+  const [mode, setMode] = useState<TimerMode>('work');
   const [sessionsCompleted, setSessionsCompleted] = useState(0);
   const [secondsLeft, setSecondsLeft] = useState(25 * 60);
   const [isRunning, setIsRunning] = useState(false);
   const audioContextRef = useRef<AudioContext | null>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const modeConfig = {
+  const modeConfig: Record<TimerMode, ModeConfig> = {
     work: {
       label: 'Focus',
       icon: Timer,
@@ -24,11 +36,18 @@ export default function SidebarTimerPomodoro({ isCollapsed }: SidebarTimerPomodo
       description: '25min work session'
     },
     short: {
-      label: 'Break',
+      label: 'Short Break',
+      icon: Coffee,
+      duration: 5 * 60,
+      color: 'green',
+      description: '5min break'
+    },
+    long: {
+      label: 'Long Break',
       icon: Coffee,
       duration: 15 * 60,
-      color: 'green',
-      description: '15min short break'
+      color: 'blue',
+      description: '15min break'
     }
   };
 
@@ -41,7 +60,7 @@ export default function SidebarTimerPomodoro({ isCollapsed }: SidebarTimerPomodo
       border: 'border-blue-200 dark:border-blue-800',
       icon: 'bg-blue-500',
       text: 'text-blue-600 dark:text-blue-400',
-      button: 'bg-blue-500 hover:bg-blue-600',
+      button: 'bg-blue-500 hover:bg-blue-600 active:bg-blue-700',
       ring: 'ring-blue-500/30'
     },
     green: {
@@ -49,7 +68,7 @@ export default function SidebarTimerPomodoro({ isCollapsed }: SidebarTimerPomodo
       border: 'border-green-200 dark:border-green-800',
       icon: 'bg-green-500',
       text: 'text-green-600 dark:text-green-400',
-      button: 'bg-green-500 hover:bg-green-600',
+      button: 'bg-green-500 hover:bg-green-600 active:bg-green-700',
       ring: 'ring-green-500/30'
     },
     purple: {
@@ -57,70 +76,145 @@ export default function SidebarTimerPomodoro({ isCollapsed }: SidebarTimerPomodo
       border: 'border-purple-200 dark:border-purple-800',
       icon: 'bg-purple-500',
       text: 'text-purple-600 dark:text-purple-400',
-      button: 'bg-purple-500 hover:bg-purple-600',
+      button: 'bg-purple-500 hover:bg-purple-600 active:bg-purple-700',
       ring: 'ring-purple-500/30'
     }
   };
 
   const colors = colorClasses[currentConfig.color];
 
-  // Initialize audio context
+  // Initialize audio context on user interaction
   useEffect(() => {
-    audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const initAudio = () => {
+      if (!audioContextRef.current) {
+        audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+      }
+    };
+
+    window.addEventListener('click', initAudio, { once: true });
+    return () => window.removeEventListener('click', initAudio);
   }, []);
 
-  // Beep sound function
-  const playBeep = () => {
-    if (!audioContextRef.current) return;
-    
-    const oscillator = audioContextRef.current.createOscillator();
-    const gainNode = audioContextRef.current.createGain();
-    
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContextRef.current.destination);
-    
-    oscillator.frequency.value = 800;
-    oscillator.type = 'sine';
-    
-    gainNode.gain.setValueAtTime(0.3, audioContextRef.current.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContextRef.current.currentTime + 0.5);
-    
-    oscillator.start(audioContextRef.current.currentTime);
-    oscillator.stop(audioContextRef.current.currentTime + 0.5);
-  };
+  // Play completion beep with error handling
+  const playBeep = useCallback(() => {
+    try {
+      if (!audioContextRef.current) return;
 
-  // Update seconds left when mode changes
-  useEffect(() => {
-    setSecondsLeft(currentConfig.duration);
-  }, [mode, currentConfig.duration]);
+      const oscillator = audioContextRef.current.createOscillator();
+      const gainNode = audioContextRef.current.createGain();
 
-  // Timer countdown logic
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-    
-    if (isRunning && secondsLeft > 0) {
-      timer = setInterval(() => {
-        setSecondsLeft(prev => prev - 1);
-      }, 1000);
-    } else if (secondsLeft === 0 && isRunning) {
-      setIsRunning(false);
-      handleComplete();
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContextRef.current.destination);
+
+      oscillator.frequency.value = 800;
+      oscillator.type = 'sine';
+
+      gainNode.gain.setValueAtTime(0.3, audioContextRef.current.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContextRef.current.currentTime + 0.5);
+
+      oscillator.start(audioContextRef.current.currentTime);
+      oscillator.stop(audioContextRef.current.currentTime + 0.5);
+    } catch (error) {
+      console.error('Audio playback failed:', error);
     }
-    
-    return () => clearInterval(timer);
-  }, [isRunning, secondsLeft]);
+  }, []);
 
-  const handleComplete = () => {
+  // Handle timer completion
+  const handleComplete = useCallback(() => {
     playBeep();
-    
+    toast.success(`${mode} time is completed!`)
+    // Show browser notification if permitted
+    if ('Notification' in window && Notification.permission === 'granted') {
+      new Notification('Pomodoro Timer', {
+        body: mode === 'work' ? 'Time for a break!' : 'Back to work!',
+        icon: '/timer-icon.png',
+        badge: '/timer-badge.png'
+      });
+    }
+
     if (mode === 'work') {
-      setSessionsCompleted(prev => prev + 1);
-      const nextMode = sessionsCompleted % 4 === 3 ? 'long' : 'short';
+      const newSessionCount = sessionsCompleted + 1;
+      setSessionsCompleted(newSessionCount);
+      // Every 4 work sessions, take a long break
+      const nextMode = newSessionCount % 4 === 0 ? 'long' : 'short';
       setMode(nextMode);
     } else {
       setMode('work');
     }
-  };
+  }, [mode, sessionsCompleted, playBeep]);
+
+  // Update seconds when mode changes
+  useEffect(() => {
+    setSecondsLeft(currentConfig.duration);
+    setIsRunning(false);
+  }, [mode, currentConfig.duration]);
+
+  // Timer countdown with cleanup
+  useEffect(() => {
+    if (isRunning && secondsLeft > 0) {
+      intervalRef.current = setInterval(() => {
+        setSecondsLeft(prev => {
+          if (prev <= 1) {
+            setIsRunning(false);
+            handleComplete();
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [isRunning, secondsLeft, handleComplete]);
+
+  // Persist state to localStorage
+  useEffect(() => {
+    const state = { mode, sessionsCompleted, secondsLeft, isRunning };
+    localStorage.setItem('pomodoroState', JSON.stringify(state));
+  }, [mode, sessionsCompleted, secondsLeft, isRunning]);
+
+  // Restore state from localStorage on mount
+  useEffect(() => {
+    const savedState = localStorage.getItem('pomodoroState');
+    if (savedState) {
+      try {
+        const { mode: savedMode, sessionsCompleted: savedSessions } = JSON.parse(savedState);
+        setMode(savedMode);
+        setSessionsCompleted(savedSessions);
+      } catch (e) {
+        console.error('Failed to restore timer state:', e);
+      }
+    }
+  }, []);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+
+      if (e.code === 'Space') {
+        e.preventDefault();
+        setIsRunning(prev => !prev);
+      } else if (e.code === 'KeyR') {
+        e.preventDefault();
+        handleReset();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, []);
+
+  // Request notification permission on mount
+  useEffect(() => {
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+  }, []);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -135,145 +229,193 @@ export default function SidebarTimerPomodoro({ isCollapsed }: SidebarTimerPomodo
     setIsRunning(false);
   };
 
-  const handleModeChange = (newMode: 'work' | 'short' | 'long') => {
+  const handleModeChange = (newMode: TimerMode) => {
     setMode(newMode);
     setIsRunning(false);
   };
 
-  // Progress calculation
   const progress = ((currentConfig.duration - secondsLeft) / currentConfig.duration) * 100;
+  const isLowTime = secondsLeft <= 60 && isRunning;
 
-  // Collapsed view - minimal icon display
+  // Collapsed view - minimal display
   if (isCollapsed) {
     return (
-      <div className="flex justify-center py-2">
-        <motion.div
-          className={`relative w-10 h-10 text-xs rounded-lg ${colors.icon} flex items-center justify-center shadow-lg ${isRunning ? `ring-2 ${colors.ring}` : ''}`}
+      <motion.div
+        className="flex justify-center py-2 px-1"
+        whileHover={{ scale: 1.05 }}
+      >
+        <motion.button
+          onClick={() => setIsRunning(!isRunning)}
+          className={`relative w-11 h-11 rounded-lg ${colors.icon} flex flex-col items-center justify-center shadow-lg transition-all ${isRunning ? `ring-2 ${colors.ring}` : ''
+            }`}
           animate={{
-            scale: isRunning ? [1, 1.1, 1] : 1,
-            opacity: secondsLeft <= 10 && isRunning ? [1, 0.5, 1] : 1
+            scale: isRunning ? [1, 1.08, 1] : 1,
+            opacity: isLowTime ? [1, 0.6, 1] : 1
           }}
           transition={{
             scale: { repeat: isRunning ? Infinity : 0, duration: 2 },
-            opacity: { repeat: secondsLeft <= 10 && isRunning ? Infinity : 0, duration: 1 }
+            opacity: { repeat: isLowTime ? Infinity : 0, duration: 1 }
           }}
-          title={`${currentConfig.label}: ${formatTime(secondsLeft)}`}
+          title={`${currentConfig.label}: ${formatTime(secondsLeft)} - Click to ${isRunning ? 'pause' : 'start'}`}
+          aria-label={`Timer: ${formatTime(secondsLeft)}`}
         >
-          {/* <Icon className="w-4 h-4 text-white" /> */}
-          {formatTime(secondsLeft)}
-          {/* Tiny progress indicator */}
-          <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-6 h-1 bg-white/20 rounded-full overflow-hidden">
-            <motion.div
-              className="h-full bg-white rounded-full"
-              style={{ width: `${progress}%` }}
-              initial={{ width: 0 }}
-              animate={{ width: `${progress}%` }}
+          <span className="text-[10px] font-bold text-white/90 leading-tight">
+            {formatTime(secondsLeft)}
+          </span>
+
+          {/* Progress ring */}
+          <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 44 44">
+            <motion.circle
+              cx="22"
+              cy="22"
+              r="18"
+              fill="none"
+              stroke="rgba(255,255,255,0.9)"
+              strokeWidth="2"
+              strokeDasharray={`${2 * Math.PI * 18}`}
+              strokeDashoffset={`${2 * Math.PI * 18 * (1 - progress / 100)}`}
+              strokeLinecap="round"
+              initial={{ strokeDashoffset: 2 * Math.PI * 18 }}
+              animate={{ strokeDashoffset: 2 * Math.PI * 18 * (1 - progress / 100) }}
               transition={{ duration: 0.5 }}
             />
-          </div>
-          {/* Session counter dot */}
+          </svg>
+
+          {/* Session badge */}
           {sessionsCompleted > 0 && (
-            <div className="absolute -top-1 -right-1 w-4 h-4 bg-orange-500 rounded-full flex items-center justify-center">
-              <span className="text-[8px] text-white font-bold">{sessionsCompleted}</span>
-            </div>
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              className="absolute -top-1 -right-1 w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center border-2 border-white dark:border-gray-800"
+            >
+              <span className="text-[9px] text-white font-bold">{sessionsCompleted}</span>
+            </motion.div>
           )}
-        </motion.div>
-      </div>
+        </motion.button>
+      </motion.div>
     );
   }
 
-  // Expanded view - full timer display
+  // Expanded view - full interface
   return (
-    <AnimatePresence>
+    <AnimatePresence mode="wait">
       <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.9 }}
-        transition={{ duration: 0.3 }}
-        className="bg-white dark:bg-gray-800 w-full p-4 rounded-xl"
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -10 }}
+        transition={{ duration: 0.2 }}
+        className="w-full px-2 py-3"
       >
-        <div className={`${colors.bg} border ${colors.border} rounded-lg p-3`}>
-          {/* Header */}
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <div className={`w-6 h-6 ${colors.icon} rounded-md flex items-center justify-center`}>
-                <Icon className="w-3 h-3 text-white" />
+        <div className={`${colors.bg} border ${colors.border} rounded-xl p-2 shadow-sm`}>
+
+          {/* Header with icon and session count */}
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2.5">
+              <motion.div
+                className={`w-8 h-8 ${colors.icon} rounded-lg flex items-center justify-center shadow-sm`}
+                animate={{ rotate: isRunning ? 360 : 0 }}
+                transition={{ duration: 2, repeat: isRunning ? Infinity : 0, ease: "linear" }}
+              >
+                <Icon className="w-4 h-4 text-white" />
+              </motion.div>
+              <div>
+                <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                  {currentConfig.label}
+                </h3>
               </div>
-              <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                {currentConfig.label}
-              </span>
-            </div>
-            <span className="text-xs text-gray-500 dark:text-gray-400">
-              #{sessionsCompleted}
-            </span>
-          </div>
-
-          {/* Timer Display */}
-          <div className="text-center mb-3">
-            <motion.div 
-              className={`inline-flex text-2xl font-bold font-mono ${colors.text}`}
-              animate={{ 
-                color: secondsLeft <= 10 && isRunning ? '#ef4444' : undefined,
-                scale: secondsLeft <= 10 && isRunning ? [1, 1.05, 1] : 1 
-              }}
-              transition={{ repeat: secondsLeft <= 10 && isRunning ? Infinity : 0, duration: 1 }}
-            >
-              {formatTime(secondsLeft)}
-            </motion.div>
-            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              {currentConfig.description}
             </div>
           </div>
 
-          {/* Progress Bar */}
-          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 mb-3">
-            <motion.div 
-              className={`h-1.5 rounded-full ${colors.icon} transition-all duration-1000 ease-out`}
-              style={{ width: `${progress}%` }}
-            />
+          {/* Progress bar */}
+          {/* Radial Glow Progress */}
+          <div className="mb-4 relative flex justify-center">
+            <div className="relative w-20 h-20">
+              {/* Glow effect */}
+              <motion.div
+                className={`absolute inset-0 ${colors.icon} rounded-full filter blur-lg opacity-50`}
+                animate={{ scale: isRunning ? [1, 1.2, 1] : 1 }}
+                transition={{ repeat: isRunning ? Infinity : 0, duration: 2 }}
+              />
+
+              {/* Progress circle */}
+              <svg className="absolute inset-0 w-full h-full -rotate-90">
+                <circle
+                  cx="40"
+                  cy="40"
+                  r="35"
+                  fill="none"
+                  stroke="rgb(229 231 235)"
+                  strokeWidth="6"
+                  className="dark:stroke-gray-700"
+                />
+                <motion.circle
+                  cx="40"
+                  cy="40"
+                  r="35"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="6"
+                  strokeDasharray={`${2 * Math.PI * 35}`}
+                  strokeDashoffset={`${2 * Math.PI * 35 * (1 - progress / 100)}`}
+                  strokeLinecap="round"
+                  animate={{ strokeDashoffset: 2 * Math.PI * 35 * (1 - progress / 100) }}
+                  transition={{ duration: 0.5 }}
+                  className={colors.text}
+                />
+              </svg>
+
+              {/* Center content */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className={`text-lg font-bold font-mono dark:text-white `}>
+                  {Math.round(progress)}%
+                </span>
+              </div>
+            </div>
           </div>
+
 
           {/* Controls */}
-          <div className="flex items-center gap-2 mb-3">
-            {!isRunning ? (
-              <button
-                onClick={handleStart}
-                className={`flex-1 flex items-center justify-center gap-1 px-3 py-2 ${colors.button} text-white rounded-lg transition-colors text-xs font-medium`}
-              >
-                <Play className="w-3 h-3" />
-                Start
-              </button>
-            ) : (
-              <button
-                onClick={handlePause}
-                className={`flex-1 flex items-center justify-center gap-1 px-3 py-2 ${colors.button} text-white rounded-lg transition-colors text-xs font-medium`}
-              >
-                <Pause className="w-3 h-3" />
-                Pause
-              </button>
-            )}
-            <button
-              onClick={handleReset}
-              className="p-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+          <div className="flex items-center gap-2 mb-2">
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={isRunning ? handlePause : handleStart}
+              className={`flex-1 flex items-center justify-center gap-2 cursor-pointer px-4 py-2.5 ${colors.button} text-white rounded-lg transition-colors text-xs font-medium shadow-sm`}
+              aria-label={isRunning ? 'Pause timer' : 'Start timer'}
             >
-              <RotateCcw className="w-3 h-3" />
-            </button>
+              {isRunning ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+              {isRunning ? 'Pause' : 'Start'}
+            </motion.button>
+
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleReset}
+              className="p-2.5 cursor-pointer border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors shadow-sm"
+              title="Reset timer (R)"
+              aria-label="Reset timer"
+            >
+              <RotateCcw className="w-4 h-3" />
+            </motion.button>
           </div>
 
-          {/* Mode Switch */}
-          <div className="flex gap-2 bg-gray-100 dark:bg-gray-700 rounded-lg p-0.5">
-            {(['work', 'short'] as const).map((m) => (
-              <button
+          {/* Mode switcher */}
+          <div className="grid grid-cols-3 gap-1.5 bg-gray-100 dark:bg-gray-700/50 rounded-lg p-1">
+            {(['work', 'short', 'long'] as const).map((m) => (
+              <motion.button
                 key={m}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => handleModeChange(m)}
-                className={`flex-1 px-2 py-1 cursor-pointer text-xs font-medium rounded-md transition-colors ${
-                  mode === m
-                    ? `${colorClasses[modeConfig[m].color].button} text-white`
-                    : 'hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300'
-                }`}
+                className={`px-2 py-1.5 text-xs font-medium rounded-md transition-all ${mode === m
+                  ? `${colorClasses[modeConfig[m].color].button} text-white shadow-sm`
+                  : 'hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300'
+                  }`}
+                aria-label={`Switch to ${modeConfig[m].label}`}
+                aria-pressed={mode === m}
               >
                 {modeConfig[m].label}
-              </button>
+              </motion.button>
             ))}
           </div>
         </div>
