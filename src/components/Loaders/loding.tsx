@@ -43,7 +43,7 @@ export const Component = ({ text = "Loading" }: ParticleLoaderProps) => {
 
         {/* Outer rotating ring */}
         <motion.div
-          className="absolute inset-0 rounded-full border-4 border-transparent border-t-black"
+          className="absolute inset-0 rounded-full border-4 border-transparent dark:border-t-white border-t-black"
           animate={{ rotate: 360 }}
           transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
         />

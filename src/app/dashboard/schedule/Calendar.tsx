@@ -112,7 +112,7 @@ export default function Scheduler({ view }: { view: string }) {
   const calendarRef = useRef<FullCalendar>(null);
   const { user, hasHydrated } = useUserStore();
 
-  
+
 
   useEffect(() => {
     if (!hasHydrated || !user.id) return;
@@ -262,17 +262,17 @@ export default function Scheduler({ view }: { view: string }) {
 
   const safeEvents = events || [];
 
-const stats = {
-  total: safeEvents.length,
-  work: safeEvents.filter(e => e.category === 'work').length,
-  personal: safeEvents.filter(e => e.category === 'personal').length,
-  urgent: safeEvents.filter(e => e.category === 'urgent').length,
-  today: safeEvents.filter(e => {
-    const today = new Date().toDateString();
-    const taskDate = new Date(e.start).toDateString();
-    return today === taskDate;
-  }).length
-};
+  const stats = {
+    total: safeEvents.length,
+    work: safeEvents.filter(e => e.category === 'work').length,
+    personal: safeEvents.filter(e => e.category === 'personal').length,
+    urgent: safeEvents.filter(e => e.category === 'urgent').length,
+    today: safeEvents.filter(e => {
+      const today = new Date().toDateString();
+      const taskDate = new Date(e.start).toDateString();
+      return today === taskDate;
+    }).length
+  };
 
 
   if (!hasHydrated) {
@@ -289,24 +289,24 @@ const stats = {
   return (
     <div className="w-full space-y-6">
       {view === 'dayGridMonth' && (
-  <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-    {[
-      { label: 'Total Tasks', value: stats.total, icon: <CalendarIcon className="w-4 h-4" /> },
-      { label: 'Work', value: stats.work, icon: <Briefcase className="w-4 h-4" /> },
-      { label: 'Personal', value: stats.personal, icon: <User className="w-4 h-4" /> },
-      { label: 'Urgent', value: stats.urgent, icon: <AlertTriangle className="w-4 h-4" /> },
-      { label: 'Today', value: stats.today, icon: <Clock className="w-4 h-4" /> }
-    ].map((stat, i) => (
-      <div key={i} className="bg-white dark:bg-gray-800 rounded-lg p-4 border">
-        <div className="flex items-center gap-2 text-gray-500 mb-2">
-          {stat.icon}
-          <span className="text-xs">{stat.label}</span>
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+          {[
+            { label: 'Total Tasks', value: stats.total, icon: <CalendarIcon className="w-4 h-4" /> },
+            { label: 'Work', value: stats.work, icon: <Briefcase className="w-4 h-4" /> },
+            { label: 'Personal', value: stats.personal, icon: <User className="w-4 h-4" /> },
+            { label: 'Urgent', value: stats.urgent, icon: <AlertTriangle className="w-4 h-4" /> },
+            { label: 'Today', value: stats.today, icon: <Clock className="w-4 h-4" /> }
+          ].map((stat, i) => (
+            <div key={i} className="bg-white dark:bg-gray-800 rounded-lg p-4 border">
+              <div className="flex items-center gap-2 text-gray-500 mb-2">
+                {stat.icon}
+                <span className="text-xs">{stat.label}</span>
+              </div>
+              <p className="text-2xl font-bold">{stat.value}</p>
+            </div>
+          ))}
         </div>
-        <p className="text-2xl font-bold">{stat.value}</p>
-      </div>
-    ))}
-  </div>
-)}
+      )}
 
 
       {/* Calendar Container */}
