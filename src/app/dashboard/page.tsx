@@ -5,7 +5,8 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 import Link from "next/link"
-import Calendar from './schedule/Calendar'
+import SchedulePreview from "@/components/myuicomponents/SchedulePreview"
+// import TaskSummaryCards from "@/components/myuicomponents/TaskSummaryCards"
 import UserChart from './progress/UserChart'
 import { motion } from 'framer-motion'
 import {
@@ -18,7 +19,6 @@ import {
 } from 'lucide-react'
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbPage } from "@/components/ui/breadcrumb"
 import { Separator } from "@radix-ui/react-separator"
-
 
 const shortcuts = [
   {
@@ -51,7 +51,6 @@ const shortcuts = [
 ]
 
 export default function DashboardPage() {
-
   return (
     <>
       <SidebarInset>
@@ -79,7 +78,6 @@ export default function DashboardPage() {
           </div>
         </header>
 
-
         {/* Main Content */}
         <div className="p-6 space-y-8 bg-gray-50/30 dark:bg-gray-950/30 min-h-screen">
 
@@ -102,7 +100,6 @@ export default function DashboardPage() {
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
             <div className="absolute bottom-0 right-8 w-20 h-20 bg-white/5 rounded-full translate-y-10"></div>
           </motion.div>
-
 
           {/* Quick Actions */}
           <motion.section
@@ -149,42 +146,21 @@ export default function DashboardPage() {
             </div>
           </motion.section>
 
-          {/* Content Grid */}
-          <div className="flex">
-            {/* Calendar Section */}
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="rounded-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden"
-            >
-              <div className="p-6 border-b border-gray-200 dark:border-gray-800">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
-                      <CalendarIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white">Today&apos;s Schedule</h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">3 sessions planned</p>
-                    </div>
-                  </div>
-                  <Link href="/tabs/schedule" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium text-sm transition-colors">
-                    View All →
-                  </Link>
-                </div>
-              </div>
-              <div className="p-6">
-                <Calendar view={'timeGridDay'} />
-              </div>
-            </motion.div>
-
-          </div>
-          {/* Chart Section */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
+          
+          {/* Schedule Preview - Full Width */}
+          <motion.section
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            <SchedulePreview />
+          </motion.section>
+
+          {/* Chart Section - Full Width */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
             className="rounded-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden"
           >
             <div className="p-6 border-b border-gray-200 dark:border-gray-800">

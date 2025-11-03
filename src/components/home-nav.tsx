@@ -3,11 +3,11 @@
 import { Button } from './ui/button'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
-import { LayoutDashboard, Menu, User, X, Home, HelpCircle, Mail, ChevronDown } from 'lucide-react'
+import { LayoutDashboard, Menu, User, X, Home, HelpCircle, Mail, ChevronDown, Moon, Sun } from 'lucide-react'
 import ProductLogo from './ProductLogo'
 import useUserStore from '@/stores/useUserStore'
 import { motion, AnimatePresence } from 'framer-motion'
-
+import { useTheme } from 'next-themes';
 
 function HomeNav() {
   const [isOpen, setIsOpen] = useState(false)
@@ -15,6 +15,7 @@ function HomeNav() {
   const [scrolled, setScrolled] = useState(false)
   const [isHydrated, setIsHydrated] = useState(false)
   const { user } = useUserStore()
+  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     setIsHydrated(true)
@@ -48,10 +49,13 @@ function HomeNav() {
     },
   }
 
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark')
+  }
 
   return (
     <>
-      <nav className={`fixed top-2 left-2 right-2 z-50 transition-all duration-300`}>
+      <nav className={`fixed top-3 left-2 right-2 z-50 transition-all duration-300`}>
         <div className='max-w-7xl mx-auto'>
           <div className='bg-white/90 dark:bg-gray-950/90 backdrop-blur-xl border border-gray-200 dark:border-gray-800 rounded-2xl shadow-lg px-4 sm:px-6'>
             <div className='flex items-center justify-between h-16'>
@@ -73,20 +77,35 @@ function HomeNav() {
               </div>
 
               <div className='hidden md:flex items-center gap-3'>
+                {/* Dark Mode Toggle Button */}
+                {isHydrated && (
+                  <motion.button
+                    onClick={toggleTheme}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className='p-2.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-all duration-300'
+                    aria-label="Toggle theme"
+                  >
+                    {theme === 'dark' ? (
+                      <Sun className='w-5 h-5 text-yellow-500' />
+                    ) : (
+                      <Moon className='w-5 h-5 text-gray-700' />
+                    )}
+                  </motion.button>
+                )}
+
                 {!isHydrated ? (
-                  // Loading skeleton
                   <div className='flex items-center gap-3'>
                     <div className='h-11 w-20 bg-gray-200 dark:bg-gray-700 rounded-xl animate-pulse' />
                     <div className='h-11 w-28 bg-violet-200 dark:bg-violet-900 rounded-xl animate-pulse' />
                   </div>
                 ) : user.id ? (
-                  // Logged in
                   <div className='relative'>
                     <motion.button
                       onClick={() => setDropdownOpen(!dropdownOpen)}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className='flex items-center gap-2 px-4 py-2.5 bg-violet-600 hover:bg-violet-700 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all'
+                      className='flex items-center cursor-pointer gap-2 px-4 py-2.5 bg-violet-600 hover:bg-violet-700 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all'
                     >
                       <div className='w-5 h-5 cursor-pointer bg-white/20 rounded-lg flex items-center justify-center'>
                         <User className='w-4 h-4' />
@@ -127,12 +146,12 @@ function HomeNav() {
                               <span className='text-sm font-medium'>Dashboard</span>
                             </div>
                           </Link>
+
                         </motion.div>
                       )}
                     </AnimatePresence>
                   </div>
                 ) : (
-                  // Not logged in
                   <>
                     <Link href='/auth/signin'>
                       <Button variant='outline' className='rounded-xl cursor-pointer'>
@@ -192,14 +211,32 @@ function HomeNav() {
                   className='w-full flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-800'
                 >
                   <span className='text-lg font-bold text-gray-900 dark:text-white'>Menu</span>
-                  <motion.button
-                    onClick={closeMobileMenu}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                    className='p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors'
-                  >
-                    <X className='w-5 h-5 text-gray-600 dark:text-gray-400' />
-                  </motion.button>
+                  <div className='flex items-center gap-2'>
+                    {/* Mobile Dark Mode Toggle */}
+                    {isHydrated && (
+                      <motion.button
+                        onClick={toggleTheme}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className='p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all'
+                        aria-label="Toggle theme"
+                      >
+                        {theme === 'dark' ? (
+                          <Sun className='w-5 h-5 text-yellow-500' />
+                        ) : (
+                          <Moon className='w-5 h-5 text-gray-700' />
+                        )}
+                      </motion.button>
+                    )}
+                    <motion.button
+                      onClick={closeMobileMenu}
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                      className='p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors'
+                    >
+                      <X className='w-5 h-5 text-gray-600 dark:text-gray-400' />
+                    </motion.button>
+                  </div>
                 </motion.div>
 
                 {/* User Profile Section */}
@@ -237,7 +274,7 @@ function HomeNav() {
                     {navItems.map((item) => {
                       const Icon = item.icon
                       return (
-                        <motion.div key={item.href} >
+                        <motion.div key={item.href}>
                           <Link
                             href={item.href}
                             onClick={closeMobileMenu}
@@ -260,7 +297,6 @@ function HomeNav() {
                   className='border-t border-gray-200 dark:border-gray-800 p-4 space-y-3'
                 >
                   {!isHydrated ? (
-                    // Loading skeleton
                     <div className='space-y-2'>
                       <div className='h-11 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse' />
                       <div className='h-11 bg-violet-200 dark:bg-violet-900 rounded-lg animate-pulse' />
@@ -285,7 +321,7 @@ function HomeNav() {
                       animate='visible'
                       className='space-y-2'
                     >
-                      <motion.div >
+                      <motion.div>
                         <Link href='/auth/signin' onClick={closeMobileMenu} className='block'>
                           <Button
                             variant='outline'
@@ -295,7 +331,7 @@ function HomeNav() {
                           </Button>
                         </Link>
                       </motion.div>
-                      <motion.div >
+                      <motion.div>
                         <Link href='/auth/signup' onClick={closeMobileMenu} className='block'>
                           <Button className='w-full h-11 bg-violet-600 hover:bg-violet-700 text-white rounded-lg font-medium shadow-lg'>
                             Get Started Free
