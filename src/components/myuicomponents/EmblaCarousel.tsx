@@ -10,27 +10,8 @@ import playlistpic from '@/images/playlistpic.png'
 import focuspic from '@/images/focuspic.png'
 import notespic from '@/images/notespic.png'
 
-
-
-const images = [
-  dashbordpic,
-  focuspic,
-  notespic,
-  playlistpic,
-  schdulepic,
-  chatbotpic,
-  analyticpic
-]
-
-const imageLabels = [
-  'Dashboard',
-  'Focus Timer',
-  'Visual Notes',
-  'Video Playlists',
-  'Day Scheduler',
-  'AI Assistant',
-]
-
+const images = [dashbordpic, focuspic, notespic, playlistpic, schdulepic, chatbotpic, analyticpic]
+const imageLabels = ['Dashboard', 'Focus Timer', 'Visual Notes', 'Video Playlists', 'Day Scheduler', 'AI Assistant', 'Analytics']
 const imageDescriptions = [
   'Your central hub for all study activities',
   'Stay focused with Pomodoro technique',
@@ -38,82 +19,94 @@ const imageDescriptions = [
   'Organize educational videos by subject',
   'Smart scheduling that adapts to you',
   'AI-powered help whenever you need it',
+  'Track your progress and achievements'
 ]
 
-type PropType = {
-  slides: number[]
-}
+type PropType = { slides: number[] }
 
 const EmblaCarousel: React.FC<PropType> = ({ slides }) => {
   const [selectedIndex, setSelectedIndex] = React.useState(0)
 
-  const goToNext = () => {
+  const handleNext = () => {
     setSelectedIndex((prev) => (prev + 1) % slides.length)
   }
 
-
   React.useEffect(() => {
-    const timer = setInterval(goToNext, 6000)
+    const timer = setInterval(handleNext, 5000)
     return () => clearInterval(timer)
   }, [])
 
   return (
-    <div className="relative w-full h-[400px] rounded-3xl overflow-hidden group">
-      {/* Image */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={selectedIndex}
-          className="absolute inset-0"
-          initial={{ opacity: 0, scale: 1.05 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
-          transition={{ duration: 0.6 }}
-        >
-          <Image
-            src={images[selectedIndex]}
-            alt={imageLabels[selectedIndex]}
-            fill
-            className="object-fill"
-            priority={selectedIndex === 0}
-          />
-          {/* Light overlay */}
-          {/* <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-black/5 to-transparent" /> */}
-        </motion.div>
-      </AnimatePresence>
+    <div className="relative w-full h-auto min-h-80 sm:min-h-96 md:min-h-[480px] rounded-2xl sm:rounded-3xl flex items-center justify-center overflow-hidden p-4 sm:p-6 md:p-8">
+      <div className="relative w-56 h-64 sm:w-72 sm:h-80 md:w-96 md:h-96 lg:w-[450px] lg:h-[400px]">
+        <AnimatePresence mode="popLayout">
+          {slides.map((_, index) => {
+            const offset = index - selectedIndex
+            const isVisible = Math.abs(offset) <= 2
 
-      {/* Bottom Content */}
-      <div className="absolute bottom-0 left-0 right-0 p-6 ">
-        <motion.div
-          key={`content-${selectedIndex}`}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-        >
-          <h3 className="text-3xl sm:text-4xl font-bold text-black mb-1 max-w-lg">
-            {imageLabels[selectedIndex]}
-          </h3>
+            if (!isVisible) return null
 
-          <p className="text-black/90 text-base sm:text-lg max-w-lg">
-            {imageDescriptions[selectedIndex]}
-          </p>
-        </motion.div>
+            return (
+              <motion.div
+                key={index}
+                className="absolute w-full cursor-pointer"
+                initial={{ scale: 0.8, rotate: -10, y: 100, opacity: 0 }}
+                animate={{
+                  x: offset * 40,
+                  y: Math.abs(offset) * 20,
+                  rotate: offset * 5,
+                  scale: offset === 0 ? 1 : 0.85,
+                  zIndex: 10 - Math.abs(offset),
+                  opacity: offset === 0 ? 1 : 0.6,
+                }}
+                exit={{ scale: 0.8, rotate: 10, y: -100, opacity: 0 }}
+                transition={{ type: "spring", stiffness: 200, damping: 30 }}
+                onClick={() => offset !== 0 && setSelectedIndex(index)}
+              >
+                {/* Polaroid frame */}
+                <div className="bg-white dark:bg-gray-900 p-3 sm:p-4 shadow-lg sm:shadow-xl md:shadow-2xl rounded-lg">
+                  <div className="relative w-full aspect-square sm:aspect-video bg-gray-100 dark:bg-gray-800 mb-2 sm:mb-4">
+                    <Image
+                      src={images[index]}
+                      alt={imageLabels[index]}
+                      fill
+                      className="object-fill"
+                      priority={selectedIndex === 0}
+                    />
+                  </div>
+                  <div className="text-center px-1">
+                    <h3 className="text-sm sm:text-lg md:text-xl font-bold text-gray-900 dark:text-white mb-0.5 sm:mb-1">
+                      {imageLabels[index]}
+                    </h3>
+                    {offset === 0 && (
+                      <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="text-xs sm:text-sm text-gray-600 dark:text-gray-400"
+                      >
+                        {imageDescriptions[index]}
+                      </motion.p>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            )
+          })}
+        </AnimatePresence>
       </div>
 
-      {/* Dots - Bottom Right */}
-      <div className="absolute bottom-8 right-8 flex gap-2">
+      {/* Navigation */}
+      <div className="absolute bottom-4 sm:bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 flex gap-1.5 sm:gap-2">
         {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => setSelectedIndex(index)}
-            className={`h-2 rounded-full transition-all ${index === selectedIndex
-              ? 'bg-black w-8'
-              : 'bg-black/30 w-2 hover:bg-white/10'
+            className={`rounded-full transition-all ${index === selectedIndex ? 'w-2.5 h-2.5 sm:w-3 sm:h-3 bg-gray-800 dark:bg-white scale-125' : 'w-2 h-2 sm:w-2.5 sm:h-2.5 bg-gray-400 dark:bg-gray-600'
               }`}
           />
         ))}
       </div>
     </div>
-
   )
 }
 

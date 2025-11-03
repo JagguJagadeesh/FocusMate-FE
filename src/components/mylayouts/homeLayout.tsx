@@ -73,64 +73,58 @@ function HomeLayout() {
     <div className="min-h-screen bg-white dark:bg-gray-950 overflow-x-hidden">
 
       {/* Hero Section */}
-      <section id='home' className="relative mt-8 pt-28 pb-20 px-6 md:px-20 max-w-full mx-auto overflow-hidden">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+      <section id='home' className="relative mt-4 sm:mt-8 pt-20 sm:pt-28 pb-16 sm:pb-20 px-4 sm:px-6 md:px-12 lg:px-20 max-w-full mx-auto overflow-hidden">
+        <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
 
           {/* Left Column - Content */}
           <motion.div
-            className="space-y-10"
+            className="space-y-6 sm:space-y-8 lg:space-y-10"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <div className="flex flex-col text-center lg:text-left space-y-6">
-              <h1 className="text-5xl font-semibold leading-[1.15] tracking-tight max-w-3xl mx-auto lg:mx-0">
+            <div className="flex flex-col text-center lg:text-left space-y-4 sm:space-y-6">
+              <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold leading-tight tracking-tight max-w-3xl mx-auto lg:mx-0">
                 Your Personal Study Planner,{" "}
                 <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
                   Achieve More
                 </span>
               </h1>
 
-              <p className="text-lg tracking-wide  text-gray-600 dark:text-gray-400 font-light leading-relaxed max-w-2xl mx-auto lg:mx-0">
+              <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 leading-relaxed max-w-2xl mx-auto lg:mx-0">
                 Organize tasks, track progress, and beat procrastination with smart reminders. Study smarter, stay consistent, and achieve your goals faster.
               </p>
             </div>
 
             {/* CTA Buttons */}
-            {user.id ? 
-            <div className="w-full flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-6">
-              <Link href="/dashboard">
-                <Button className="group h-14 px-8 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-2xl shadow-xl hover:shadow-blue-500/20 transition-all duration-300 hover:scale-105">
-                  Start Focusing
-                </Button>
-              </Link>
-            </div> : 
-            <div className="w-full flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-6">
-              <Link href="/auth/signup">
-                <Button className="group h-14 px-8 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-2xl shadow-xl hover:shadow-blue-500/20 transition-all duration-300 hover:scale-105">
-                  Get Started Free
-                </Button>
-              </Link>
-            </div>}
+            {user.id ? (
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start pt-4 sm:pt-6">
+                <Link href="/dashboard">
+                  <Button className="w-full sm:w-auto h-12 sm:h-14 px-6 sm:px-8 bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-700 hover:to-violet-700 text-white font-semibold rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95">
+                    Start Focusing
+                  </Button>
+                </Link>
+              </div>
+            ) : (
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start pt-4 sm:pt-6">
+                <Link href="/auth/signup" className="w-full sm:w-auto">
+                  <Button className="w-full sm:w-auto h-12 sm:h-14 px-6 sm:px-8 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95">
+                    Get Started Free
+                  </Button>
+                </Link>
+              </div>
+            )}
           </motion.div>
-
 
           {/* Right Column - Visual */}
           <motion.div
-            className="relative"
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7, delay: 0.4 }}
+            className="relative mt-8 lg:mt-0 lg:pl-4 xl:pl-8"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.7, delay: 0.5 }}
           >
             <div className="relative">
-              {/* Layered Glow Effects */}
-              <div className="absolute -inset-6 bg-gradient-to-r from-blue-500/25 to-purple-500/25 rounded-3xl blur-3xl"></div>
-              <div className="absolute -inset-6 bg-gradient-to-r from-purple-500/15 to-pink-500/15 rounded-3xl blur-2xl"></div>
-
-              {/* Main Visual Container */}
-              <div className="relative bg-white dark:bg-gray-900  rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-800 backdrop-blur-lg">
-                <EmblaCarousel slides={SLIDES} />
-              </div>
+              <EmblaCarousel slides={SLIDES} />
             </div>
           </motion.div>
         </div>
@@ -277,7 +271,6 @@ function HomeLayout() {
         </div>
       </section>
 
-
       {/* Social Proof */}
       <section className="py-24 px-6">
         <div className="max-w-7xl mx-auto text-center">
@@ -385,7 +378,6 @@ function HomeLayout() {
           </div>
         </div>
       </section>
-
 
       {/* Footer */}
       <FooterLayout />
