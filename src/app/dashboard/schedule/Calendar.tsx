@@ -27,6 +27,7 @@ import { Trash2, CheckCircle2 } from 'lucide-react';
 import { getAllTasks } from '@/services/userService';
 import SchedulerSidebar from '@/components/myuicomponents/SchedulerSidebar';
 import SchedulerCalendar from '@/components/myuicomponents/SchedulerCalendar';
+import { Component } from '@/components/Loaders/loding';
 
 type Task = {
   id: string;
@@ -181,7 +182,7 @@ export default function Scheduler({ view }: { view: string }) {
   };
 
   if (!hasHydrated) {
-    return <div className="flex items-center justify-center h-96">Loading...</div>;
+    return <div className="flex items-center justify-center h-96"><Component/></div>;
   }
 
   return (

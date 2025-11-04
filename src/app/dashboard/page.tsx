@@ -6,7 +6,6 @@ import {
 } from "@/components/ui/sidebar"
 import Link from "next/link"
 import SchedulePreview from "@/components/myuicomponents/SchedulePreview"
-// import TaskSummaryCards from "@/components/myuicomponents/TaskSummaryCards"
 import UserChart from './progress/UserChart'
 import { motion } from 'framer-motion'
 import {

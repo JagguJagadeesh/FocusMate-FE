@@ -124,13 +124,13 @@ export default function SidebarTimerPomodoro({ isCollapsed }: SidebarTimerPomodo
     playBeep();
     toast.success(`${mode} time is completed!`)
     // Show browser notification if permitted
-    if ('Notification' in window && Notification.permission === 'granted') {
-      new Notification('Pomodoro Timer', {
-        body: mode === 'work' ? 'Time for a break!' : 'Back to work!',
-        icon: '/timer-icon.png',
-        badge: '/timer-badge.png'
-      });
-    }
+    // if ('Notification' in window && Notification.permission === 'granted') {
+    //   new Notification('Pomodoro Timer', {
+    //     body: mode === 'work' ? 'Time for a break!' : 'Back to work!',
+    //     icon: '/timer-icon.png',
+    //     badge: '/timer-badge.png'
+    //   });
+    // }
 
     if (mode === 'work') {
       const newSessionCount = sessionsCompleted + 1;
@@ -210,11 +210,11 @@ export default function SidebarTimerPomodoro({ isCollapsed }: SidebarTimerPomodo
   }, []);
 
   // Request notification permission on mount
-  useEffect(() => {
-    if ('Notification' in window && Notification.permission === 'default') {
-      Notification.requestPermission();
-    }
-  }, []);
+  // useEffect(() => {
+  //   if ('Notification' in window && Notification.permission === 'default') {
+  //     Notification.requestPermission();
+  //   }
+  // }, []);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
