@@ -2,11 +2,14 @@
 
 import { useEffect, useState } from 'react'
 import { SidebarInset, SidebarTrigger } from '@/components/ui/sidebar'
-import { FilePlus, Trash2, Download, Eye, Search, X , File } from 'lucide-react'
+import {  Trash2, Download, Eye, Search, X, File, Cloud, Loader2, Calendar, HardDrive } from 'lucide-react'
 import useUserStore from '@/stores/useUserStore'
 import { getFiles, uploadFile, deleteFile } from '@/services/userService'
 import { toast } from 'sonner'
-import { DialogHeader, Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Separator } from '@/components/ui/separator'
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbPage } from '@/components/ui/breadcrumb'
+import { motion, AnimatePresence } from 'framer-motion'
 
 interface PdfFile {
   id: string
@@ -21,15 +24,16 @@ export default function Page() {
   const [uploading, setUploading] = useState(false)
   const [loadingFiles, setLoadingFiles] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
-  const { user } = useUserStore()
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+  const [dragActive, setDragActive] = useState(false)
+  const { user } = useUserStore()
 
   useEffect(() => {
     if (!user?.id) return
     setLoadingFiles(true)
     getFiles({ handlerId: user.id })
       .then(data => setPdfs(data.files.files || []))
-      .catch(() => toast.error('Failed to get data'))
+      .catch(() => toast.error('Failed to load files'))
       .finally(() => setLoadingFiles(false))
   }, [user])
 
@@ -42,6 +46,11 @@ export default function Page() {
       return
     }
 
+    if (file.size > 50 * 1024 * 1024) {
+      toast.error('File size must be less than 50MB')
+      return
+    }
+
     setUploading(true)
     try {
       const formData = new FormData()
@@ -51,199 +60,321 @@ export default function Page() {
 
       const newFile = await uploadFile(formData)
       setPdfs(prev => [newFile, ...prev])
-      toast.success('Uploaded file')
-    } catch {
+      toast.success('PDF uploaded successfully! 📄')
+    } catch (error) {
+      console.error(error)
       toast.error('Upload failed!')
     } finally {
       setUploading(false)
     }
   }
 
-
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string, name: string) => {
     if (!user?.id) return
-    if (!confirm('Are you sure you want to delete this file?')) return
+    if (!confirm(`Delete "${name}"?`)) return
+
     try {
       await deleteFile({ handlerId: user.id, id })
       setPdfs(prev => prev.filter(pdf => pdf.id !== id))
-      toast.success('File deleted!')
+      toast.success('File deleted')
     } catch {
-      toast.error('Failed to delete file.')
+      toast.error('Failed to delete file')
     }
   }
 
   const handlePreview = (url: string) => {
     if (!url) {
-      toast.error('This PDF has no valid URL.')
+      toast.error('Preview not available')
       return
     }
     setPreviewUrl(url)
   }
 
-  const handleClose = () => setPreviewUrl(null)
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (e.type === 'dragenter' || e.type === 'dragover') {
+      setDragActive(true)
+    } else if (e.type === 'dragleave') {
+      setDragActive(false)
+    }
+  }
 
-  const getDownloadUrl = (url: string) => url
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragActive(false)
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFileUpload(e.dataTransfer.files)
+    }
+  }
 
   const filteredPdfs = pdfs.filter(pdf =>
     (pdf.name ?? '').toLowerCase().includes(searchQuery.toLowerCase())
   )
 
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return '0 B'
+    const k = 1024
+    const sizes = ['B', 'KB', 'MB']
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i]
+  }
+
+  const formatDate = (date: string) => {
+    const d = new Date(date)
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  }
+
+  const totalSize = pdfs.reduce((sum, pdf) => sum + pdf.size, 0)
+
   return (
     <>
       <SidebarInset>
-        <header className="sticky top-0 z-20 bg-white/80 dark:bg-gray-950/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
-          <div className="flex h-16 items-center justify-between px-4 md:px-6">
-            <div className="flex items-center gap-2 md:gap-3">
-              <SidebarTrigger />
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
-                My PDFs
-              </h2>
-            </div>
-            <div className="relative w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search PDFs..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                disabled={loadingFiles}
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2"
-                  aria-label="Clear search"
-                >
-                  <X className="w-4 h-4 text-gray-400 hover:text-gray-600" />
-                </button>
-              )}
-            </div>
+        {/* Header */}
+        <header className="sticky top-0 z-40 border-b border-slate-200/50 dark:border-slate-800/50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md">
+          <div className="flex h-14 items-center px-4 md:px-6 gap-2">
+            <SidebarTrigger />
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem className="hidden md:block">
+                  <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator className="hidden md:block" />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>PDFs</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
           </div>
         </header>
-        <main className="p-4 md:p-6 max-w-7xl mx-auto">
-          {loadingFiles ? (
-            <div className="flex items-center justify-center py-12">
-              <span className="text-blue-600 text-lg font-medium">Loading files...</span>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {/* Upload Card */}
-              <div className="flex flex-col items-center justify-center border-2 border-dashed border-blue-400 rounded-lg bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/30 p-6 cursor-pointer transition group min-h-[240px]"
-                onClick={() => document.getElementById('pdf-upload')?.click()}
-                role="button"
-                tabIndex={0}
-              >
-                <input
-                  id="pdf-upload"
-                  type="file"
-                  accept="application/pdf"
-                  className="hidden"
-                  onChange={e => handleFileUpload(e.target.files)}
-                  disabled={uploading}
-                />
-                <FilePlus className="w-12 h-12 text-blue-600 group-hover:scale-105 transition mb-2" />
-                <h3 className="text-lg font-medium text-blue-700 mb-1">
-                  {uploading ? 'Uploading...' : 'Add PDF'}
-                </h3>
-                <p className="text-sm text-blue-400">
-                  {uploading ? 'Please wait...' : 'Click to select or drop PDF here.'}
-                </p>
+
+        {/* Main Content */}
+        <main className="flex-1 overflow-hidden flex flex-col">
+          <section className="flex-1 overflow-y-auto p-6 md:p-10">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="max-w-7xl mx-auto space-y-8"
+            >
+              {/* Top Section */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Left: Title & Search */}
+                <div className="md:col-span-2 space-y-4">
+                  <div>
+                    <h1 className="text-4xl font-black text-slate-900 dark:text-white mb-1">My PDFs</h1>
+                    <p className="text-slate-600 dark:text-slate-400">Manage and organize your documents</p>
+                  </div>
+
+                  <div className="relative">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                    <input
+                      type="text"
+                      placeholder="Search PDFs..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full pl-12 pr-10 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                    {searchQuery && (
+                      <motion.button
+                        whileHover={{ scale: 1.1 }}
+                        onClick={() => setSearchQuery('')}
+                        className="absolute right-4 top-1/2 -translate-y-1/2"
+                      >
+                        <X className="w-5 h-5 text-slate-400 hover:text-slate-600" />
+                      </motion.button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Right: Stats Card */}
+                {pdfs.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 rounded-xl border border-blue-200 dark:border-blue-800/50 p-6 space-y-4"
+                  >
+                    <div>
+                      <p className="text-sm text-blue-600 dark:text-blue-400 font-semibold mb-1">Total Files</p>
+                      <p className="text-3xl font-black text-slate-900 dark:text-white">{pdfs.length}</p>
+                    </div>
+                    <Separator className="bg-blue-200 dark:bg-blue-800/50" />
+                    <div>
+                      <p className="text-sm text-blue-600 dark:text-blue-400 font-semibold mb-1">Total Size</p>
+                      <p className="text-lg font-bold text-slate-900 dark:text-white">{formatFileSize(totalSize)}</p>
+                    </div>
+                  </motion.div>
+                )}
               </div>
 
-              {/* PDFs */}
-              {filteredPdfs.length === 0 ? (
-                <div className="col-span-full text-center py-12">
-                  <File className="w-16 h-16 text-gray-300 dark:text-gray-700 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">
-                    {searchQuery ? 'No PDFs found' : 'No PDFs yet'}
-                  </h3>
-                  <p className="text-gray-500 dark:text-gray-400">
-                    {searchQuery
-                      ? 'Try a different search term'
-                      : 'Upload your first PDF to get started'}
-                  </p>
-                </div>
+              {/* Content */}
+              {loadingFiles ? (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center h-64">
+                  <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 2, ease: 'linear' }}>
+                    <Loader2 size={50} className="text-blue-600 dark:text-blue-400" />
+                  </motion.div>
+                  <p className="mt-4 text-slate-600 dark:text-slate-400 font-medium">Loading files...</p>
+                </motion.div>
               ) : (
-                filteredPdfs.map(pdf => (
-                  <div
-                    key={pdf.id}
-                    className="relative group bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden hover:shadow-md transition-shadow flex flex-col min-h-[240px]"
+                <div className="space-y-4">
+                  {/* Upload Zone */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    onDragEnter={handleDrag}
+                    onDragLeave={handleDrag}
+                    onDragOver={handleDrag}
+                    onDrop={handleDrop}
+                    onClick={() => document.getElementById('pdf-upload')?.click()}
+                    className={`relative group cursor-pointer rounded-2xl border-2 border-dashed transition-all duration-300 p-8 flex items-center gap-6 ${
+                      dragActive
+                        ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/40'
+                        : 'border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 hover:border-blue-400 dark:hover:border-blue-600'
+                    }`}
                   >
-                    <div className="bg-gray-100 dark:bg-gray-800 flex flex-col items-center justify-center border-b border-gray-200 dark:border-gray-700">
-                      {pdf.url ? (
-                        <iframe
-                          src={`https://docs.google.com/gview?url=${encodeURIComponent(pdf.url)}&embedded=true`}
-                          title="PDF preview"
-                          className="w-full h-32"
-                          loading="lazy"
-                        />
+                    <input
+                      id="pdf-upload"
+                      type="file"
+                      accept="application/pdf"
+                      className="hidden"
+                      onChange={e => handleFileUpload(e.target.files)}
+                      disabled={uploading}
+                    />
+
+                    <motion.div
+                      animate={{ scale: uploading ? 1 : [1, 1.1, 1] }}
+                      transition={{ repeat: uploading ? 0 : Infinity, duration: 2 }}
+                    >
+                      {uploading ? (
+                        <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1.5, ease: 'linear' }}>
+                          <Loader2 className="w-10 h-10 text-blue-600 dark:text-blue-400" />
+                        </motion.div>
                       ) : (
-                        <img
-                          src="/pdf-thumbnail.png"
-                          alt={pdf.name}
-                          className="w-full h-32 object-cover"
-                        />
+                        <Cloud className="w-10 h-10 text-slate-400 dark:text-slate-600 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
                       )}
-                      <div className="absolute top-2 right-2 flex gap-1">
-                        <button
-                          onClick={() => handlePreview(pdf.url)}
-                          className="p-1 bg-white shadow-sm rounded hover:bg-gray-100 transition"
-                          title="Full Preview"
-                          disabled={!pdf.url}
-                          aria-label="Preview"
-                        >
-                          <Eye className="w-4 h-4 text-gray-700" />
-                        </button>
-                        <a
-                          href={pdf.url ? getDownloadUrl(pdf.url) : '#'}
-                          download={pdf.url ? pdf.name : undefined}
-                          className={`p-1 bg-white rounded hover:bg-gray-100 transition-colors ${!pdf.url && 'opacity-60 pointer-events-none'
-                            }`}
-                          title="Download"
-                          aria-label="Download"
-                        >
-                          <Download className="w-4 h-4 text-gray-700" />
-                        </a>
-                      </div>
-                    </div>
-                    <div className="p-4 flex-grow flex flex-col">
-                      <h3 className="font-medium text-base mb-1 truncate" title={pdf.name}>
-                        {pdf.name}
+                    </motion.div>
+
+                    <div className="flex-1">
+                      <h3 className="font-bold text-slate-900 dark:text-white">
+                        {uploading ? 'Uploading...' : 'Upload PDF'}
                       </h3>
-                      <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-2">
-                        <span>{(pdf.size / (1024 * 1024)).toFixed(2)} MB</span>
-                        <span>{new Date(pdf.createdAt).toLocaleDateString()}</span>
-                      </div>
-                      <button
-                        onClick={() => handleDelete(pdf.id)}
-                        className="w-full mt-auto flex items-center justify-center gap-2 px-3 py-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors text-sm font-medium"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                        Delete
-                      </button>
+                      <p className="text-sm text-slate-600 dark:text-slate-400">
+                        {uploading ? 'Please wait...' : 'Drag & drop or click to select'}
+                      </p>
                     </div>
-                  </div>
-                ))
+                  </motion.div>
+
+                  {/* PDFs List */}
+                  {filteredPdfs.length === 0 ? (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
+                      <File size={60} className="text-slate-300 dark:text-slate-700 mx-auto mb-4" />
+                      <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
+                        {searchQuery ? 'No PDFs found' : 'No PDFs yet'}
+                      </h3>
+                      <p className="text-slate-600 dark:text-slate-400">
+                        {searchQuery ? 'Try a different search' : 'Upload your first PDF to get started'}
+                      </p>
+                    </motion.div>
+                  ) : (
+                    <div className="space-y-2">
+                      <AnimatePresence>
+                        {filteredPdfs.map((pdf, i) => (
+                          <motion.div
+                            key={pdf.id}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            transition={{ delay: i * 0.05 }}
+                            whileHover={{ x: 8 }}
+                            className="group"
+                          >
+                            <div className="flex items-center gap-4 p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:shadow-md hover:border-blue-300 dark:hover:border-blue-700 transition-all duration-300">
+                              {/* Icon */}
+                              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-950/50 dark:to-purple-950/50 flex items-center justify-center flex-shrink-0 group-hover:shadow-md transition-all">
+                                <File className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                              </div>
+
+                              {/* Info */}
+                              <div className="flex-1 min-w-0">
+                                <h3 className="font-semibold text-slate-900 dark:text-white truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" title={pdf.name}>
+                                  {pdf.name}
+                                </h3>
+                                <div className="flex items-center gap-4 mt-1 text-xs text-slate-600 dark:text-slate-400">
+                                  <div className="flex items-center gap-1">
+                                    <HardDrive className="w-3 h-3" />
+                                    {formatFileSize(pdf.size)}
+                                  </div>
+                                  <div className="flex items-center gap-1">
+                                    <Calendar className="w-3 h-3" />
+                                    {formatDate(pdf.createdAt)}
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Actions */}
+                              <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <motion.button
+                                  whileHover={{ scale: 1.1 }}
+                                  whileTap={{ scale: 0.95 }}
+                                  onClick={() => handlePreview(pdf.url)}
+                                  className="p-2 hover:bg-blue-50 dark:hover:bg-blue-950/30 rounded-lg transition-colors"
+                                  title="Preview"
+                                >
+                                  <Eye className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                                </motion.button>
+                                <motion.a
+                                  whileHover={{ scale: 1.1 }}
+                                  whileTap={{ scale: 0.95 }}
+                                  href={pdf.url}
+                                  download={pdf.name}
+                                  className="p-2 hover:bg-blue-50 dark:hover:bg-blue-950/30 rounded-lg transition-colors"
+                                  title="Download"
+                                >
+                                  <Download className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                                </motion.a>
+                                <motion.button
+                                  whileHover={{ scale: 1.1 }}
+                                  whileTap={{ scale: 0.95 }}
+                                  onClick={() => handleDelete(pdf.id, pdf.name)}
+                                  className="p-2 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-colors"
+                                  title="Delete"
+                                >
+                                  <Trash2 className="w-5 h-5 text-red-600 dark:text-red-400" />
+                                </motion.button>
+                              </div>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </AnimatePresence>
+                    </div>
+                  )}
+                </div>
               )}
-            </div>
-          )}
+            </motion.div>
+          </section>
         </main>
       </SidebarInset>
-      <Dialog open={!!previewUrl} onOpenChange={handleClose}>
-        <DialogHeader className="px-4 mt-2">
-          <DialogTitle className="text-lg font-semibold text-gray-900 dark:text-white">
-            PDF Preview
-          </DialogTitle>
-        </DialogHeader>
-        <DialogContent className="max-w-5xl h-[90vh] p-0 overflow-hidden">
-          {previewUrl && (
-            <iframe
-              src={`https://docs.google.com/gview?url=${encodeURIComponent(previewUrl)}&embedded=true`}
-              className="w-full h-full"
-              title="PDF Preview"
-            />
-          )}
+
+      {/* Preview Dialog */}
+      <Dialog open={!!previewUrl} onOpenChange={() => setPreviewUrl(null)}>
+        <DialogContent className="max-w-6xl max-h-[85vh] p-0 rounded-2xl overflow-hidden border-0 shadow-2xl">
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col h-full">
+            <DialogHeader className="flex-shrink-0 p-6 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+              <DialogTitle className="text-2xl font-bold">PDF Preview</DialogTitle>
+            </DialogHeader>
+            <div className="flex-1 overflow-hidden">
+              {previewUrl && (
+                <iframe
+                  src={`https://docs.google.com/gview?url=${encodeURIComponent(previewUrl)}&embedded=true`}
+                  className="w-full h-full border-0"
+                  title="PDF Preview"
+                />
+              )}
+            </div>
+          </motion.div>
         </DialogContent>
       </Dialog>
     </>
