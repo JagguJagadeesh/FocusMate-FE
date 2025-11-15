@@ -75,10 +75,10 @@ const StarRating = ({ rating }: { rating: number }) => (
     {Array(5)
       .fill(0)
       .map((_, i) => (
-        <svg 
-          key={i} 
-          className={`w-4 h-4 ${i < rating ? 'text-amber-400' : 'text-gray-300'}`} 
-          fill="currentColor" 
+        <svg
+          key={i}
+          className={`w-4 h-4 ${i < rating ? 'text-amber-400' : 'text-gray-300'}`}
+          fill="currentColor"
           viewBox="0 0 20 20"
         >
           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967 4.174.012c.97.003 1.371 1.243.588 1.81l-3.375 2.457 1.272 3.96c.295.917-.755 1.68-1.538 1.118L10 13.347l-3.358 2.904c-.783.562-1.833-.2-1.538-1.118l1.272-3.96-3.375-2.457c-.783-.567-.382-1.807.588-1.81l4.174-.012 1.286-3.967z" />
@@ -88,7 +88,7 @@ const StarRating = ({ rating }: { rating: number }) => (
 )
 
 const TestimonialCard = ({ name, role, quote, img, rating, location }: typeof reviews[0]) => (
-  <motion.div 
+  <motion.div
     className="group relative bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg hover:shadow-xl p-6 transition-all duration-300 hover:-translate-y-1"
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
@@ -98,7 +98,7 @@ const TestimonialCard = ({ name, role, quote, img, rating, location }: typeof re
   >
     {/* Gradient Background Effect */}
     <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-purple-50/30 to-pink-50/50 dark:from-blue-950/20 dark:via-purple-950/10 dark:to-pink-950/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-    
+
     {/* Quote Icon */}
     <div className="absolute top-4 right-4 opacity-20 group-hover:opacity-30 transition-opacity">
       <Quote className="w-8 h-8 text-blue-500" />
@@ -108,18 +108,18 @@ const TestimonialCard = ({ name, role, quote, img, rating, location }: typeof re
       {/* Header */}
       <div className="flex items-start gap-4 mb-4">
         <div className="relative">
-          <Image 
-            src={img} 
-            alt={name} 
-            width={64} 
-            height={64} 
-            className="rounded-full object-cover border-2 border-gray-200 dark:border-gray-700 group-hover:border-blue-300 dark:group-hover:border-blue-600 transition-colors duration-300" 
+          <Image
+            src={img}
+            alt={name}
+            width={64}
+            height={64}
+            className="rounded-full object-cover border-2 border-gray-200 dark:border-gray-700 group-hover:border-blue-300 dark:group-hover:border-blue-600 transition-colors duration-300"
           />
           <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-white dark:border-gray-900 flex items-center justify-center">
             <div className="w-2 h-2 bg-white rounded-full"></div>
           </div>
         </div>
-        
+
         <div className="flex-1">
           <h4 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
             {name}
@@ -140,7 +140,7 @@ const TestimonialCard = ({ name, role, quote, img, rating, location }: typeof re
       <blockquote className="text-gray-700 dark:text-gray-300 text-base leading-relaxed italic">
         {quote}
       </blockquote>
-</div>
+    </div>
   </motion.div>
 )
 
@@ -154,7 +154,7 @@ export default function ReviewLayout() {
   return (
     <div className="relative max-w-7xl mx-auto">
       {/* Header */}
-      <motion.div 
+      <motion.div
         className="text-center mb-12"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -189,7 +189,7 @@ export default function ReviewLayout() {
       </div>
 
       {/* Bottom Stats */}
-      <motion.div 
+      <motion.div
         className="mt-16 text-center"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}

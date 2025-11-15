@@ -41,10 +41,10 @@ export function NavMain({
       <SidebarMenu>
         {items.map((item) => {
           // Check if any sub-item is active
-          const isAnySubItemActive = item.items?.some(subItem => 
+          const isAnySubItemActive = item.items?.some(subItem =>
             pathname === subItem.url || pathname.startsWith(subItem.url)
           )
-          
+
           return (
             <Collapsible
               key={item.title}
@@ -64,7 +64,7 @@ export function NavMain({
                   <SidebarMenuSub>
                     {item.items?.map((subItem) => {
                       const isActive = pathname === subItem.url || pathname.startsWith(subItem.url)
-                      
+
                       return (
                         <SidebarMenuSubItem key={subItem.title}>
                           <SidebarMenuSubButton asChild isActive={isActive}>

@@ -207,23 +207,21 @@ export default function PlayList() {
                     <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-4">
                       Filters
                     </h3>
-                    
+
                     <div className="space-y-1">
                       <button
                         onClick={() => { setFilterType('all'); setSidebarOpen(false); }}
-                        className={`w-full text-left px-4 py-2.5 rounded-lg transition-all group ${
-                          filterType === 'all' 
-                            ? 'text-blue-600 dark:text-blue-400 font-semibold' 
+                        className={`w-full text-left px-4 py-2.5 rounded-lg transition-all group ${filterType === 'all'
+                            ? 'text-blue-600 dark:text-blue-400 font-semibold'
                             : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-                        }`}
+                          }`}
                       >
                         <div className="flex items-center justify-between">
                           <span>All</span>
-                          <span className={`text-xs px-2 py-0.5 rounded-full border ${
-                            filterType === 'all'
+                          <span className={`text-xs px-2 py-0.5 rounded-full border ${filterType === 'all'
                               ? 'border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400'
                               : 'border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400'
-                          }`}>
+                            }`}>
                             {videos.length}
                           </span>
                         </div>
@@ -231,19 +229,17 @@ export default function PlayList() {
 
                       <button
                         onClick={() => { setFilterType('video'); setSidebarOpen(false); }}
-                        className={`w-full text-left px-4 py-2.5 rounded-lg transition-all group ${
-                          filterType === 'video' 
-                            ? 'text-blue-600 dark:text-blue-400 font-semibold' 
+                        className={`w-full text-left px-4 py-2.5 rounded-lg transition-all group ${filterType === 'video'
+                            ? 'text-blue-600 dark:text-blue-400 font-semibold'
                             : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-                        }`}
+                          }`}
                       >
                         <div className="flex items-center justify-between">
                           <span>Videos</span>
-                          <span className={`text-xs px-2 py-0.5 rounded-full border ${
-                            filterType === 'video'
+                          <span className={`text-xs px-2 py-0.5 rounded-full border ${filterType === 'video'
                               ? 'border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400'
                               : 'border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400'
-                          }`}>
+                            }`}>
                             {videos.filter(v => v.type === 'video').length}
                           </span>
                         </div>
@@ -251,19 +247,17 @@ export default function PlayList() {
 
                       <button
                         onClick={() => { setFilterType('playlist'); setSidebarOpen(false); }}
-                        className={`w-full text-left px-4 py-2.5 rounded-lg transition-all group ${
-                          filterType === 'playlist' 
-                            ? 'text-blue-600 dark:text-blue-400 font-semibold' 
+                        className={`w-full text-left px-4 py-2.5 rounded-lg transition-all group ${filterType === 'playlist'
+                            ? 'text-blue-600 dark:text-blue-400 font-semibold'
                             : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-                        }`}
+                          }`}
                       >
                         <div className="flex items-center justify-between">
                           <span>Playlists</span>
-                          <span className={`text-xs px-2 py-0.5 rounded-full border ${
-                            filterType === 'playlist'
+                          <span className={`text-xs px-2 py-0.5 rounded-full border ${filterType === 'playlist'
                               ? 'border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400'
                               : 'border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400'
-                          }`}>
+                            }`}>
                             {videos.filter(v => v.type === 'playlist').length}
                           </span>
                         </div>

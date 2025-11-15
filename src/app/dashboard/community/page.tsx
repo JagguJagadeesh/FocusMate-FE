@@ -2,7 +2,7 @@ import UnderConstructionPage from "@/components/myuicomponents/UnderConstruction
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 
 export default function CommunityPage() {
-  
+
   return (
     <div className=''>
       <SidebarInset>
@@ -14,14 +14,14 @@ export default function CommunityPage() {
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
                   Join Community
                 </h2>
-                
+
               </div>
             </div>
           </div>
         </header>
       </SidebarInset>
       <main className='h-96 flex items-center justify-center'>
-        <UnderConstructionPage/>
+        <UnderConstructionPage />
       </main>
     </div>
   )

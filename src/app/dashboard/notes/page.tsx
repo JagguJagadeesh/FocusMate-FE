@@ -40,7 +40,7 @@ export default function Page() {
     setIsLoading(true)
     try {
       const res = await getAllNotesData(id)
-      const sorted = [...(res.notes || [])].sort((a, b) => 
+      const sorted = [...(res.notes || [])].sort((a, b) =>
         new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
       )
       setNotesData(sorted)
@@ -196,7 +196,7 @@ export default function Page() {
                   {searchQuery ? 'No notes found' : 'No notes yet'}
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400 text-center max-w-md mb-8">
-                  {searchQuery 
+                  {searchQuery
                     ? `Try a different search term for "${searchQuery}"`
                     : 'Start creating notes to organize your thoughts and ideas'
                   }
@@ -246,8 +246,8 @@ export default function Page() {
                           transition={{ delay: i * 0.05 }}
                           layout
                         >
-                          <NotesCard 
-                            {...note} 
+                          <NotesCard
+                            {...note}
                             onClick={() => {
                               setSelectedNote(note)
                               setOpen(true)

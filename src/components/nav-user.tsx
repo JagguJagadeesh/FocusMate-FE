@@ -57,16 +57,16 @@ const PlanBadge = ({ plan }: { plan?: string }) => {
   if (!plan) return null
 
   const planConfig = {
-    free: { 
-      label: 'Free', 
+    free: {
+      label: 'Free',
       class: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300'
     },
-    pro: { 
-      label: 'Pro', 
+    pro: {
+      label: 'Pro',
       class: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300'
     },
-    enterprise: { 
-      label: 'Enterprise', 
+    enterprise: {
+      label: 'Enterprise',
       class: 'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300'
     }
   }
@@ -123,9 +123,9 @@ export function NavUser({ user }: NavUserProps) {
             >
               <div className="flex items-center gap-3 flex-1 min-w-0">
                 <Avatar className="h-9 w-9 border-2 border-gray-200 dark:border-gray-700 group-hover:border-blue-400 dark:group-hover:border-blue-500 transition-colors ring-2 ring-white dark:ring-gray-900">
-                  <AvatarImage 
-                    src={user.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${user.name}`} 
-                    alt={user.name || 'User'} 
+                  <AvatarImage
+                    src={user.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${user.name}`}
+                    alt={user.name || 'User'}
                   />
                   <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white text-sm font-bold">
                     {userInitials}
@@ -167,9 +167,9 @@ export function NavUser({ user }: NavUserProps) {
                   <div className="p-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-gradient-to-br from-gray-50 to-gray-50/50 dark:from-gray-900/50 dark:to-gray-900/20">
                     <div className="flex items-center gap-3">
                       <Avatar className="h-12 w-12 border-2 border-gray-300 dark:border-gray-600 ring-2 ring-white dark:ring-gray-900">
-                        <AvatarImage 
-                          src={user.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${user.name}`} 
-                          alt={user.name || 'User'} 
+                        <AvatarImage
+                          src={user.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${user.name}`}
+                          alt={user.name || 'User'}
                         />
                         <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold">
                           {userInitials}

@@ -152,11 +152,10 @@ export default function EventsPage() {
           </div>
         ) : (
           <div
-            className={`grid gap-4 sm:gap-6 ${
-              viewMode === 'grid'
+            className={`grid gap-4 sm:gap-6 ${viewMode === 'grid'
                 ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
                 : 'grid-cols-1 max-w-3xl mx-auto'
-            }`}
+              }`}
           >
             {filteredEvents.map((event) => (
               <EventCard key={event.id} event={event} formatDate={formatDate} viewMode={viewMode} />

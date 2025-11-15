@@ -54,9 +54,8 @@ export default function EventCard({ event, formatDate, viewMode = 'grid' }) {
       <DialogTrigger asChild>
         <div
           className={`group cursor-pointer bg-white dark:bg-gray-900 rounded-lg border 
-                     hover:shadow-md transition-all ${
-                       viewMode === 'list' ? 'flex flex-col sm:flex-row' : ''
-                     }`}
+                     hover:shadow-md transition-all ${viewMode === 'list' ? 'flex flex-col sm:flex-row' : ''
+            }`}
         >
           {/* Image */}
           <div

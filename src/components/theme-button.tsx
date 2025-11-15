@@ -10,7 +10,7 @@ export function ModeToggle() {
   useEffect(() => setMounted(true), []);
 
   if (!mounted) {
-    return <div className="w-[2rem] h-[2rem]" />; 
+    return <div className="w-[2rem] h-[2rem]" />;
   }
 
   return (

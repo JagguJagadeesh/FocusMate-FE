@@ -24,13 +24,13 @@ interface NotesCardProps {
   onClick?: () => void
 }
 
-export default function NotesCard({ 
-  id, 
+export default function NotesCard({
+  id,
   title,
   description,
-  imgData, 
+  imgData,
   onDelete,
-  onClick 
+  onClick
 }: NotesCardProps) {
   const [isDeleting, setIsDeleting] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
@@ -38,7 +38,7 @@ export default function NotesCard({
   const handleDelete = async (e: React.MouseEvent) => {
     e.stopPropagation()
     setIsDeleting(true)
-    
+
     try {
       await deleteNote(id)
       toast.success("Note deleted successfully!")
@@ -64,7 +64,7 @@ export default function NotesCard({
     if (diffMins < 60) return `${diffMins}m ago`
     if (diffHours < 24) return `${diffHours}h ago`
     if (diffDays < 7) return `${diffDays}d ago`
-    
+
     return noteDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
   }
 
@@ -82,8 +82,8 @@ export default function NotesCard({
         onClick={onClick}
         className="relative overflow-hidden rounded-2xl border-2 border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900/50 transition-all cursor-pointer hover:border-blue-300 dark:hover:border-blue-700"
         animate={{
-          boxShadow: isHovered 
-            ? '0 10px 30px rgba(0, 0, 0, 0.1)' 
+          boxShadow: isHovered
+            ? '0 10px 30px rgba(0, 0, 0, 0.1)'
             : '0 2px 8px rgba(0, 0, 0, 0.05)'
         }}
         whileHover={{ y: -4 }}

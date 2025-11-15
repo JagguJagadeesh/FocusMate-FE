@@ -54,8 +54,8 @@ function ContactPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
       <div className="max-w-2xl mx-auto">
         {/* Back Button */}
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           size="sm"
           onClick={handleBackToDashboard}
           className="mb-6"

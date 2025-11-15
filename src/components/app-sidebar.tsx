@@ -41,7 +41,7 @@ const navigationData = {
           url: "/dashboard/playlist",
         },
         {
-          title: "Notes", 
+          title: "Notes",
           url: "/dashboard/notes",
         }
       ],
@@ -63,7 +63,7 @@ const navigationData = {
     },
     {
       title: "Explore",
-      url: "#", 
+      url: "#",
       icon: Telescope,
       items: [
         {

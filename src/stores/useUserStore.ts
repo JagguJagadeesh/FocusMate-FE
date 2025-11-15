@@ -1,5 +1,5 @@
-import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 type User = {
   id: string;
@@ -24,7 +24,7 @@ type UserStore = {
 const initialUser: User = {
   id: "",
   name: "",
-  email: ""
+  email: "",
 };
 
 const initialStats: TaskStats = {
@@ -43,7 +43,7 @@ const useUserStore = create<UserStore>()(
       setTaskStats: (stats) => set({ taskStats: stats }),
     }),
     {
-      name: 'user-store',
+      name: "user-store",
       onRehydrateStorage: () => (state) => {
         if (state) state.hasHydrated = true;
       },

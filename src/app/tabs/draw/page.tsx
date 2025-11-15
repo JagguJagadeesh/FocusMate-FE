@@ -4,7 +4,7 @@ import NotesClient from './NotesClient'
 function Draw() {
   return (
     <div>
-        <NotesClient />
+      <NotesClient />
     </div>
   )
 }

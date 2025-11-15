@@ -100,91 +100,91 @@ export default function SidebarTimerPomodoro({ isCollapsed }: SidebarTimerPomodo
 
   const progress = ((currentConfig.duration - secondsLeft) / currentConfig.duration) * 100;
 
- if (isCollapsed) {
-  const isLowTime = secondsLeft <= 60 && isRunning;
+  if (isCollapsed) {
+    const isLowTime = secondsLeft <= 60 && isRunning;
 
-  return (
-    <motion.button
-      onClick={() => setIsRunning(!isRunning)}
-      className={`w-full aspect-square rounded-2xl bg-gradient-to-br ${currentConfig.color} text-white font-black shadow-xl flex flex-col items-center justify-center relative overflow-hidden group`}
-      whileHover={{ scale: 1.08 }}
-      whileTap={{ scale: 0.92 }}
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-    >
-      {/* Animated gradient overlay */}
-      <motion.div
-        className="absolute inset-0 bg-gradient-to-t from-black/20 to-white/10"
-        animate={{ opacity: isRunning ? [0.2, 0.4, 0.2] : 0.2 }}
-        transition={{ duration: 1.5, repeat: Infinity }}
-      />
-
-      {/* Pulse border when running */}
-      {isRunning && (
+    return (
+      <motion.button
+        onClick={() => setIsRunning(!isRunning)}
+        className={`w-full aspect-square rounded-2xl bg-gradient-to-br ${currentConfig.color} text-white font-black shadow-xl flex flex-col items-center justify-center relative overflow-hidden group`}
+        whileHover={{ scale: 1.08 }}
+        whileTap={{ scale: 0.92 }}
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+      >
+        {/* Animated gradient overlay */}
         <motion.div
-          className="absolute inset-0 border-2 border-white/60 rounded-2xl"
-          animate={{ scale: [1, 1.15], opacity: [1, 0] }}
+          className="absolute inset-0 bg-gradient-to-t from-black/20 to-white/10"
+          animate={{ opacity: isRunning ? [0.2, 0.4, 0.2] : 0.2 }}
           transition={{ duration: 1.5, repeat: Infinity }}
         />
-      )}
 
-      {/* Content */}
-      <div className="relative z-10 flex flex-col items-center gap-1">
-        {/* Rotating icon */}
-        <motion.div
-          animate={{
-            rotate: isRunning ? 360 : 0,
-            scale: isLowTime ? [1, 1.2, 1] : 1
-          }}
-          transition={{
-            rotate: { duration: 2.5, repeat: isRunning ? Infinity : 0, ease: "linear" },
-            scale: { duration: 0.6, repeat: isLowTime ? Infinity : 0 }
-          }}
-        >
-          <Icon className="w-4 h-4" />
-        </motion.div>
-
-        {/* Small badge */}
-        {sessionsCompleted > 0 && (
-          <motion.span
-            className="text-[9px] font-black"
-            animate={{ scale: [1, 1.1, 1] }}
-            transition={{ repeat: Infinity, duration: 2 }}
-          >
-            ⚡{sessionsCompleted}
-          </motion.span>
+        {/* Pulse border when running */}
+        {isRunning && (
+          <motion.div
+            className="absolute inset-0 border-2 border-white/60 rounded-2xl"
+            animate={{ scale: [1, 1.15], opacity: [1, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          />
         )}
-      </div>
 
-      {/* Progress ring */}
-      <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
-        <motion.circle
-          cx="50"
-          cy="50"
-          r="45"
-          fill="none"
-          stroke="white"
-          strokeWidth="2"
-          strokeDasharray={`${2 * Math.PI * 45}`}
-          strokeDashoffset={`${2 * Math.PI * 45 * (1 - progress / 100)}`}
-          strokeLinecap="round"
-          animate={{ strokeDashoffset: 2 * Math.PI * 45 * (1 - progress / 100) }}
-          transition={{ duration: 0.5 }}
-          opacity="0.3"
-        />
-      </svg>
+        {/* Content */}
+        <div className="relative z-10 flex flex-col items-center gap-1">
+          {/* Rotating icon */}
+          <motion.div
+            animate={{
+              rotate: isRunning ? 360 : 0,
+              scale: isLowTime ? [1, 1.2, 1] : 1
+            }}
+            transition={{
+              rotate: { duration: 2.5, repeat: isRunning ? Infinity : 0, ease: "linear" },
+              scale: { duration: 0.6, repeat: isLowTime ? Infinity : 0 }
+            }}
+          >
+            <Icon className="w-4 h-4" />
+          </motion.div>
 
-      {/* Low time warning */}
-      {isLowTime && (
-        <motion.div
-          className="absolute inset-0 bg-red-500/20 rounded-2xl"
-          animate={{ opacity: [0, 0.4, 0] }}
-          transition={{ duration: 0.4, repeat: Infinity }}
-        />
-      )}
-    </motion.button>
-  );
-}
+          {/* Small badge */}
+          {sessionsCompleted > 0 && (
+            <motion.span
+              className="text-[9px] font-black"
+              animate={{ scale: [1, 1.1, 1] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+            >
+              ⚡{sessionsCompleted}
+            </motion.span>
+          )}
+        </div>
+
+        {/* Progress ring */}
+        <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
+          <motion.circle
+            cx="50"
+            cy="50"
+            r="45"
+            fill="none"
+            stroke="white"
+            strokeWidth="2"
+            strokeDasharray={`${2 * Math.PI * 45}`}
+            strokeDashoffset={`${2 * Math.PI * 45 * (1 - progress / 100)}`}
+            strokeLinecap="round"
+            animate={{ strokeDashoffset: 2 * Math.PI * 45 * (1 - progress / 100) }}
+            transition={{ duration: 0.5 }}
+            opacity="0.3"
+          />
+        </svg>
+
+        {/* Low time warning */}
+        {isLowTime && (
+          <motion.div
+            className="absolute inset-0 bg-red-500/20 rounded-2xl"
+            animate={{ opacity: [0, 0.4, 0] }}
+            transition={{ duration: 0.4, repeat: Infinity }}
+          />
+        )}
+      </motion.button>
+    );
+  }
 
 
   return (
@@ -254,11 +254,10 @@ export default function SidebarTimerPomodoro({ isCollapsed }: SidebarTimerPomodo
               setMode(m);
               setIsRunning(false);
             }}
-            className={`py-1.5 rounded-lg text-xs font-semibold transition-all ${
-              mode === m
+            className={`py-1.5 rounded-lg text-xs font-semibold transition-all ${mode === m
                 ? `bg-gradient-to-r ${modeConfig[m].color} text-white shadow-sm`
                 : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'
-            }`}
+              }`}
             whileHover={{ scale: 1.02 }}
           >
             {modeConfig[m].label}

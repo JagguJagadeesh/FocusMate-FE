@@ -24,8 +24,8 @@ export default function ChatBotPopup() {
   const [input, setInput] = useState('')
   const [isTyping, setIsTyping] = useState(false)
   const [messages, setMessages] = useState<Message[]>([
-    { 
-      sender: 'bot', 
+    {
+      sender: 'bot',
       text: '👋 Hello! I\'m your AI assistant. How can I help you today?',
       timestamp: new Date(),
       id: 'welcome-message'
@@ -65,9 +65,9 @@ export default function ChatBotPopup() {
 
   const handleSend = async () => {
     if (!input.trim()) return
-    
-    const userMsg: Message = { 
-      sender: 'user', 
+
+    const userMsg: Message = {
+      sender: 'user',
       text: input,
       timestamp: new Date(),
       id: `user-${Date.now()}`
@@ -79,16 +79,16 @@ export default function ChatBotPopup() {
     try {
       const reply = await getAIResponse(input)
       setIsTyping(false)
-      setMessages((prev) => [...prev, { 
-        sender: 'bot', 
+      setMessages((prev) => [...prev, {
+        sender: 'bot',
         text: reply,
         timestamp: new Date(),
         id: `bot-${Date.now()}`
       }])
     } catch (error) {
       setIsTyping(false)
-      setMessages((prev) => [...prev, { 
-        sender: 'bot', 
+      setMessages((prev) => [...prev, {
+        sender: 'bot',
         text: 'Sorry, I encountered an error. Please try again.',
         timestamp: new Date(),
         id: `error-${Date.now()}`
@@ -172,14 +172,14 @@ export default function ChatBotPopup() {
               className="relative w-14 h-14 rounded-full shadow-2xl cursor-pointer flex items-center justify-center transition-all duration-300 overflow-hidden bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-700"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              
+
               <motion.div
                 initial={{ rotate: -90, opacity: 0 }}
                 animate={{ rotate: 0, opacity: 1 }}
                 className="relative"
               >
-                <Bot  className="w-6 h-6 text-white" />
-                
+                <Bot className="w-6 h-6 text-white" />
+
               </motion.div>
             </motion.button>
 
@@ -272,10 +272,10 @@ export default function ChatBotPopup() {
                       ChatMate
                       <Sparkles className="w-5 h-5 text-yellow-300" />
                     </h3>
-                    
+
                   </div>
                 </div>
-                
+
                 {/* Control Buttons */}
                 <div className="flex items-center gap-2">
                   <motion.button
@@ -287,7 +287,7 @@ export default function ChatBotPopup() {
                   >
                     <Minus className="w-4 h-4" />
                   </motion.button>
-                  
+
                   <motion.button
                     whileHover={{ scale: 1.1, backgroundColor: 'rgba(255,255,255,0.2)' }}
                     whileTap={{ scale: 0.9 }}
@@ -297,7 +297,7 @@ export default function ChatBotPopup() {
                   >
                     {chatState === 'expanded' ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
                   </motion.button>
-                  
+
                   <motion.button
                     whileHover={{ scale: 1.1, backgroundColor: 'rgba(255,255,255,0.2)' }}
                     whileTap={{ scale: 0.9 }}
@@ -316,9 +316,9 @@ export default function ChatBotPopup() {
               <div className={`py-4 space-y-1 ${chatState === 'expanded' ? 'max-w-5xl mx-auto px-6' : 'px-4'}`}>
                 {messages.map((msg, idx) => {
                   const showDateSeparator = isNewDay(msg, messages[idx - 1])
-                  const showTimestamp = idx === 0 || 
-                    (msg.timestamp && messages[idx - 1]?.timestamp && 
-                     new Date(msg.timestamp).getTime() - new Date(messages[idx - 1].timestamp!).getTime() > 300000) // 5 minutes
+                  const showTimestamp = idx === 0 ||
+                    (msg.timestamp && messages[idx - 1]?.timestamp &&
+                      new Date(msg.timestamp).getTime() - new Date(messages[idx - 1].timestamp!).getTime() > 300000) // 5 minutes
 
                   return (
                     <div key={msg.id || idx}>
@@ -330,11 +330,11 @@ export default function ChatBotPopup() {
                           className="flex items-center justify-center my-6"
                         >
                           <Badge variant="secondary" className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-0 shadow-sm">
-                            {new Date(msg.timestamp!).toLocaleDateString('en-US', { 
-                              weekday: 'long', 
-                              year: 'numeric', 
-                              month: 'long', 
-                              day: 'numeric' 
+                            {new Date(msg.timestamp!).toLocaleDateString('en-US', {
+                              weekday: 'long',
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric'
                             })}
                           </Badge>
                         </motion.div>
@@ -344,8 +344,8 @@ export default function ChatBotPopup() {
                       <motion.div
                         initial={{ opacity: 0, y: 15, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
-                        transition={{ 
-                          delay: idx * 0.05, 
+                        transition={{
+                          delay: idx * 0.05,
                           duration: 0.4,
                           type: "spring",
                           stiffness: 300,
@@ -359,9 +359,9 @@ export default function ChatBotPopup() {
                           className="flex-shrink-0"
                         >
                           <Avatar className="w-10 h-10 shadow-lg ring-2 ring-white/20">
-                            <AvatarFallback 
-                              className={msg.sender === 'user' 
-                                ? 'bg-gradient-to-br from-purple-500 via-purple-600 to-blue-600 text-white shadow-inner' 
+                            <AvatarFallback
+                              className={msg.sender === 'user'
+                                ? 'bg-gradient-to-br from-purple-500 via-purple-600 to-blue-600 text-white shadow-inner'
                                 : 'bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 text-white shadow-inner'
                               }
                             >
@@ -378,13 +378,11 @@ export default function ChatBotPopup() {
                         <div className={`flex flex-col ${chatState === 'expanded' ? 'max-w-[70%]' : 'max-w-[75%]'} ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
                           <motion.div
                             whileHover={{ scale: 1.01, y: -1 }}
-                            className={`relative group/message ${
-                              msg.sender === 'user'
+                            className={`relative group/message ${msg.sender === 'user'
                                 ? 'bg-gradient-to-br from-purple-500 via-purple-600 to-blue-600 text-white shadow-xl'
                                 : 'bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-xl ring-1 ring-slate-200/50 dark:ring-slate-700/50'
-                            } px-4 py-3 rounded-2xl ${
-                              msg.sender === 'user' ? 'rounded-tr-sm' : 'rounded-tl-sm'
-                            } backdrop-blur-sm transition-all duration-200`}
+                              } px-4 py-3 rounded-2xl ${msg.sender === 'user' ? 'rounded-tr-sm' : 'rounded-tl-sm'
+                              } backdrop-blur-sm transition-all duration-200`}
                           >
                             {/* Message Content */}
                             <p className={`${chatState === 'expanded' ? 'text-base' : 'text-sm'} leading-relaxed whitespace-pre-wrap font-medium`}>
@@ -403,23 +401,21 @@ export default function ChatBotPopup() {
                                 >
                                   <Copy className="w-3 h-3 text-slate-600 dark:text-slate-300" />
                                 </motion.button>
-                                
+
                               </div>
                             )}
 
                             {/* Glow Effect */}
-                            <div className={`absolute inset-0 rounded-2xl ${
-                              msg.sender === 'user' ? 'rounded-tr-sm' : 'rounded-tl-sm'
-                            } ${
-                              msg.sender === 'user' 
-                                ? 'bg-gradient-to-br from-purple-400/20 to-blue-400/20' 
+                            <div className={`absolute inset-0 rounded-2xl ${msg.sender === 'user' ? 'rounded-tr-sm' : 'rounded-tl-sm'
+                              } ${msg.sender === 'user'
+                                ? 'bg-gradient-to-br from-purple-400/20 to-blue-400/20'
                                 : 'bg-gradient-to-br from-emerald-400/10 to-teal-400/10'
-                            } opacity-0 group-hover/message:opacity-100 transition-opacity duration-300 pointer-events-none`} />
+                              } opacity-0 group-hover/message:opacity-100 transition-opacity duration-300 pointer-events-none`} />
                           </motion.div>
 
                           {/* Timestamp */}
                           {(showTimestamp || msg.timestamp) && (
-                            <motion.p 
+                            <motion.p
                               initial={{ opacity: 0 }}
                               animate={{ opacity: 1 }}
                               transition={{ delay: 0.2 }}
@@ -454,14 +450,14 @@ export default function ChatBotPopup() {
                           {[0, 1, 2].map((i) => (
                             <motion.div
                               key={i}
-                              animate={{ 
-                                scale: [1, 1.4, 1], 
+                              animate={{
+                                scale: [1, 1.4, 1],
                                 opacity: [0.4, 1, 0.4],
                                 y: [0, -2, 0]
                               }}
-                              transition={{ 
-                                duration: 1.2, 
-                                repeat: Infinity, 
+                              transition={{
+                                duration: 1.2,
+                                repeat: Infinity,
                                 delay: i * 0.2,
                                 ease: "easeInOut"
                               }}
@@ -516,8 +512,8 @@ export default function ChatBotPopup() {
                     </Button>
                   </motion.div>
                 </div>
-                
-                
+
+
               </div>
             </div>
           </motion.div>

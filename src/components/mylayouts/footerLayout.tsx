@@ -20,9 +20,9 @@ function FooterLayout() {
           {/* Center: Quick Links */}
           <nav className='flex flex-wrap justify-center gap-6'>
             {['Features', 'Pricing', 'About', 'Contact', 'Privacy'].map((item) => (
-              <Link 
+              <Link
                 key={item}
-                href='#' 
+                href='#'
                 className='text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors'
               >
                 {item}
@@ -37,7 +37,7 @@ function FooterLayout() {
               { icon: Github, href: 'https://github.com/JagguJagadeesh/FocusMate-FE' },
               { icon: Mail, href: 'https://github.com/JagguJagadeesh/FocusMate-FE' }
             ].map((social, i) => (
-              <Link 
+              <Link
                 key={i}
                 href={social.href}
                 className='w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 hover:bg-blue-600 hover:text-white transition-all'

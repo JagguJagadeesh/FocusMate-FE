@@ -231,11 +231,10 @@ export default function Page() {
                     onDragOver={handleDrag}
                     onDrop={handleDrop}
                     onClick={() => document.getElementById('pdf-upload')?.click()}
-                    className={`relative group cursor-pointer rounded-xl sm:rounded-2xl border-2 border-dashed transition-all duration-300 p-4 sm:p-6 md:p-8 flex flex-col sm:flex-row items-center gap-3 sm:gap-6 ${
-                      dragActive
+                    className={`relative group cursor-pointer rounded-xl sm:rounded-2xl border-2 border-dashed transition-all duration-300 p-4 sm:p-6 md:p-8 flex flex-col sm:flex-row items-center gap-3 sm:gap-6 ${dragActive
                         ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/40'
                         : 'border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 hover:border-blue-400 dark:hover:border-blue-600'
-                    }`}
+                      }`}
                   >
                     <input
                       id="pdf-upload"
@@ -364,9 +363,9 @@ export default function Page() {
       {/* Preview Dialog - Full Screen on Mobile, Large on Desktop */}
       <Dialog open={!!previewUrl} onOpenChange={() => setPreviewUrl(null)}>
         <DialogContent className="w-full h-[95vh] max-w-[95vw] sm:max-w-[90vw] lg:max-w-7xl p-0 rounded-lg sm:rounded-2xl overflow-hidden border-0 shadow-2xl">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }} 
-            animate={{ opacity: 1, scale: 1 }} 
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
             className="flex flex-col h-full"
           >
             <DialogHeader className="flex-shrink-0 p-3 sm:p-4 md:p-6 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">

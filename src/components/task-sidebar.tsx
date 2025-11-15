@@ -6,9 +6,9 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
-import { 
-  Calendar, 
-  Clock, 
+import {
+  Calendar,
+  Clock,
   ArrowRight,
   AlertCircle,
   CheckCircle2,
@@ -89,7 +89,7 @@ const TaskItem = ({ task, index }: TaskItemProps) => {
               {task.title}
             </h4>
           </div>
-          
+
           <Badge className={`text-[10px] capitalize shrink-0 ${config.badgeColor} border-0`}>
             {task.category}
           </Badge>
@@ -201,13 +201,13 @@ export default function TaskSidebar() {
     try {
       setLoading(true)
       setError(false)
-      
-      const response = await axiosInstance.post('/getalltasks', { 
-        userID: user.id 
+
+      const response = await axiosInstance.post('/getalltasks', {
+        userID: user.id
       })
 
       const sortedTasks = (response.data.tasks || [])
-        .sort((a: Task, b: Task) => 
+        .sort((a: Task, b: Task) =>
           new Date(b.start).getTime() - new Date(a.start).getTime()
         )
         .slice(0, 10) // Limit to 10 most recent tasks
@@ -225,7 +225,7 @@ export default function TaskSidebar() {
     fetchTasks()
   }, [fetchTasks])
 
-  const upcomingTasks = tasks.filter(task => 
+  const upcomingTasks = tasks.filter(task =>
     new Date(task.start) >= new Date() && !task.completed
   ).slice(0, 5)
 
@@ -309,9 +309,9 @@ export default function TaskSidebar() {
         className="mt-3"
       >
         <Link href="/dashboard/schedule">
-          <Button 
-            variant="ghost" 
-            size="sm" 
+          <Button
+            variant="ghost"
+            size="sm"
             className="w-full justify-between gap-2 text-xs h-8 hover:bg-muted/80 transition-colors"
           >
             <span>View all tasks</span>

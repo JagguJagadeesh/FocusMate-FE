@@ -183,7 +183,7 @@ export default function Scheduler({ view }: { view: string }) {
   };
 
   if (!hasHydrated) {
-    return <div className="flex items-center justify-center h-96"><Component/></div>;
+    return <div className="flex items-center justify-center h-96"><Component /></div>;
   }
 
   return (
@@ -208,12 +208,12 @@ export default function Scheduler({ view }: { view: string }) {
         `}>
           {/* Overlay for mobile */}
           {sidebarOpen && (
-            <div 
+            <div
               className="fixed inset-0 bg-black/50 lg:hidden z-30"
               onClick={() => setSidebarOpen(false)}
             />
           )}
-          
+
           <div className="relative z-40 h-full lg:h-auto">
             <SchedulerSidebar
               events={events}
@@ -283,11 +283,10 @@ export default function Scheduler({ view }: { view: string }) {
                   <button
                     key={key}
                     onClick={() => setCategory(key)}
-                    className={`p-2 sm:p-3 rounded-xl border-2 transition-all text-sm sm:text-base ${
-                      category === key
+                    className={`p-2 sm:p-3 rounded-xl border-2 transition-all text-sm sm:text-base ${category === key
                         ? `bg-gradient-to-r ${config.gradient} text-white border-transparent`
                         : 'border-gray-200 dark:border-gray-700 hover:border-indigo-300'
-                    }`}
+                      }`}
                   >
                     {config.label}
                   </button>
@@ -328,9 +327,9 @@ export default function Scheduler({ view }: { view: string }) {
             )}
 
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-              <Button 
-                variant="outline" 
-                onClick={() => setOpen(false)} 
+              <Button
+                variant="outline"
+                onClick={() => setOpen(false)}
                 className="w-full sm:flex-1 rounded-xl text-sm sm:text-base"
               >
                 Cancel

@@ -145,7 +145,7 @@ export default function DashboardPage() {
             </div>
           </motion.section>
 
-          
+
           {/* Schedule Preview - Full Width */}
           <motion.section
             initial={{ opacity: 0, y: 30 }}

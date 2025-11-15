@@ -45,8 +45,8 @@ function ProfilePage() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
       <div className="max-w-2xl mx-auto space-y-6">
         {/* Header with Back Button */}
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           size="sm"
           onClick={handleBackToDashboard}
           className="mb-4"
@@ -59,7 +59,7 @@ function ProfilePage() {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Profile</h1>
           <p className="text-gray-600 dark:text-gray-400">Manage your personal information</p>
         </div>
-        
+
         <Card className="border border-gray-200 dark:border-gray-700">
           <CardHeader className="border-b border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between">
@@ -80,7 +80,7 @@ function ProfilePage() {
                   <p className="text-sm text-gray-600 dark:text-gray-400">{user?.email}</p>
                 </div>
               </div>
-              
+
               {!isEditing && (
                 <Button variant="outline" onClick={() => setIsEditing(true)}>
                   <Edit3 className="w-4 h-4 mr-2" />
@@ -104,7 +104,7 @@ function ProfilePage() {
                     className="border-gray-300 dark:border-gray-600"
                   />
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-sm font-medium">
                     Email
@@ -140,7 +140,7 @@ function ProfilePage() {
                       {user?.name || 'Not specified'}
                     </p>
                   </div>
-                  
+
                   <div>
                     <Label className="text-sm font-medium text-gray-500 dark:text-gray-400">
                       Email

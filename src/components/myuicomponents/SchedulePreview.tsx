@@ -103,35 +103,35 @@ export default function SchedulePreview() {
                     className="group p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 hover:border-blue-400 dark:hover:border-blue-500 cursor-pointer transition-all hover:shadow-md"
                   >
                     <Link href={'/dashboard/schedule'}>
-                    <div className="flex items-start justify-between gap-2 mb-2">
-                      <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-sm text-gray-900 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                          {event.title}
+                      <div className="flex items-start justify-between gap-2 mb-2">
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-sm text-gray-900 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                            {event.title}
+                          </p>
+                        </div>
+                        <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-blue-600 transition-colors flex-shrink-0 mt-0.5" />
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+                          <div
+                            className="w-2 h-2 rounded-full"
+                            style={{ backgroundColor: config.color }}
+                          />
+                          {config.label}
+                        </div>
+
+                        <div className="text-xs text-gray-500 dark:text-gray-500 flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          {new Date(event.start).toLocaleDateString([], { month: 'short', day: 'numeric' })}
+                        </div>
+                      </div>
+
+                      {event.description && (
+                        <p className="text-xs text-gray-600 dark:text-gray-400 mt-2 line-clamp-1">
+                          {event.description}
                         </p>
-                      </div>
-                      <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-blue-600 transition-colors flex-shrink-0 mt-0.5" />
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
-                        <div
-                          className="w-2 h-2 rounded-full"
-                          style={{ backgroundColor: config.color }}
-                        />
-                        {config.label}
-                      </div>
-                      
-                      <div className="text-xs text-gray-500 dark:text-gray-500 flex items-center gap-1">
-                        <Clock className="w-3 h-3" />
-                        {new Date(event.start).toLocaleDateString([], { month: 'short', day: 'numeric' })}
-                      </div>
-                    </div>
-
-                    {event.description && (
-                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-2 line-clamp-1">
-                        {event.description}
-                      </p>
-                    )}
+                      )}
                     </Link>
                   </motion.div>
                 );
